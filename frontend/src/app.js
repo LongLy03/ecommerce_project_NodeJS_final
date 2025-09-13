@@ -1,0 +1,1 @@
+// Component gốc nơi định nghĩa route
