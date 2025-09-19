@@ -17,6 +17,7 @@ const registerUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 isAdmin: user.isAdmin,
+                isBlocked: user.isBlocked,
                 address: user.address,
                 token: generateToken(user._id),
             });
@@ -38,6 +39,7 @@ const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 isAdmin: user.isAdmin,
+                isBlocked: user.isBlocked,
                 address: user.address,
                 token: generateToken(user._id),
             });
