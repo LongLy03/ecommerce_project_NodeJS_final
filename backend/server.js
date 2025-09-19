@@ -37,7 +37,9 @@ app.use(passport.session());
 
 // Routes
 const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 
