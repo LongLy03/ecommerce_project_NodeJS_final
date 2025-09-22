@@ -2,7 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser} = require('../controllers/userController');
+const { registerUser, loginUser, getUserProfile } = require('../controllers/userController');
+const { protect } = require('../middleware/authMiddleware');
 const passport = require('passport');
 
 router.post('/register', registerUser);
@@ -17,7 +18,7 @@ router.get('/google/callback',
     }
 );
 
-router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+router.get('/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 
 router.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/login-failed' }),
@@ -29,5 +30,7 @@ router.get('/facebook/callback',
 router.get('/login-failed', (req, res) => {
     res.status(401).json({ message: 'Đăng nhạp thất bại!' });
 });
+
+router.get('/profile', protect, getUserProfile);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 // Discount model: code giảm giá, số lần dùng, ...
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
         maxUsage: {

@@ -1,10 +1,8 @@
 // CRUD sản phẩm, dashboard, quản lý đơn, ...
-import User from "../models/User";
-import Product from "../models/Product";
-import Order from "../models/Order";
-import Discount from "../models/Discount";
-import req from "express/lib/request";
-
+const User = require("../models/User");
+const Product = require("../models/Product");
+const Order = require("../models/Order");
+const Discount = require("../models/Discount");
 
 // User
 const getAllUsers = (req, res) => {

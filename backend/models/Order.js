@@ -1,4 +1,5 @@
 // Order model: sản phẩm, số lượng, ...
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
        history: [

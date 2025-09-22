@@ -51,4 +51,23 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser };
+const getUserProfile = async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: 'Chưa xác thực' });
+        }
+        res.json({
+            _id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            isAdmin: req.user.isAdmin,
+            isBlocked: req.user.isBlocked,
+            address: req.user.address,
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
+module.exports = { registerUser, loginUser, getUserProfile };
