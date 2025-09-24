@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+// Bảo vệ các route - chỉ người dùng đã đăng nhập mới có thể truy cập
 const protect = async (req, res, next) => {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -27,6 +28,7 @@ const protect = async (req, res, next) => {
     res.status(401).json({ message: 'Không có token, từ chối truy cập' });
 };
 
+// Chỉ admin mới có thể truy cập
 const adminOnly = (req, res, next) => {
     if (req.user && req.user.isAdmin) {
         return next();

@@ -1,7 +1,6 @@
-// Gửi email xác nhận đơn hàng
-
 const nodemailer = require('nodemailer');
 
+// Gửi email
 const sendEmail = async ({ to, subject, text}) => {
     const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,

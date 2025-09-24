@@ -8,13 +8,22 @@ const { registerUser,
     changePassword,
     updateUserProfile,
     forgotPassword,
-    resetPassword } = require('../controllers/userController');
+    resetPassword,
+    getAddresses,
+    addAddress,
+    updateAddress,
+    deleteAddress,
+    setDefaultAddress } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 const passport = require('passport');
 
+// Đăng ký
 router.post('/register', registerUser);
+
+// Đăng nhập
 router.post('/login', loginUser);
 
+// Đăng nhập với Google
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback',
@@ -24,6 +33,7 @@ router.get('/google/callback',
     }
 );
 
+// Đăng nhập với Facebook
 router.get('/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 
 router.get('/facebook/callback',
@@ -33,16 +43,27 @@ router.get('/facebook/callback',
     }
 );
 
+// Xử lý lỗi đăng nhập OAuth
 router.get('/login-failed', (req, res) => {
     res.status(401).json({ message: 'Đăng nhạp thất bại!' });
 });
 
+// Hồ sơ người dùng
 router.get('/profile', protect, getUserProfile);
 router.put('/profile', protect, updateUserProfile);
 
+// Đổi mật khẩu
 router.put('/changepassword', protect, changePassword);
 
+// Quên mật khẩu - đặt lại mật khẩu
 router.post('/forgotpassword', forgotPassword);
 router.post('/resetpassword/:token', resetPassword);
+
+// Quản lý địa chỉ
+router.get('/addresses', protect, getAddresses);
+router.post('/addresses', protect, addAddress);
+router.put('/addresses/:id', protect, updateAddress);
+router.delete('/addresses/:id', protect, deleteAddress);
+router.put('/addresses/default/:id', protect, setDefaultAddress);
 
 module.exports = router;

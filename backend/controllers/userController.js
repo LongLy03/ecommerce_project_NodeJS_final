@@ -5,6 +5,7 @@ const generateToken = require('../utils/generateToken');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
 
+// Đăng ký người dùng
 const registerUser = async (req, res) => {
     const { name, email, password, address } = req.body;
     try {
@@ -12,7 +13,10 @@ const registerUser = async (req, res) => {
         if (userExists) {
             return res.status(400).json({ message: 'Email đã tồn tại!' });
         }
-        const user = await User.create({ name, email, password, address });
+
+        const addresses = Array.isArray(address) ? address : [address];
+
+        const user = await User.create({ name, email, password, addresses: addresses });
         if (user) {
             res.status(201).json({
                 _id: user._id,
@@ -20,7 +24,7 @@ const registerUser = async (req, res) => {
                 email: user.email,
                 isAdmin: user.isAdmin,
                 isBlocked: user.isBlocked,
-                address: user.address,
+                address: user.addresses,
                 token: generateToken(user._id),
             });
         } else {
@@ -31,10 +35,15 @@ const registerUser = async (req, res) => {
     }
 };
 
+// Đăng nhập người dùng
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email }).select('+password');
+        if (user.isBlocked) {
+            return res.status(403).json({ message: 'Tài khoản của bạn đã bị khóa.' });
+        }
+
         if (user && (await user.matchPassword(password))) {
             res.json({
                 _id: user._id,
@@ -53,18 +62,22 @@ const loginUser = async (req, res) => {
     }
 };
 
+// Lấy thông tin profile người dùng
 const getUserProfile = async (req, res) => {
     try {
         if (!req.user) {
             return res.status(401).json({ message: 'Chưa xác thực' });
         }
+
+        const defaultAddress = req.user.addresses.find(addr => addr.isDefault) || null;
+        
         res.json({
             _id: req.user._id,
             name: req.user.name,
             email: req.user.email,
             isAdmin: req.user.isAdmin,
             isBlocked: req.user.isBlocked,
-            address: req.user.address,
+            defaultAddress
         });
     }
     catch (error) {
@@ -72,6 +85,44 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+// Cập nhật thông tin người dùng
+const updateUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (user) {
+            user.name = req.body.name || user.name;
+            user.email = req.body.email || user.email;
+            
+            if (req.body.address) {
+                const defaultAddress = user.addresses.find(addr => addr.isDefault);
+                if (defaultAddress) {
+                    defaultAddress.phone = req.body.address.phone || defaultAddress.phone;
+                    defaultAddress.street = req.body.address.street || defaultAddress.street;
+                    defaultAddress.city = req.body.address.city || defaultAddress.city;
+                    defaultAddress.country = req.body.address.country || defaultAddress.country;
+                }
+            }
+
+            const updatedUser = await user.save();
+
+            res.json({
+                _id: updatedUser._id,
+                name: updatedUser.name,
+                email: updatedUser.email,
+                isAdmin: updatedUser.isAdmin,
+                isBlocked: updatedUser.isBlocked,
+                defaultAddress: updatedUser.addresses.find(addr => addr.isDefault) || null,
+                token: generateToken(updatedUser._id),
+            });
+        } else {
+            res.status(404).json({ message: 'Người dùng không tồn tại' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
+// Đổi mật khẩu
 const changePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
     try {
@@ -92,39 +143,7 @@ const changePassword = async (req, res) => {
     }
 };
 
-const updateUserProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user._id);
-        if (user) {
-            user.name = req.body.name || user.name;
-            user.email = req.body.email || user.email;
-            
-            if (req.body.address) {
-                user.address.street = req.body.address.street || user.address.street;
-                user.address.city = req.body.address.city || user.address.city;
-                user.address.state = req.body.address.state || user.address.state;
-                user.address.zip = req.body.address.zip || user.address.zip;
-                user.address.country = req.body.address.country || user.address.country;
-            }
-
-            const updatedUser = await user.save();
-
-            res.json({
-                _id: updatedUser._id,
-                name: updatedUser.name,
-                email: updatedUser.email,
-                address: updatedUser.address,
-                isAdmin: updatedUser.isAdmin,
-                token: generateToken(updatedUser._id),
-            });
-        } else {
-            res.status(404).json({ message: 'Người dùng không tồn tại' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Lỗi server' });
-    }
-};
-
+// Quên mật khẩu - Gửi email
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -169,6 +188,7 @@ const forgotPassword = async (req, res) => {
     }
 };
 
+// Đặt lại mật khẩu
 const resetPassword = async (req, res) => {
     try {
         const rawToken = req.params.token;
@@ -201,6 +221,78 @@ const resetPassword = async (req, res) => {
     }
 };
 
+// Lấy danh sách địa chỉ
+const getAddresses = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        res.json(user.addresses);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
+// Thêm địa chỉ
+const addAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        user.addresses.push(req.body);
+        await user.save();
+        res.status(201).json(user.addresses);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
+// Cập nhật địa chỉ
+const updateAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        const address = user.addresses.id(req.params.id);
+        if (!address) {
+            return res.status(404).json({ message: 'Địa chỉ không tồn tại' });
+        }
+
+        Object.assign(address, req.body);
+        await user.save();
+        res.json(address);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
+// Xóa địa chỉ
+const deleteAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        user.addresses = user.addresses.filter(addr => addr._id.toString() !== req.params.id);
+        await user.save();
+        res.json({ message: 'Đã xóa địa chỉ' });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
+// Đặt mặc định địa chỉ
+const setDefaultAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        user.addresses.forEach(addr => {
+            addr.isDefault = false;
+        });
+
+        const address = user.addresses.id(req.params.id);
+        if (!address) {
+            return res.status(404).json({ message: 'Địa chỉ không tồn tại' });
+        }
+
+        address.isDefault = true;
+        await user.save();
+        res.json({ message: 'Đã đặt địa chỉ mặc định', addresses: user.addresses });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
 module.exports = { 
     registerUser, 
     loginUser, 
@@ -208,5 +300,10 @@ module.exports = {
     changePassword,
     updateUserProfile,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    getAddresses,
+    addAddress,
+    updateAddress,
+    deleteAddress,
+    setDefaultAddress
 };
