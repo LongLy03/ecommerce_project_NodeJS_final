@@ -2,7 +2,13 @@
 
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser, getUserProfile } = require('../controllers/userController');
+const { registerUser, 
+    loginUser, 
+    getUserProfile, 
+    changePassword,
+    updateUserProfile,
+    forgotPassword,
+    resetPassword } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 const passport = require('passport');
 
@@ -32,5 +38,11 @@ router.get('/login-failed', (req, res) => {
 });
 
 router.get('/profile', protect, getUserProfile);
+router.put('/profile', protect, updateUserProfile);
+
+router.put('/changepassword', protect, changePassword);
+
+router.post('/forgotpassword', forgotPassword);
+router.post('/resetpassword/:token', resetPassword);
 
 module.exports = router;
