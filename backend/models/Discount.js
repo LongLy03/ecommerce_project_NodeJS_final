@@ -2,14 +2,37 @@
 
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-        maxUsage: {
-            type: Number,
-            default: 10, // mặc định 10 lần/code
-        },
-        usedCount: {
-            type: Number,
-            default: 0,
-        },
-    }
-)
+const discountSchema = new mongoose.Schema(
+  {
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    percentage: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100,
+    },
+    description: {
+      type: String,
+      default: '',
+    },
+    usageLimit: {
+      type: Number,
+      default: 0, // 0 = không giới hạn
+    },
+    usedCount: {
+      type: Number,
+      default: 0,
+    },
+    expiresAt: {
+      type: Date,
+    },
+  },
+  { timestamps: true }
+);
+
+const Discount = mongoose.model('Discount', discountSchema);
+module.exports = Discount;

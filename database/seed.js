@@ -27,7 +27,7 @@ const seed = async () => {
     ]);
 
     const users = await User.create([
-      { name: "Nguyen Van A", email: "a@example.com", password: "123456" },
+      { name: "Nguyen Van A", email: "a@example.com", password: "123456", isAdmin: false },
       { name: "Admin", email: "admin@example.com", password: "admin123", isAdmin: true },
     ]);
 
@@ -39,8 +39,24 @@ const seed = async () => {
     const [cat1, cat2] = categories;
 
     const products = await Product.insertMany([
-      { name: "iPhone 15", description: "Điện thoại mới nhất", price: 25000000, category: cat1._id },
-      { name: "MacBook Pro", description: "Laptop cao cấp", price: 45000000, category: cat2._id },
+      {
+        name: "iPhone 15",
+        description: "Điện thoại mới nhất",
+        price: 25000000,
+        stock: 10,
+        brand: "Apple",
+        category: cat1._id,
+        images: [{ url: "https://example.com/iphone15.jpg" }],
+      },
+      {
+        name: "MacBook Pro",
+        description: "Laptop cao cấp",
+        price: 45000000,
+        stock: 5,
+        brand: "Apple",
+        category: cat2._id,
+        images: [{ url: "https://example.com/macbookpro.jpg" }],
+      },
     ]);
 
     const [prod1, prod2] = products;
