@@ -2,6 +2,15 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+
+const addressSchema = new mongoose.Schema({
+    phone: { type: String, default: '' },
+    street: { type: String, default: '' },
+    city: { type: String, default: '' },
+    country: { type: String, default: '' },
+    isDefault: { type: Boolean, default: false },
+}, {timestamps: true});
 
 const userSchema = new mongoose.Schema(
     {
@@ -31,22 +40,23 @@ const userSchema = new mongoose.Schema(
         },
         isBlocked: {
             type: Boolean,
+            required: true,
             default: false,
         },
-        address: {
-            street: { type: String, default: '' },
-            city: { type: String, default: '' },
-            state: { type: String, default: '' },
-            zip: { type: String, default: '' },
-            country: { type: String, default: '' },
+        addresses: {
+            type: [addressSchema],
+            validate: [arr => arr.length > 0, 'Cần ít nhất một địa chỉ'],
         },
+
+        resetPasswordToken: { type: String },
+        resetPasswordExpire: {type: Date},
     },
     {
         timestamps: true,
     }
 );
 
-// Hash password before saving
+// Mã hóa mật khẩu trước khi lưu
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next();
@@ -57,9 +67,23 @@ userSchema.pre('save', async function (next) {
 }
 );
 
-// Match user entered password to hashed password in database
+// So sánh mật khẩu nhập vào với mật khẩu đã mã hóa
 userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
+
+// Tạo token đặt lại mật khẩu
+userSchema.methods.getResetPasswordToken = function() {
+    const resetToken = crypto.randomBytes(20).toString('hex');
+
+    this.resetPasswordToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+    return resetToken;
+};
+
 const User = mongoose.model('User', userSchema);
 module.exports = User;

@@ -1,18 +1,19 @@
 // CRUD sản phẩm, dashboard, quản lý đơn, ...
-import User from "../models/User";
-import Product from "../models/Product";
-import Order from "../models/Order";
-import Discount from "../models/Discount";
-import req from "express/lib/request";
 
+const User = require("../models/User");
+const Product = require("../models/Product");
+const Order = require("../models/Order");
+const Discount = require("../models/Discount");
 
 // User
+// Lấy tất cả người dùng
 const getAllUsers = (req, res) => {
     User.find()
         .then(users => res.json(users))
         .catch(err => res.status(500).json({ message: 'Lỗi server', error: err.message }));
 };
 
+// Cập nhật thông tin người dùng
 const updateUser = (req, res) => {
     const { id } = req.params;
     User.findByIdAndUpdate(id, req.body, { new: true })
@@ -20,6 +21,7 @@ const updateUser = (req, res) => {
         .catch(err => res.status(500).json({ message: 'Lỗi server', error: err.message }));
 };
 
+// Chặn người dùng
 const blockUser = (req, res) => {
     const { id } = req.params;
     User.findById(id)
@@ -33,12 +35,14 @@ const blockUser = (req, res) => {
 };
 
 // Product
+// Tạo mới sản phẩm
 const createProduct = (req, res) => {
     Product.create(req.body)
             .then(product => res.status(201).json(product))
             .catch(err => res.status(400).json({message: 'Tạo sản phẩm thất bại', error: err.message}));
 };
 
+// Cập nhật sản phẩm
 const updateProduct = (req, res) => {
     const { id } = req.params;
     Product.findByIdAndUpdate(id, req.body, { new: true })
@@ -46,6 +50,7 @@ const updateProduct = (req, res) => {
         .catch(err => res.status(500).json({ message: 'Cập nhật thất bại', error: err.message }));
 };
 
+// Xóa sản phẩm
 const deleteProduct = (req, res) => {
     const {id} = req.params;
     Product.findByIdAndDelete(id)
@@ -54,12 +59,14 @@ const deleteProduct = (req, res) => {
 };
 
 // Order
+// Lấy tất cả đơn hàng
 const getOrders = (req, res) => {
     Order.find().sort({createdAt: -1})
         .then(orders => res.json(orders))
         .catch(err => res.status(500).json({message: 'Lỗi server', error: err.message}));
 };
 
+// Lấy chi tiết đơn hàng
 const getOrderDetail = (req, res) => {
     const {id} = req.params;
     Order.findById(id).populate('user products.product')
@@ -67,6 +74,7 @@ const getOrderDetail = (req, res) => {
         .catch(err => res.status(500).json({message: 'Lỗi server', error: err.message}));
 }
 
+// Cập nhật trạng thái đơn hàng
 const updateOrderStatus = (req, res) => {
     const {id} = req.params;
     const {status} = req.body;
@@ -81,12 +89,14 @@ const updateOrderStatus = (req, res) => {
 };
 
 // Discount
+// Tạo mã giảm giá
 const createDiscountCode = (req, res) => {
     Discount.create(req.body)
         .then(discount => res.status(201).json(discount))
         .catch(err => res.status(500).json({message: 'Lỗi server', error: err.message}));
 };
 
+// Lấy tất cả mã giảm giá
 const getAllDiscountCodes = (req, res) => {
     Discount.find()
         .then(discounts => res.json(discounts))
@@ -94,6 +104,7 @@ const getAllDiscountCodes = (req, res) => {
 };
 
 // Dashboard
+// Thống kê cơ bản
 const dashboardBasic = (req, res) => {
     Promise.all([
         User.countDocuments(),
@@ -106,6 +117,7 @@ const dashboardBasic = (req, res) => {
         .catch(err => res.status(500).json({ message: 'Lỗi server', error: err.message }));
 };
 
+// Thống kê nâng cao - doanh thu theo tháng
 const dashboardAdvanced = (req, res) => {
     Order.aggregate([
         {$group: {_id: {$month: "$createdAt"}, total: {$sum: "$total"}}},
