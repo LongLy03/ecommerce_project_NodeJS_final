@@ -2,6 +2,15 @@
 
 const mongoose = require('mongoose');
 
+const variantSchema = new mongoose.Schema({
+  sku: String,
+  name: String,
+  price: { type: Number, required: true },
+  compareAtPrice: Number,
+  stock: { type: Number, default: 0 },
+  attributes: [{key: String, value: String}],
+}, { _id: true });
+
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -9,23 +18,23 @@ const productSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     description: {
       type: String,
       default: '',
     },
+    category: {type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true},
     price: {
       type: Number,
       required: true,
+      index: true,
       min: 0,
     },
-    stock: {
-      type: Number,
-      default: 0,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
+    variants: [variantSchema],
     brand: {
       type: String,
       default: '',
@@ -35,9 +44,21 @@ const productSchema = new mongoose.Schema(
         url: { type: String },
       },
     ],
+    rating: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
+    numReviews: {
+      type: Number,
+      default: 0,
+    }
   },
   { timestamps: true }
 );
+
+productSchema.index({ name: 'text', description: 'text', brand: 'text' });
+productSchema.index({ price: 1, category: 1 }); 
 
 const Product = mongoose.model('Product', productSchema);
 module.exports = Product;

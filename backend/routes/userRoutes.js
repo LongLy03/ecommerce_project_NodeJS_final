@@ -45,7 +45,7 @@ router.get('/facebook/callback',
 
 // Xử lý lỗi đăng nhập OAuth
 router.get('/login-failed', (req, res) => {
-    res.status(401).json({ message: 'Đăng nhạp thất bại!' });
+    res.status(401).json({ message: 'Đăng nhập thất bại!' });
 });
 
 // Hồ sơ người dùng

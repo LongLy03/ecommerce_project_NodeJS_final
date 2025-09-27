@@ -7,16 +7,16 @@ const sendEmail = require('../utils/sendEmail');
 
 // Đăng ký người dùng
 const registerUser = async (req, res) => {
-    const { name, email, password, address } = req.body;
+    const { name, email, password, addresses } = req.body;
     try {
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ message: 'Email đã tồn tại!' });
         }
 
-        const addresses = Array.isArray(address) ? address : [address];
+        //const addresses = Array.isArray(addresses) ? addresses : [addresses];
 
-        const user = await User.create({ name, email, password, addresses: addresses });
+        const user = await User.create({ name, email, password, addresses });
         if (user) {
             res.status(201).json({
                 _id: user._id,
@@ -24,7 +24,7 @@ const registerUser = async (req, res) => {
                 email: user.email,
                 isAdmin: user.isAdmin,
                 isBlocked: user.isBlocked,
-                address: user.addresses,
+                addresses: user.addresses,
                 token: generateToken(user._id),
             });
         } else {
@@ -93,13 +93,13 @@ const updateUserProfile = async (req, res) => {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
             
-            if (req.body.address) {
+            if (req.body.addresses) {
                 const defaultAddress = user.addresses.find(addr => addr.isDefault);
                 if (defaultAddress) {
-                    defaultAddress.phone = req.body.address.phone || defaultAddress.phone;
-                    defaultAddress.street = req.body.address.street || defaultAddress.street;
-                    defaultAddress.city = req.body.address.city || defaultAddress.city;
-                    defaultAddress.country = req.body.address.country || defaultAddress.country;
+                    defaultAddress.phone = req.body.addresses.phone || defaultAddress.phone;
+                    defaultAddress.street = req.body.addresses.street || defaultAddress.street;
+                    defaultAddress.city = req.body.addresses.city || defaultAddress.city;
+                    defaultAddress.country = req.body.addresses.country || defaultAddress.country;
                 }
             }
 

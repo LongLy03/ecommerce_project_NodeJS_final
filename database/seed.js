@@ -1,99 +1,120 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
-const User = require("./models/user");
-const Category = require("./models/category");
-const Product = require("./models/product");
-const Order = require("./models/order");
-const Cart = require("./models/cart");
-const Review = require("./models/review");
-const Loyalty = require("./models/loyalty");
-const Discount = require("./models/discount");
+dotenv.config({ path: '../backend/.env' });
 
-const uri = "mongodb://127.0.0.1:27017/final_ecommerce";
+// Import models
+const User = require('../backend/models/User');
+const Product = require('../backend/models/Product');
+const Category = require('../backend/models/Category');
 
-const seed = async () => {
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ecommerce';
+
+const seedData = async () => {
   try {
-    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-    await Promise.all([
-      User.deleteMany({}),
-      Category.deleteMany({}),
-      Product.deleteMany({}),
-      Order.deleteMany({}),
-      Cart.deleteMany({}),
-      Review.deleteMany({}),
-      Loyalty.deleteMany({}),
-      Discount.deleteMany({}),
-    ]);
-
-    const users = await User.create([
-      { name: "Nguyen Van A", email: "a@example.com", password: "123456", isAdmin: false },
-      { name: "Admin", email: "admin@example.com", password: "admin123", isAdmin: true },
-    ]);
-
-    const categories = await Category.insertMany([
-      { category_name: "Điện thoại", description: "Các loại điện thoại" },
-      { category_name: "Laptop", description: "Các loại laptop" },
-    ]);
-
-    const [cat1, cat2] = categories;
-
-    const products = await Product.insertMany([
-      {
-        name: "iPhone 15",
-        description: "Điện thoại mới nhất",
-        price: 25000000,
-        stock: 10,
-        brand: "Apple",
-        category: cat1._id,
-        images: [{ url: "https://example.com/iphone15.jpg" }],
-      },
-      {
-        name: "MacBook Pro",
-        description: "Laptop cao cấp",
-        price: 45000000,
-        stock: 5,
-        brand: "Apple",
-        category: cat2._id,
-        images: [{ url: "https://example.com/macbookpro.jpg" }],
-      },
-    ]);
-
-    const [prod1, prod2] = products;
-    const user1 = users[0];
-
-    await Order.insertMany([
-      { customer: user1._id, total_amount: prod1.price, status: 1 },
-      { customer: user1._id, total_amount: prod2.price, status: 1 },
-    ]);
-
-    await Cart.create({
-      customer: user1._id,
-      products: products.map((p) => ({ product: p._id, quantity: 1 })),
+    await mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
 
-    await Review.insertMany(
-      products.map((p) => ({
-        customer: user1._id,
-        product: p._id,
-        rating: 5,
-        comment: `Đánh giá cho ${p.name}`,
-      }))
-    );
+    console.log('✅ MongoDB connected');
 
-    await Loyalty.create({ customer: user1._id, points: 100 });
+    // Xóa dữ liệu cũ
+    // await User.deleteMany();
+    // await Category.deleteMany();
+    // await Product.deleteMany();
 
-    await Discount.insertMany([
-      { code: "SALE10", percentage: 10, description: "Giảm giá 10%" },
-      { code: "SALE20", percentage: 20, description: "Giảm giá 20%" },
+    // console.log('🗑️ Đã xóa dữ liệu cũ');
+
+    // 1️⃣ Tạo user admin + user thường
+    const users = await User.insertMany([
+      {
+        name: 'Admin User',
+        email: 'admin@example.com',
+        password: '123456',
+        isAdmin: true,
+        addresses: [
+          { phone: '0123456789', street: '123 Trần Hưng Đạo', city: 'Hà Nội', country: 'VN', isDefault: true },
+        ],
+      },
+      {
+        name: 'Nguyen Van A',
+        email: 'user@example.com',
+        password: '123456',
+        isAdmin: false,
+        addresses: [
+          { phone: '0987654321', street: '456 Lê Lợi', city: 'HCM', country: 'VN', isDefault: true },
+          { phone: '0911222333', street: '789 Nguyễn Huệ', city: 'HCM', country: 'VN', isDefault: false },
+        ],
+      },
     ]);
 
-    console.log("Seed dữ liệu thành công");
-    mongoose.connection.close();
+    console.log('👤 Đã thêm user mẫu');
+
+    // 2️⃣ Tạo danh mục mẫu
+    const categories = await Category.insertMany([
+      { name: 'Điện thoại', slug: 'dien-thoai', description: 'Các loại điện thoại thông minh' },
+      { name: 'Laptop', slug: 'laptop', description: 'Laptop học tập, văn phòng, gaming' },
+      { name: 'Phụ kiện', slug: 'phu-kien', description: 'Tai nghe, sạc, chuột...' },
+    ]);
+
+    console.log('📂 Đã thêm category mẫu');
+
+    // 3️⃣ Tạo sản phẩm mẫu
+    const products = await Product.insertMany([
+      {
+        name: 'iPhone 15 Pro Max',
+        slug: 'iphone-15-pro-max',
+        description: 'Điện thoại Apple mới nhất, hiệu năng mạnh mẽ.',
+        category: categories[0]._id,
+        price: 35000000,
+        variants: [
+          { sku: 'IP15PM-256', name: '256GB', price: 35000000, stock: 20, attributes: [{ key: 'màu', value: 'đen' }] },
+          { sku: 'IP15PM-512', name: '512GB', price: 40000000, stock: 10, attributes: [{ key: 'màu', value: 'trắng' }] },
+        ],
+        brand: 'Apple',
+        images: [{ url: 'https://example.com/iphone15.jpg' }],
+        rating: 4.8,
+        numReviews: 120,
+      },
+      {
+        name: 'MacBook Air M2',
+        slug: 'macbook-air-m2',
+        description: 'Laptop siêu nhẹ, chip Apple M2.',
+        category: categories[1]._id,
+        price: 28000000,
+        variants: [
+          { sku: 'MBA-M2-8GB', name: '8GB RAM', price: 28000000, stock: 15, attributes: [{ key: 'màu', value: 'bạc' }] },
+          { sku: 'MBA-M2-16GB', name: '16GB RAM', price: 32000000, stock: 5, attributes: [{ key: 'màu', value: 'xám' }] },
+        ],
+        brand: 'Apple',
+        images: [{ url: 'https://example.com/macbookm2.jpg' }],
+        rating: 4.7,
+        numReviews: 90,
+      },
+      {
+        name: 'Tai nghe AirPods Pro 2',
+        slug: 'airpods-pro-2',
+        description: 'Tai nghe không dây chống ồn chủ động.',
+        category: categories[2]._id,
+        price: 5500000,
+        variants: [
+          { sku: 'APPRO2-WHT', name: 'Màu trắng', price: 5500000, stock: 100, attributes: [{ key: 'màu', value: 'trắng' }] },
+        ],
+        brand: 'Apple',
+        images: [{ url: 'https://example.com/airpodspro2.jpg' }],
+        rating: 4.5,
+        numReviews: 60,
+      },
+    ]);
+
+    console.log('📦 Đã thêm product mẫu');
+    console.log('🎉 SEED DATA HOÀN TẤT');
+    process.exit();
   } catch (err) {
-    console.error("Lỗi seed:", err);
-    mongoose.connection.close();
+    console.error('❌ Lỗi seed dữ liệu:', err.message);
+    process.exit(1);
   }
 };
 
-seed();
+seedData();
