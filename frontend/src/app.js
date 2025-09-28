@@ -1,4 +1,3 @@
-// Component gốc nơi định nghĩa route
 // app.js - SPA Router cho Ecommerce Project
 
 const view = document.getElementById('view');
@@ -11,7 +10,7 @@ const routes = {
     '/catalog': () =>
         import ('./pages/CatalogPage.js'),
     '/product': () =>
-        import ('./pages/ProductDetail.js'), // /product/:id
+        import ('./pages/ProductDetail.js'), // #/product/:id
     '/cart': () =>
         import ('./pages/CartPage.js'),
     '/checkout': () =>
@@ -36,7 +35,7 @@ function buildNav() {
             ['Hồ sơ', '#/profile'],
             ['Đăng nhập', '#/login'],
             ['Đăng ký', '#/register'],
-            ['Admin', '#/admin']
+            ['Admin', '#/admin'],
         ]
         .map(([t, href]) => `<a href="${href}">${t}</a>`)
         .join('');
@@ -51,6 +50,19 @@ function parseHash() {
     return { path, params };
 }
 
+// Map tên route sang key trong window.Pages
+const pageMap = {
+    landing: 'LandingPage',
+    catalog: 'CatalogPage',
+    product: 'ProductDetail',
+    cart: 'CartPage',
+    checkout: 'CheckoutPage',
+    profile: 'ProfilePage',
+    login: 'LoginPage',
+    register: 'RegisterPage',
+    admin: 'AdminDashboard',
+};
+
 // Điều hướng và render trang
 async function navigate() {
     const { path, params } = parseHash();
@@ -62,13 +74,19 @@ async function navigate() {
     }
 
     try {
-        const mod = await loader();
+        await loader(); // import module (tự gắn vào window.Pages)
         view.innerHTML = '';
-        const render = mod && (mod.default || mod.render);
-        if (typeof render === 'function') {
-            await render(view, { params });
-        } else if (mod && mod.mount) {
-            await mod.mount(view, { params });
+
+        const routeName = path.slice(1); // bỏ dấu '/'
+        const key = pageMap[routeName] || 'LandingPage';
+        const pageObj = (window.Pages || {})[key];
+
+        if (pageObj && typeof pageObj.mount === 'function') {
+            // với product: #/product/123 => params[0] là id
+            const props = routeName === 'product' ? { id: params[0], params } : { params };
+            await pageObj.mount(view, props);
+        } else {
+            view.innerHTML = `<p>Không tìm thấy hàm mount cho ${key}</p>`;
         }
     } catch (err) {
         console.error(err);

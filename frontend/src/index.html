@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Ecommerce SPA</title>
+    <title>ElectroHub - E-commerce SPA</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
     <style>
         body {
             margin: 0;
@@ -27,17 +28,22 @@
             padding: 12px 16px;
             position: sticky;
             top: 0;
-            background: rgba(11, 16, 32, .8);
+            background: rgba(11, 16, 32, .85);
             backdrop-filter: saturate(140%) blur(8px);
             border-bottom: 1px solid #1b2344;
             z-index: 50;
         }
         
         .nav a {
-            padding: 8px 10px;
+            padding: 8px 12px;
             border: 1px solid #1f2a54;
-            border-radius: 10px;
+            border-radius: 8px;
             background: #0f1633;
+            transition: background .2s;
+        }
+        
+        .nav a:hover {
+            background: #1b2344;
         }
         
         .container {
@@ -60,7 +66,16 @@
 
 <body>
     <!-- Thanh điều hướng -->
-    <nav id="nav" class="nav"></nav>
+    <nav id="nav" class="nav">
+        <a href="#/">Trang chủ</a>
+        <a href="#/catalog">Catalog</a>
+        <a href="#/cart">Giỏ hàng</a>
+        <a href="#/checkout">Thanh toán</a>
+        <a href="#/profile">Hồ sơ</a>
+        <a href="#/admin">Admin</a>
+        <a href="#/login">Đăng nhập</a>
+        <a href="#/register">Đăng ký</a>
+    </nav>
 
     <!-- Nội dung sẽ thay đổi theo từng trang -->
     <main id="view" class="container"></main>
