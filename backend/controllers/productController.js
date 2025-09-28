@@ -8,14 +8,15 @@ const getProducts = async (req, res) => {
     const { 
         category, 
         minPrice, 
-        maxPrice, 
+        maxPrice,
+        minRating,
         search, 
         sort = 'createdAt_desc', 
         brand, 
         page = 1, 
         limit = 10 } = req.query;
 
-    const pageNum = Math.max(párseInt(page), 1);
+    const pageNum = Math.max(parseInt(page), 1);
     const pageSize = Math.min(Math.max(parseInt(limit), 1), 100);
 
     const filter = {};
@@ -45,6 +46,10 @@ const getProducts = async (req, res) => {
         filter.price = {};
         if (minPrice) filter.price.$gte = Number(minPrice);
         if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+
+    if (minRating) {
+        filter.rating = { $gte: Number(minRating) }
     }
 
     if (search) {
@@ -81,4 +86,25 @@ const getProducts = async (req, res) => {
     }
 };
 
-module.exports = { getProducts };
+const getProductByIdOrSlug = async (req, res) => {
+    try {
+        const { idOrSlug } = req.params;
+        let product;
+        if (/^[0-9a-fA-F]{24}$/.test(idOrSlug)) {
+            product = await Product.findById(idOrSlug).populate('category', 'name slug').lean();
+        } else {
+            product = await Product.findOne({ slug: idOrSlug }).populate('category', 'name slug').lean();
+        }
+
+        if (!product) return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+
+        return res.json(product);
+    } catch (err) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
+module.exports = { 
+    getProducts,
+    getProductByIdOrSlug
+};

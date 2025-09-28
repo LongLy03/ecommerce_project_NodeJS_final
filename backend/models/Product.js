@@ -34,16 +34,24 @@ const productSchema = new mongoose.Schema(
       index: true,
       min: 0,
     },
-    variants: [variantSchema],
+    variants: {
+      type: [variantSchema],
+      validate: {
+        validator: v => Array.isArray(v) && v.length >= 2,
+        message: 'Sản phẩm phải có ít nhất 2 biến thể'
+      }
+    },
     brand: {
       type: String,
       default: '',
     },
-    images: [
-      {
-        url: { type: String },
-      },
-    ],
+    images: {
+      type: [{ url: String}],
+      validate: {
+        validator: a => Array.isArray(a) && a.length >= 3,
+        message: 'Sản phẩm phải có ít nhất 3 ảnh minh họa'
+      }
+    },
     rating: {
       type: Number,
       default: 0,
@@ -53,12 +61,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     }
-  },
-  { timestamps: true }
+  }, { timestamps: true }
 );
 
 productSchema.index({ name: 'text', description: 'text', brand: 'text' });
-productSchema.index({ price: 1, category: 1 }); 
 
 const Product = mongoose.model('Product', productSchema);
 module.exports = Product;
