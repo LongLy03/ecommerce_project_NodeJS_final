@@ -8,27 +8,23 @@ const discountSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      uppercase: true,
+      trim: true,
+      match: [/^[A-Z0-9]{5}$/, 'Mã giảm giá phải gồm 5 ký tự chữ và số'],
     },
-    percentage: {
+    value: {
       type: Number,
       required: true,
-      min: 0,
+      min: 1,
       max: 100,
-    },
-    description: {
-      type: String,
-      default: '',
     },
     usageLimit: {
       type: Number,
-      default: 0, // 0 = không giới hạn
+      default: 10,
     },
     usedCount: {
       type: Number,
       default: 0,
-    },
-    expiresAt: {
-      type: Date,
     },
   },
   { timestamps: true }

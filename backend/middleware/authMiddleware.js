@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // Bảo vệ các route - chỉ người dùng đã đăng nhập mới có thể truy cập
-const protect = async (req, res, next) => {
+const protect = (required = true) => async (req, res, next) => {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
@@ -22,10 +22,12 @@ const protect = async (req, res, next) => {
             return next();
 
         } catch (error) {
-            return res.status(401).json({ message: 'Không được phép, token không hợp lệ' });
+            if (required) return res.status(401).json({ message: 'Không được phép, token không hợp lệ' });
+
+            return next();
         }
     }
-    res.status(401).json({ message: 'Không có token, từ chối truy cập' });
+    if (required) res.status(401).json({ message: 'Không có token, từ chối truy cập' });
 };
 
 // Chỉ admin mới có thể truy cập
