@@ -1,5 +1,6 @@
 const Review = require('../models/Review');
 const Product = require('../models/Product');
+const { io } = require('../server');
 
 const getReviews = async (req, res) => {
     try {
@@ -29,6 +30,8 @@ const addReview = async (req, res) => {
             rating,
             comment
         });
+
+        io.to(productId).emit('reviewAdded', review);
 
         const stats = await Review.aggregate([
             { $match: { product: review.product } },

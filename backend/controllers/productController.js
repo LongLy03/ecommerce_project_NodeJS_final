@@ -104,7 +104,41 @@ const getProductByIdOrSlug = async (req, res) => {
     }
 };
 
+const getHomeProducts = async (req, res) => {
+    try {
+        const newest = await Product.find()
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .select('name slug price images brand rating numReviews');
+
+        const bestSellers = await Product.find()
+            .sort({ numReviews: -1 })
+            .limit(10)
+            .select('name slug price images brand rating numReviews');
+
+        const categories = await Category.find({ slug: { $in: ['dien-thoai', 'laptop', 'phu-kien'] } });
+
+        const byCategory = {};
+        for (const cat of categories) {
+            const products = await Product.find({ category: cat._id })
+                .sort({ createdAt: -1 })
+                .limit(6)
+                .select('name slug price images brand rating numReviews');
+            byCategory[cat.slug] = { category: cat, products };
+        }
+
+        res.json({
+            newest,
+            bestSellers,
+            categories: byCategory
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Lỗi server' })
+    }
+}
+
 module.exports = { 
     getProducts,
-    getProductByIdOrSlug
+    getProductByIdOrSlug,
+    getHomeProducts
 };
