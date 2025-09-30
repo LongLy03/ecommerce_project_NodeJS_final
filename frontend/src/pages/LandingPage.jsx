@@ -83,7 +83,6 @@ const LandingPage = () => {
       {data.categories && Object.keys(data.categories).map((key) => {
         const catData = data.categories[key];
         if (!catData || !catData.products || catData.products.length === 0) return null;
-
         return (
           <section className="mb-5" key={key}>
             <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
