@@ -11,12 +11,15 @@ const { addToCart,
         guestCheckout } = require('../controllers/orderController');
 const { protect } = require('../middleware/authMiddleware');
 
+// Giỏ hàng
 router.post('/cart', protect(false), addToCart);
 router.get('/cart', protect(false), getCart);
 router.put('/cart/:itemId', protect(false), updateCartItem);
 router.delete('/:itemId', protect(false), removeCartItem);
 router.post('/cart/discount', protect(false), applyDiscount);
-router.post('/checkout', protect, checkout);
+
+// Thang toán
+router.post('/checkout', protect(true), checkout);
 router.post('/guest-checkout', guestCheckout);
 
 module.exports = router;

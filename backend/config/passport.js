@@ -63,4 +63,18 @@ passport.use(new FacebookStrategy({
     }
 }));
 
+passport.serializeUser((user, done) => {
+  done(null, user._id ? user._id.toString() : user);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id).select('-password');
+    if (!user) return done(null, false);
+    return done(null, user);
+  } catch (err) {
+    return done(err, null);
+  }
+});
+
 module.exports = passport;

@@ -6,10 +6,15 @@ const { getProducts, getProductByIdOrSlug, getHomeProducts } = require('../contr
 const { getReviews, addReview } = require('../controllers/reviewController');
 const { protect } = require('../middleware/authMiddleware');
 
+// Danh mục, Chi tiết sản phẩm
 router.get('/', getProducts);
 router.get('/:idOrSlug', getProductByIdOrSlug);
-router.get('/:idOrSlug/reviews', getReviews);
-router.post('/:idOrSlug/reviews', protect, addReview);
+
+// Bình luận và đánh giá
+// router.get('/:idOrSlug/reviews', getReviews);
+// router.post('/:idOrSlug/reviews', protect, addReview);
+
+// Trang chủ
 router.get('/home/sections', getHomeProducts);
 
 module.exports = router;

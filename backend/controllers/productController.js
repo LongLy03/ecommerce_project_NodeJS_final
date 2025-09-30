@@ -3,6 +3,7 @@
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 
+// Xem danh mục sản phẩm, tìm kiếm, lọc, sắp xếp, phân trang
 const getProducts = async (req, res) => {
   try {
     const { 
@@ -18,7 +19,6 @@ const getProducts = async (req, res) => {
 
     const pageNum = Math.max(parseInt(page), 1);
     const pageSize = Math.min(Math.max(parseInt(limit), 1), 100);
-
     const filter = {};
 
     if (category) {
@@ -86,6 +86,7 @@ const getProducts = async (req, res) => {
     }
 };
 
+// Trang chi tiết sản phẩm
 const getProductByIdOrSlug = async (req, res) => {
     try {
         const { idOrSlug } = req.params;
@@ -104,6 +105,7 @@ const getProductByIdOrSlug = async (req, res) => {
     }
 };
 
+// Trang chủ
 const getHomeProducts = async (req, res) => {
     try {
         const newest = await Product.find()

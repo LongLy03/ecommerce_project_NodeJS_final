@@ -5,6 +5,7 @@ const Product = require('../models/Product');
 const Discount = require('../models/Discount');
 const Order = require('../models/Order');
 
+// Thêm vào giỏ hàng
 const addToCart = async (req, res) => {
     try {
         const { productId, variantId, quatity = 1 } = req.body;
@@ -37,19 +38,23 @@ const addToCart = async (req, res) => {
     }
 };
 
+// Xem giỏ hàng
 const getCart = async (req, res) => {
     try {
         const userId = req.user ? req.user._id : null;
         let cart = await Cart.findOne({ user: userId })
             .populate('items.product', 'name price images variants')
             .populate('discount');
+        
         if (!cart) return res.json({ items: [] });
+
         res.json(cart);
     } catch (err) {
         res.status(500).json({ message: 'Lỗi server' })
     }
 };
 
+// Cập nhật số lượng sản phẩm
 const updateCartItem = async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -64,13 +69,13 @@ const updateCartItem = async (req, res) => {
 
     item.quantity = quantity;
     await cart.save();
-
     res.json(cart);
   } catch (err) {
     res.status(500).json({ message: 'Lỗi server' });
   }
 };
 
+// Xóa sản phẩm ra khỏi giỏ hàng
 const removeCartItem = async (req, res) => {
     try {
         const { itemId } = req.params;
@@ -81,20 +86,20 @@ const removeCartItem = async (req, res) => {
 
         cart.items = cart.items.filter(i => i.product.toString() !== itemId);
         await cart.save();
-
         res.json(cart);
     } catch (err) {
         res.status(500).json({ message: 'Lỗi server' });
     }
 };
 
+// Áp dụng mã giảm giá
 const applyDiscount = async (req, res) => {
     try {
         const { code } = req.body;
         const userId = req.user ? req.user._id : null;
-
         const discount = await Discount.findOne({ code });
         if (!discount) return res.status(404).json({ message: 'Mã giảm giá không hợp lệ' });
+
         if (discount.usedCount >= discount.usageLimit) {
         return res.status(400).json({ message: 'Mã giảm giá đã hết lượt sử dụng' });
         }
@@ -104,21 +109,21 @@ const applyDiscount = async (req, res) => {
 
         cart.discount = discount._id;
         await cart.save();
-
         res.json(cart);
     } catch (err) {
         res.status(500).json({ message: 'Lỗi server' });
     }
 };
 
+// Thanh toán cho user
 const checkout = async (req, res) => {
     try {
         const userId = req.user ? req.user._id : null;
         const { shippingAddress, paymentMethod } = req.body;
-
         const cart = await Cart.findOne({ user: userId })
             .populate('items.product', 'name price variants stock')
             .populate('discount');
+
         if (!cart || cart.items.length === 0) return res.status(400).json({ message: 'Giỏ hàng trống' });
 
         let total = 0;
@@ -146,7 +151,6 @@ const checkout = async (req, res) => {
         if (cart.discount) {
             discountAmount = (total * cart.discount.value) / 100; 
             total -= discountAmount;
-
             cart.discount.usedCount += 1;
             await cart.discount.save();
         }
@@ -165,13 +169,13 @@ const checkout = async (req, res) => {
         cart.items = [];
         cart.discount = null;
         await cart.save();
-
         res.status(201).json({ message: 'Đặt hàng thành công', order });
     } catch (err) {
         res.status(500).json({ message: 'Lỗi server', error: err.message });
     }
 };
 
+// Thanh toán cho guest
 const guestCheckout = async (req, res) => {
     try {
         const { items, shippingAddress, paymentMethod, discountCode } = req.body;
@@ -184,49 +188,50 @@ const guestCheckout = async (req, res) => {
         const orderItems = [];
 
         for (const item of items) {
-        const product = await Product.findById(item.productId);
-        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+            const product = await Product.findById(item.productId);
+            if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
 
-        const variant = item.variantId ? product.variants.id(item.variantId) : null;
-        const price = variant ? variant.price : product.price;
-        const subTotal = price * item.quantity;
-        total += subTotal;
+            const variant = item.variantId ? product.variants.id(item.variantId) : null;
+            const price = variant ? variant.price : product.price;
+            const subTotal = price * item.quantity;
+            total += subTotal;
 
-        orderItems.push({
-            product: product._id,
-            variantId: item.variantId || null,
-            name: product.name,
-            quantity: item.quantity,
-            price,
-            subTotal,
-        });
+            orderItems.push({
+                product: product._id,
+                variantId: item.variantId || null,
+                name: product.name,
+                quantity: item.quantity,
+                price,
+                subTotal,
+            });
         }
 
         let discount = null;
         let discountAmount = 0;
         if (discountCode) {
-        discount = await Discount.findOne({ code: discountCode });
-        if (!discount) return res.status(404).json({ message: 'Mã giảm giá không hợp lệ' });
-        if (discount.usedCount >= discount.usageLimit) {
-            return res.status(400).json({ message: 'Mã giảm giá đã hết lượt sử dụng' });
-        }
+            discount = await Discount.findOne({ code: discountCode });
+            if (!discount) return res.status(404).json({ message: 'Mã giảm giá không hợp lệ' });
 
-        discountAmount = (total * discount.value) / 100;
-        total -= discountAmount;
+            if (discount.usedCount >= discount.usageLimit) {
+                return res.status(400).json({ message: 'Mã giảm giá đã hết lượt sử dụng' });
+            }
 
-        discount.usedCount += 1;
-        await discount.save();
+            discountAmount = (total * discount.value) / 100;
+            total -= discountAmount;
+
+            discount.usedCount += 1;
+            await discount.save();
         }
 
         const order = await Order.create({
-        user: null,
-        items: orderItems,
-        shippingAddress,
-        paymentMethod,
-        discount: discount ? discount._id : null,
-        discountAmount,
-        totalPrice: total,
-        status: 'pending',
+            user: null,
+            items: orderItems,
+            shippingAddress,
+            paymentMethod,
+            discount: discount ? discount._id : null,
+            discountAmount,
+            totalPrice: total,
+            status: 'pending',
         });
 
         res.status(201).json({ message: 'Đặt hàng thành công (Guest)', order });

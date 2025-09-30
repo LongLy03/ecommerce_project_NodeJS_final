@@ -16,6 +16,8 @@ const { registerUser,
     setDefaultAddress } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 // Đăng ký
 router.post('/register', registerUser);
@@ -49,21 +51,59 @@ router.get('/login-failed', (req, res) => {
 });
 
 // Hồ sơ người dùng
-router.get('/profile', protect, getUserProfile);
-router.put('/profile', protect, updateUserProfile);
+router.get('/profile', protect(true), getUserProfile);
+router.put('/profile', protect(true), updateUserProfile);
 
 // Đổi mật khẩu
-router.put('/changepassword', protect, changePassword);
+router.put('/changepassword', protect(true), changePassword);
 
 // Quên mật khẩu - đặt lại mật khẩu
 router.post('/forgotpassword', forgotPassword);
 router.post('/resetpassword/:token', resetPassword);
 
 // Quản lý địa chỉ
-router.get('/addresses', protect, getAddresses);
-router.post('/addresses', protect, addAddress);
-router.put('/addresses/:id', protect, updateAddress);
-router.delete('/addresses/:id', protect, deleteAddress);
-router.put('/addresses/default/:id', protect, setDefaultAddress);
+router.get('/addresses', protect(true), getAddresses);
+router.post('/addresses', protect(true), addAddress);
+router.put('/addresses/:id', protect(true), updateAddress);
+router.delete('/addresses/:id', protect(true), deleteAddress);
+router.put('/addresses/default/:id', protect(true), setDefaultAddress);
+
+// Đăng xuất
+router.post('/logout', async (req, res) => {
+  try {
+    let userId = null;
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.id;
+      } catch (err) {
+      }
+    }
+
+    if (!userId && req.session && req.session.userId) {
+      userId = req.session.userId;
+    }
+
+    if (userId) {
+      await User.findByIdAndUpdate(userId, { tokenInvalidBefore: new Date() });
+    }
+
+    if (req.session) {
+      req.session.destroy(err => {
+        res.clearCookie('connect.sid');
+        if (err) {
+          return res.status(500).json({ message: 'Đăng xuất thất bại' });
+        }
+        return res.json({ message: 'Đã đăng xuất' });
+      });
+    } else {
+      return res.json({ message: 'Đã đăng xuất' });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: 'Lỗi server' });
+  }
+});
 
 module.exports = router;

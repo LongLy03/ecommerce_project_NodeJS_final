@@ -2,6 +2,7 @@ const Review = require('../models/Review');
 const Product = require('../models/Product');
 const { io } = require('../server');
 
+// Xem bình luận
 const getReviews = async (req, res) => {
     try {
         const productId = req.params.idOrSlug;
@@ -16,6 +17,7 @@ const getReviews = async (req, res) => {
     }
 };
 
+// Thêm bình luận và đánh giá sao
 const addReview = async (req, res) => {
     try {
         const productId = req.params.idOrSlug;

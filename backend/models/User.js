@@ -45,11 +45,12 @@ const userSchema = new mongoose.Schema(
         },
         addresses: {
             type: [addressSchema],
-            validate: [arr => arr.length > 0, 'Cần ít nhất một địa chỉ'],
         },
 
-        resetPasswordToken: { type: String },
-        resetPasswordExpire: {type: Date},
+        resetPasswordToken: { type: String, select: false },
+        resetPasswordExpire: { type: Date, select: false },
+
+        tokenInvalidBefore: { type: Date, select: false }
     },
     {
         timestamps: true,

@@ -14,10 +14,13 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: 'Email đã tồn tại!' });
         }
 
-        //const addresses = Array.isArray(addresses) ? addresses : [addresses];
-
         const user = await User.create({ name, email, password, addresses });
         if (user) {
+            if (req.session) {
+                req.session.userId = user._id;
+                req.session.user = { id: user._id, email: user.email, name: user.name };
+            }
+
             res.status(201).json({
                 _id: user._id,
                 name: user.name,
@@ -40,18 +43,28 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email }).select('+password');
+
+        if (!user) {
+            return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
+        }
+
         if (user.isBlocked) {
             return res.status(403).json({ message: 'Tài khoản của bạn đã bị khóa.' });
         }
 
-        if (user && (await user.matchPassword(password))) {
+        if (await user.matchPassword(password)) {
+            if (req.session) {
+                req.session.userId = user._id;
+                req.session.user = { id: user._id, email: user.email, name: user.name };
+            }
+
             res.json({
                 _id: user._id,
                 name: user.name,
                 email: user.email,
                 isAdmin: user.isAdmin,
                 isBlocked: user.isBlocked,
-                address: user.address,
+                addresses: user.addresses,
                 token: generateToken(user._id),
             });
         } else {
@@ -65,6 +78,15 @@ const loginUser = async (req, res) => {
 // Lấy thông tin profile người dùng
 const getUserProfile = async (req, res) => {
     try {
+        if (!req.user) {
+            if (req.session && req.session.userId) {
+                const userFromSession = await User.findById(req.session.userId).select('-password');
+                if (userFromSession) {
+                    req.user = userFromSession;
+                }
+            }
+        }
+
         if (!req.user) {
             return res.status(401).json({ message: 'Chưa xác thực' });
         }
@@ -215,6 +237,11 @@ const resetPassword = async (req, res) => {
 
         const token = generateToken ? generateToken(user._id) : null;
 
+        if (req.session) {
+            req.session.userId = user._id;
+            req.session.user = { id: user._id, email: user.email, name: user.name };
+        }
+
         res.json({ message: 'Đặt lại mật khẩu thành công', token });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
@@ -225,6 +252,7 @@ const resetPassword = async (req, res) => {
 const getAddresses = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ message: 'Người dùng không tồn tại' });
         res.json(user.addresses);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
