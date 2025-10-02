@@ -21,6 +21,7 @@ const discountSchema = new mongoose.Schema(
     usageLimit: {
       type: Number,
       default: 10,
+      max: 10
     },
     usedCount: {
       type: Number,

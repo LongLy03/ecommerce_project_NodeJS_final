@@ -7,19 +7,17 @@ const { addToCart,
         updateCartItem, 
         removeCartItem, 
         applyDiscount,
-        checkout,
-        guestCheckout } = require('../controllers/orderController');
+        checkout } = require('../controllers/orderController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Giỏ hàng
 router.post('/cart', protect(false), addToCart);
 router.get('/cart', protect(false), getCart);
 router.put('/cart/:itemId', protect(false), updateCartItem);
-router.delete('/:itemId', protect(false), removeCartItem);
+router.delete('/cart/:itemId', protect(false), removeCartItem);
 router.post('/cart/discount', protect(false), applyDiscount);
 
 // Thang toán
-router.post('/checkout', protect(true), checkout);
-router.post('/guest-checkout', guestCheckout);
+router.post('/checkout', protect(false), checkout);
 
 module.exports = router;

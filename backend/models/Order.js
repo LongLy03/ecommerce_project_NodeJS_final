@@ -23,18 +23,26 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User',
     },
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
     items: [orderItemSchema],
     shippingAddress: {
-        fullName: String,
-        phone: String,
-        street: String,
-        city: String,
-        country: String,
+        addressId: { type: mongoose.Schema.Types.ObjectId, default: null },
+        phone: { type: String, default: '' },
+        street: { type: String, default: '' },
+        city: { type: String, default: '' },
+        country: { type: String, default: '' },
     },
     discount: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Discount',
-       default: null
+        default: null
     },
     totalPrice: {
         type: Number,

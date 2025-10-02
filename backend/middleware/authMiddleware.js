@@ -4,18 +4,17 @@ const User = require('../models/User');
 // Bảo vệ các route - chỉ người dùng đã đăng nhập mới có thể truy cập
 const protect = (required = true) => async (req, res, next) => {
     try {
-        // 1) Nếu passport đã deserialize user vào req.user thì dùng luôn
         if (req.user && req.user._id) {
             if (req.user.isBlocked) return res.status(403).json({ message: 'Tài khoản của bạn đã bị chặn' });
             return next();
         }
 
-        // 2) JWT flow
+        // JWT flow
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             const token = req.headers.authorization.split(' ')[1];
             try {
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                const user = await User.findById(decoded.id).select('+tokenInvaliBefore -password');
+                const user = await User.findById(decoded.id).select('+tokenInvalidBefore -password');
 
                 if (!user) {
                     if (required) return res.status(401).json({ message: 'Người dùng không tồn tại' });
@@ -42,12 +41,12 @@ const protect = (required = true) => async (req, res, next) => {
             }
         }
 
-        // 3) Session flow (express-session / passport.session)
+        // Session flow
         if (req.session && req.session.userId) {
             try {
                 const user = await User.findById(req.session.userId).select('-password');
                 if (!user) {
-                if (required) return res.status(401).json({ message: 'Người dùng không tồn tại (session)' });
+                    if (required) return res.status(401).json({ message: 'Người dùng không tồn tại (session)' });
                     return next();
                 }
                 if (user.isBlocked) return res.status(403).json({ message: 'Tài khoản của bạn đã bị chặn' });
@@ -60,10 +59,7 @@ const protect = (required = true) => async (req, res, next) => {
             }
         }
 
-        // Không có bất kỳ auth nào
-        if (required) {
-            return res.status(401).json({ message: 'Không có token, từ chối truy cập' });
-        }
+        if (required) return res.status(401).json({ message: 'Không có token, từ chối truy cập' });
         return next();
     } catch (error) {
         if (required) return res.status(401).json({ message: 'Không được phép' });
