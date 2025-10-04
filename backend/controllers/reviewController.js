@@ -11,6 +11,7 @@ const getReviews = async (req, res) => {
             .populate('user', 'name')
             .sort({ createAt: -1 })
             .lean();
+            
         res.json(reviews);
     } catch (err) {
         res.status(500).json({ message: 'Lỗi server' });

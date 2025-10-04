@@ -2,7 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { registerUser, 
+
+const { 
+    registerUser, 
     loginUser, 
     getUserProfile, 
     changePassword,
@@ -13,7 +15,9 @@ const { registerUser,
     addAddress,
     updateAddress,
     deleteAddress,
-    setDefaultAddress } = require('../controllers/userController');
+    setDefaultAddress 
+} = require('../controllers/userController');
+
 const { protect } = require('../middleware/authMiddleware');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');

@@ -8,14 +8,26 @@ const orderItemSchema = new mongoose.Schema({
         ref: 'Product',
         required: true
     },
+
+    name: {
+        type: String,
+        required: true
+    },
+
     quantity: {
         type: Number,
         required: true
     },
+
     price: {
         type: Number,
         required: true
-    }
+    },
+
+    subTotal: {
+        type: Number,
+        required: true
+    },
 });
 
 const orderSchema = new mongoose.Schema({
@@ -23,15 +35,19 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User',
     },
+
     name: {
         type: String,
         required: true
     },
+
     email: {
         type: String,
         required: true
     },
+
     items: [orderItemSchema],
+
     shippingAddress: {
         addressId: { type: mongoose.Schema.Types.ObjectId, default: null },
         phone: { type: String, default: '' },
@@ -39,20 +55,34 @@ const orderSchema = new mongoose.Schema({
         city: { type: String, default: '' },
         country: { type: String, default: '' },
     },
+
+    paymentMethod: {
+        type: String,
+        required: true
+    },
+
+    discountAmount: {
+        type: Number,
+        required: true
+    },
+
     discount: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Discount',
         default: null
     },
+
     totalPrice: {
         type: Number,
         required: true
     },
+
     status: {
         type: String,
         enum: ['pending', 'paid', 'shipped'],
         default: 'pending'
     }
+    
 }, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);

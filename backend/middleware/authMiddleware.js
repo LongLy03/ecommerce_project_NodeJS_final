@@ -6,12 +6,14 @@ const protect = (required = true) => async (req, res, next) => {
     try {
         if (req.user && req.user._id) {
             if (req.user.isBlocked) return res.status(403).json({ message: 'Tài khoản của bạn đã bị chặn' });
+
             return next();
         }
 
         // JWT flow
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             const token = req.headers.authorization.split(' ')[1];
+
             try {
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
                 const user = await User.findById(decoded.id).select('+tokenInvalidBefore -password');
@@ -34,9 +36,11 @@ const protect = (required = true) => async (req, res, next) => {
                 }
 
                 req.user = user;
+
                 return next();
             } catch (err) {
                 if (required) return res.status(401).json({ message: 'Không được phép, token không hợp lệ' });
+
                 return next();
             }
         }
@@ -45,24 +49,30 @@ const protect = (required = true) => async (req, res, next) => {
         if (req.session && req.session.userId) {
             try {
                 const user = await User.findById(req.session.userId).select('-password');
+
                 if (!user) {
                     if (required) return res.status(401).json({ message: 'Người dùng không tồn tại (session)' });
                     return next();
                 }
+
                 if (user.isBlocked) return res.status(403).json({ message: 'Tài khoản của bạn đã bị chặn' });
                 
                 req.user = user;
+
                 return next();
             } catch (err) {
                 if (required) return res.status(401).json({ message: 'Không được phép (session)' });
+
                 return next();
             }
         }
 
         if (required) return res.status(401).json({ message: 'Không có token, từ chối truy cập' });
+
         return next();
     } catch (error) {
         if (required) return res.status(401).json({ message: 'Không được phép' });
+        
         return next();
     }
 };

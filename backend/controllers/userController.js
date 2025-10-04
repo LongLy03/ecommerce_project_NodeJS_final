@@ -10,11 +10,13 @@ const registerUser = async (req, res) => {
     const { name, email, password, addresses } = req.body;
     try {
         const userExists = await User.findOne({ email });
+
         if (userExists) {
             return res.status(400).json({ message: 'Email đã tồn tại!' });
         }
 
         const user = await User.create({ name, email, password, addresses });
+
         if (user) {
             if (req.session) {
                 req.session.userId = user._id;
@@ -41,6 +43,7 @@ const registerUser = async (req, res) => {
 // Đăng nhập người dùng
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
+
     try {
         const user = await User.findOne({ email }).select('+password');
 
@@ -81,6 +84,7 @@ const getUserProfile = async (req, res) => {
         if (!req.user) {
             if (req.session && req.session.userId) {
                 const userFromSession = await User.findById(req.session.userId).select('-password');
+                
                 if (userFromSession) {
                     req.user = userFromSession;
                 }
@@ -111,6 +115,7 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
+
         if (user) {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
@@ -147,8 +152,10 @@ const updateUserProfile = async (req, res) => {
 // Đổi mật khẩu
 const changePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
+
     try {
         const user = await User.findById(req.user._id).select('+password');
+
         if (!user) {
             return res.status(404).json({ message: 'Người dùng không tồn tại' });
         }
@@ -159,6 +166,7 @@ const changePassword = async (req, res) => {
 
         user.password = newPassword;
         await user.save();
+
         res.json({ message: 'Đổi mật khẩu thành công' });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
@@ -169,6 +177,7 @@ const changePassword = async (req, res) => {
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
+
         if (!email) {
             return res.status(400).json({ message: 'Vui lòng nhập email' });
         }
@@ -192,19 +201,53 @@ const forgotPassword = async (req, res) => {
             });
         }
 
-        const message = `Bạn nhận được email này vì bạn (hoặc ai đó) đã yêu cầu đặt lại mật khẩu cho tài khoản của bạn.\n\n
-        Vui lòng nhấp vào liên kết sau để đặt lại mật khẩu của bạn:\n\n
-        ${resetUrl}\n\n
-        Link sẽ hết hạn sau 10 phút.\n\n
-        Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.\n`;
+        const html = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+            <div style="background-color: #0d6efd; color: #fff; padding: 16px; text-align: center;">
+                <h2 style="margin: 0;">E-Commerce Store</h2>
+                <p style="margin: 4px 0;">Yêu cầu đặt lại mật khẩu</p>
+            </div>
 
-        await sendEmail({
-            to: user.email,
-            subject: 'Yêu cầu đặt lại mật khẩu',
-            text: message,
-        });
+            <div style="padding: 20px;">
+                <p>Xin chào <strong>${user.name || user.email}</strong>,</p>
+                <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
+                <p>Nhấn vào nút bên dưới để tạo mật khẩu mới. Liên kết sẽ hết hạn sau <strong>10 phút</strong>.</p>
 
-        res.json({ message: 'Đã gửi email với hướng dẫn đặt lại mật khẩu' });
+                <div style="text-align:center; margin: 24px 0;">
+                <a href="${resetUrl}" 
+                    style="background-color:#0d6efd; color:white; padding:12px 20px; text-decoration:none; border-radius:5px; font-weight:bold;">
+                    Đặt lại mật khẩu
+                </a>
+                </div>
+
+                <p>Nếu nút trên không hoạt động, bạn có thể sao chép và dán liên kết này vào trình duyệt:</p>
+                <p style="word-break:break-all; background:#f8f9fa; padding:10px; border-radius:5px;">${resetUrl}</p>
+
+                <p>Nếu bạn không yêu cầu thay đổi mật khẩu, vui lòng bỏ qua email này.</p>
+                <p>Trân trọng,<br><strong>Đội ngũ E-Commerce Store</strong></p>
+            </div>
+
+            <div style="background-color: #f8f9fa; padding: 10px; text-align: center; font-size: 12px; color: #666;">
+                <p>© ${new Date().getFullYear()} E-Commerce Store. Mọi quyền được bảo lưu.</p>
+            </div>
+            </div>
+            `;
+
+         try {
+            await sendEmail({
+                to: user.email,
+                subject: 'Yêu cầu đặt lại mật khẩu',
+                html
+            });
+            return res.json({ message: 'Đã gửi email với hướng dẫn đặt lại mật khẩu' });
+        } catch (sendErr) {
+            // nếu gửi mail thất bại, xóa token để tránh rò rỉ
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpire = undefined;
+            await user.save({ validateBeforeSave: false });
+            console.error('[forgotPassword] sendEmail error', sendErr);
+            return res.status(500).json({ message: 'Không thể gửi email, vui lòng thử lại sau' });
+        }
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
     }
@@ -215,6 +258,7 @@ const resetPassword = async (req, res) => {
     try {
         const rawToken = req.params.token;
         const { password: newPassword } = req.body;
+        
         if (!newPassword) {
             return res.status(400).json({ message: 'Vui lòng nhập mật khẩu mới' });
         }
@@ -276,12 +320,14 @@ const updateAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         const address = user.addresses.id(req.params.id);
+
         if (!address) {
             return res.status(404).json({ message: 'Địa chỉ không tồn tại' });
         }
 
         Object.assign(address, req.body);
         await user.save();
+
         res.json(address);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
@@ -304,6 +350,7 @@ const deleteAddress = async (req, res) => {
 const setDefaultAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
+
         user.addresses.forEach(addr => {
             addr.isDefault = false;
         });
@@ -315,6 +362,7 @@ const setDefaultAddress = async (req, res) => {
 
         address.isDefault = true;
         await user.save();
+        
         res.json({ message: 'Đã đặt địa chỉ mặc định', addresses: user.addresses });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });

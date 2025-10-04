@@ -27,6 +27,7 @@ const getProducts = async (req, res) => {
             filter.category = category;
         } else {
             const cat = await Category.findOne({ slug: category });
+
             if (cat) {
                 filter.category = cat._id;
             } else {
@@ -60,6 +61,7 @@ const getProducts = async (req, res) => {
     const sortOption = {};
     const dir = order === 'asc' ? 1 : -1;
     const allowedSortFields = ['price', 'createdAt', 'rating', 'name'];
+
     if (allowedSortFields.includes(field)) {
         sortOption[field] = dir;
     } else {
@@ -91,6 +93,7 @@ const getProductByIdOrSlug = async (req, res) => {
     try {
         const { idOrSlug } = req.params;
         let product;
+
         if (/^[0-9a-fA-F]{24}$/.test(idOrSlug)) {
             product = await Product.findById(idOrSlug).populate('category', 'name slug').lean();
         } else {
@@ -121,6 +124,7 @@ const getHomeProducts = async (req, res) => {
         const categories = await Category.find({ slug: { $in: ['dien-thoai', 'laptop', 'phu-kien'] } });
 
         const byCategory = {};
+        
         for (const cat of categories) {
             const products = await Product.find({ category: cat._id })
                 .sort({ createdAt: -1 })
