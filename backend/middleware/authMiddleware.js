@@ -71,7 +71,7 @@ const protect = (required = true) => async (req, res, next) => {
 
         return next();
     } catch (error) {
-        if (required) return res.status(401).json({ message: 'Không được phép' });
+        if (required) return res.status(401).json({ message: 'Không được phép truy cập' });
         
         return next();
     }

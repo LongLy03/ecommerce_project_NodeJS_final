@@ -71,20 +71,20 @@ const io = new Server (server, {
 });
 
 io.on('connection', (socket) => {
-    console.log('Client connected');
+    console.log('Client đã kết nối');
 
     socket.on('joinProductRoom', (productId) => {
-        console.log('Client joined room ${productId}');
+        console.log('Client tham gia phòng ${productId}');
         socket.join(productId);
     });
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected');
+        console.log('Client đã ngắt kết nối');
     });
 });
 
 module.exports = { io };
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server đang chạy tại port ${PORT}`);
 });
