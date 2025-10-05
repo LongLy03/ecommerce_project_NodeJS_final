@@ -1,30 +1,35 @@
+// src/pages/RegisterPage.js
 (function() {
-    const root = document.getElementById("app");
-
-    root.innerHTML = `
-      <div style="max-width:400px;margin:40px auto;padding:20px;border:1px solid #ddd;border-radius:8px">
+    function mount(root) {
+        root.innerHTML = `
+      <div class="auth">
         <h2>Đăng ký</h2>
-        <form id="registerForm">
-          <div style="margin:12px 0">
-            <label>Họ và tên</label><br/>
-            <input type="text" id="fullname" style="width:100%;padding:8px"/>
-          </div>
-          <div style="margin:12px 0">
-            <label>Email</label><br/>
-            <input type="email" id="email" style="width:100%;padding:8px"/>
-          </div>
-          <div style="margin:12px 0">
-            <label>Mật khẩu</label><br/>
-            <input type="password" id="password" style="width:100%;padding:8px"/>
-          </div>
-          <button type="submit" style="padding:10px 16px">Tạo tài khoản</button>
+        <form id="frm">
+          <input name="name" placeholder="Họ tên" required />
+          <input name="email" type="email" placeholder="Email" required />
+          <input name="password" type="password" placeholder="Mật khẩu" required />
+          <button class="btn" type="submit">Tạo tài khoản</button>
         </form>
-        <p style="margin-top:12px">Đã có tài khoản? <a href="LoginPage.html">Đăng nhập</a></p>
+        <div id="msg"></div>
+        <div class="mt"><a href="#/login">Đã có tài khoản? Đăng nhập</a></div>
       </div>
     `;
+        const frm = root.querySelector('#frm');
+        const msg = root.querySelector('#msg');
 
-    document.getElementById("registerForm").onsubmit = (e) => {
-        e.preventDefault();
-        alert("Đăng ký thành công (mock)!");
-    };
+        frm.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const payload = Object.fromEntries(new FormData(frm).entries());
+            try {
+                await window.Api.AuthAPI.register(payload);
+                msg.innerHTML = `<div class="text-green-700">Đăng ký thành công! Vui lòng đăng nhập.</div>`;
+                setTimeout(() => location.hash = '#/login', 800);
+            } catch (err) {
+                msg.innerHTML = `<div class="text-red-600">${err.message}</div>`;
+            }
+        });
+    }
+
+    window.Pages = window.Pages || {};
+    window.Pages.RegisterPage = { mount };
 })();

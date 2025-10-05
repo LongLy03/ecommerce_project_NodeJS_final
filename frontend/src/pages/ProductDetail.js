@@ -1,24 +1,35 @@
-// Trang chi tiết sản phấm
+// src/pages/ProductDetail.js
 (function() {
-        const root = document.getElementById("app");
+    async function mount(root, { id }) {
+        if (!id) {
+            root.innerHTML = `<div class="p-4 text-red-600">Thiếu sản phẩm.</div>`;
+            return;
+        }
 
-        const product = {
-            id: 1,
-            name: "Laptop A",
-            price: 12000000,
-            description: "Laptop hiệu năng cao, thiết kế gọn nhẹ, phù hợp cho học tập và làm việc.",
-            images: ["https://picsum.photos/200", "https://picsum.photos/201", "https://picsum.photos/202"]
-        };
-
-        root.innerHTML = `
-      <div style="padding:20px">
-        <h2>${product.name}</h2>
-        <p><strong>Giá:</strong> ${product.price.toLocaleString()} đ</p>
-        <p>${product.description}</p>
-        <div style="display:flex;gap:10px;margin:10px 0">
-          ${product.images.map(img => `<img src="${img}" width="100"/>`).join("")}
+        root.innerHTML = `<div class="p-4">Đang tải chi tiết...</div>`;
+        try {
+            const product = await window.Api.ProductAPI.get(id); // kỳ vọng backend trả object product
+            root.innerHTML = `
+        <div class="product-detail">
+          <img src="${product.image || '/placeholder.png'}" alt="${product.name}" />
+          <div class="info">
+            <h2>${product.name}</h2>
+            <div class="price">${(product.price || 0).toLocaleString()} đ</div>
+            <p>${product.description || ''}</p>
+            <button id="btnAdd" class="btn">Thêm vào giỏ</button>
+          </div>
         </div>
-        <button onclick="alert('Thêm vào giỏ')">Thêm vào giỏ</button>
-      </div>
-    `;
-  })();
+      `;
+            root.querySelector('#btnAdd').addEventListener('click', () => {
+                window.Cart.add({ productId: product._id, variantId: null, price: product.price, name: product.name, qty: 1 });
+                alert('Đã thêm vào giỏ');
+                location.hash = '#/cart';
+            });
+        } catch (e) {
+            root.innerHTML = `<div class="p-4 text-red-600">Lỗi tải: ${e.message}</div>`;
+        }
+    }
+
+    window.Pages = window.Pages || {};
+    window.Pages.ProductDetail = { mount };
+})();

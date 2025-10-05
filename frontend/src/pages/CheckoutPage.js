@@ -1,26 +1,44 @@
-// Thanh toán
+// src/pages/CheckoutPage.js
 (function() {
-    const root = document.getElementById("app");
+    function mount(root) {
+        const items = window.Cart.all();
+        if (!items.length) {
+            root.innerHTML = `<div class="p-4">Giỏ hàng trống. <a href="#/catalog">Quay lại cửa hàng</a></div>`;
+            return;
+        }
 
-    root.innerHTML = `
-      <div style="padding:20px;max-width:600px;margin:auto">
+        const total = items.reduce((s, it) => s + (it.price || 0) * (it.qty || 1), 0);
+        root.innerHTML = `
+      <div class="checkout">
         <h2>Thanh toán</h2>
-        <form id="checkoutForm">
-          <div style="margin:12px 0">
-            <label>Địa chỉ giao hàng</label><br/>
-            <input type="text" id="address" style="width:100%;padding:8px"/>
-          </div>
-          <div style="margin:12px 0">
-            <label>Mã giảm giá</label><br/>
-            <input type="text" id="discount" style="width:100%;padding:8px"/>
-          </div>
-          <button type="submit" style="padding:10px 16px">Đặt hàng</button>
+        <div class="summary">Tổng thanh toán: <b>${total.toLocaleString()} đ</b></div>
+        <form id="frm">
+          <input name="fullname" placeholder="Họ tên" required />
+          <input name="address" placeholder="Địa chỉ" required />
+          <input name="phone" placeholder="SĐT" required />
+          <button class="btn" type="submit">Đặt hàng</button>
         </form>
+        <div id="msg"></div>
       </div>
     `;
 
-    document.getElementById("checkoutForm").onsubmit = (e) => {
-        e.preventDefault();
-        alert("Đặt hàng thành công (mock)!");
-    };
+        const form = root.querySelector('#frm');
+        const msg = root.querySelector('#msg');
+
+        form.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(form).entries());
+            try {
+                await window.Api.OrderAPI.create({ items, shipping: data });
+                window.Cart.clear();
+                msg.innerHTML = `<div class="text-green-700">Đặt hàng thành công!</div>`;
+                setTimeout(() => location.hash = '#/profile', 1200);
+            } catch (err) {
+                msg.innerHTML = `<div class="text-red-600">Lỗi đặt hàng: ${err.message}</div>`;
+            }
+        });
+    }
+
+    window.Pages = window.Pages || {};
+    window.Pages.CheckoutPage = { mount };
 })();

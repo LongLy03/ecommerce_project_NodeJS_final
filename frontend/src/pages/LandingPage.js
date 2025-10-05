@@ -572,4 +572,8 @@
   
     // Initial mount
     render();
+
+    window.Pages = window.Pages || {};
+    window.Pages.LandingPage = { mount };
+
   })();
