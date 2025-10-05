@@ -1,6 +1,7 @@
 const Review = require('../models/Review');
 const Product = require('../models/Product');
 const { io } = require('../server');
+const mongoose = require('mongoose');
 
 // Xem bình luận
 const getReviews = async (req, res) => {
@@ -22,33 +23,72 @@ const getReviews = async (req, res) => {
 const addReview = async (req, res) => {
     try {
         const productId = req.params.idOrSlug;
-        const userId = req.user._id;
-        const { rating, comment } = req.body;
+        const user = req.user ? req.user : null;
+        const { rating, comment, guestName, guestEmail } = req.body;
         
-        if (!rating || !comment) return res.status(400).json({ message: 'Cần đánh giá bằng cách chọn số sao và bình luận sản phẩm' });
-        
-        const review = await Review.create({
-            product: productId,
-            user: userId,
-            rating,
-            comment
-        });
-
-        io.to(productId).emit('reviewAdded', review);
-
-        const stats = await Review.aggregate([
-            { $match: { product: review.product } },
-            { $group: { _id: '$product', avgRating: { $avg: '$rating' }, count: { $sum: 1 } } }
-        ])
-
-        if (stats && stats[0]) {
-            await Product.findByIdAndUpdate(review.product, {
-                rating: stats[0].avgRating,
-                numReviews: stats[0].count
-            });
+        if (!comment || comment.trim().length === 0) {
+            return res.status(400).json({ message: 'Vui lòng nhập nội dung bình luận' });
         }
 
-        res.status(201).json(review);
+        if (rating && !user) {
+            return res.status(401).json({ message: 'Bạn phải đăng nhập để đánh giá bằng sao' });
+        }
+
+        if (!user && (!guestName || !guestEmail)) {
+            return res.status(400).json({ message: 'Khách phải nhập tên và email' });
+        }
+
+        let review;
+
+        if (user) {
+            review = await Review.findOne({ product: productId, user: user._id });
+            if (review) {
+                review.comment = comment;
+                if (rating) review.rating = Number(rating);
+                await review.save();
+            } else {
+                review = await Review.create({
+                    product: productId,
+                    user: user._id,
+                    rating: rating ? Number(rating) : null,
+                    comment,
+                });
+            }
+        } else {
+            review = await Review.create({
+                product: productId,
+                guestName,
+                guestEmail,
+                comment,
+                rating: null,
+            });
+        }
+        
+        // Cập nhật lại điểm trung bình và tổng số đánh giá của sản phẩm
+        const stats = await Review.aggregate([
+            { $match: { product:  new mongoose.Types.ObjectId(productId), rating: { $ne: null } } },
+            { $group: { _id: '$product', avgRating: { $avg: '$rating' }, count: { $sum: 1 } } },
+        ]);
+
+        if (stats.length > 0) {
+            await Product.findByIdAndUpdate(productId, {
+                rating: stats[0].avgRating,
+                numReviews: stats[0].count,
+            });
+        } else {
+            await Product.findByIdAndUpdate(productId, { rating: 0, numReviews: 0 });
+        }
+
+        const populated = await Review.findById(review._id)
+            .populate('user', 'name email')
+            .lean();
+
+        const io = req.app.get('io');
+            if (io) {
+                io.to(`product_${productId}`).emit('reviewAdded', populated);
+        }
+
+        res.status(201).json({ message: 'Đã thêm bình luận thành công', review: populated });
     } catch (err) {
         res.status(500).json({ message: 'Lỗi server' });
     }

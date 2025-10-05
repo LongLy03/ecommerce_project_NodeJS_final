@@ -21,8 +21,8 @@ router.get('/', getProducts);
 router.get('/:idOrSlug', getProductByIdOrSlug);
 
 // Bình luận và đánh giá
-// router.get('/:idOrSlug/reviews', getReviews);
-// router.post('/:idOrSlug/reviews', protect, addReview);
+router.get('/:idOrSlug/reviews', getReviews);
+router.post('/:idOrSlug/reviews', protect(false), addReview);
 
 // Trang chủ
 router.get('/home/sections', getHomeProducts);
