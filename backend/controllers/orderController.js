@@ -340,6 +340,7 @@ const checkout = async (req, res) => {
             discountAmount,
             totalPrice: total,
             status: 'pending',
+            statusHistory: [{ status: 'pending', updatedAt: new Date() }]
         });
 
         cart.items = [];
@@ -463,11 +464,70 @@ const checkout = async (req, res) => {
     }
 };
 
+// Lấy danh sách đơn hàng của người dùng
+const getOrderHistory = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const orders = await Order.find({ user: userId })
+            .populate('items.product', 'name images')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ message: 'Lỗi server khi lấy lịch sử đơn hàng' });
+    }
+};
+
+// Xem chi tiết 1 đơn hàng
+const getOrderDetails = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({ _id: orderId, user: userId })
+        .populate('items.product', 'name images price')
+        .lean();
+
+    if (!order) return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ message: 'Lỗi server khi lấy chi tiết đơn hàng' });
+  }
+};
+
+// Xem lịch sử và trạng thái đơn hàng
+const getOrderStatusHistory = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const order = await Order.findById(orderId).lean();
+
+        if (!order) return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+
+        // Sắp xếp lịch sử từ mới nhất đến cũ nhất
+        const history = (order.statusHistory || [])
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+        res.json({
+            orderId: order._id,
+            currentStatus: order.status,
+            history
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
 module.exports = { 
     addToCart, 
     getCart, 
     updateCartItem, 
     removeCartItem, 
     applyDiscount,
-    checkout
+    checkout,
+    getOrderHistory,
+    getOrderDetails,
+    getOrderStatusHistory
 };
