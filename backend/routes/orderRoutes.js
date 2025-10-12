@@ -9,7 +9,10 @@ const {
         updateCartItem, 
         removeCartItem, 
         applyDiscount,
-        checkout 
+        checkout,
+        getOrderHistory,
+        getOrderDetails,
+        getOrderStatusHistory
 } = require('../controllers/orderController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -25,5 +28,11 @@ router.post('/cart/discount', protect(false), applyDiscount);
 
 // Thang toán
 router.post('/checkout', protect(false), checkout);
+
+// Lấy đơn hàng
+router.get('/history', protect(true), getOrderHistory);
+router.get('/:orderId', protect(true), getOrderDetails);
+router.get('/:orderId/status-history', protect(true), getOrderStatusHistory);
+
 
 module.exports = router;

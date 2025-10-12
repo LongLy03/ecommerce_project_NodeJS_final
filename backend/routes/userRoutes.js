@@ -59,11 +59,11 @@ router.get('/profile', protect(true), getUserProfile);
 router.put('/profile', protect(true), updateUserProfile);
 
 // Đổi mật khẩu
-router.put('/changepassword', protect(true), changePassword);
+router.put('/change-password', protect(true), changePassword);
 
 // Quên mật khẩu - đặt lại mật khẩu
-router.post('/forgotpassword', forgotPassword);
-router.post('/resetpassword/:token', resetPassword);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 
 // Quản lý địa chỉ
 router.get('/addresses', protect(true), getAddresses);
@@ -73,7 +73,7 @@ router.delete('/addresses/:id', protect(true), deleteAddress);
 router.put('/addresses/default/:id', protect(true), setDefaultAddress);
 
 // Đăng xuất
-router.post('/logout', async (req, res) => {
+router.post('/logout', protect(true), async (req, res) => {
   try {
     let userId = null;
 

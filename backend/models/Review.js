@@ -3,10 +3,17 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-    customer: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+    },
+
+    guestName: {
+      type: String
+    },
+
+    guestEmail: {
+      type: String
     },
 
     product: {
@@ -17,7 +24,6 @@ const reviewSchema = new mongoose.Schema({
 
     rating: {
       type: Number,
-      required: true,
       min: 1,
       max: 5,
     },

@@ -58,6 +58,8 @@ const orderSchema = new mongoose.Schema({
 
     paymentMethod: {
         type: String,
+        enum: ['COD', 'Online'],
+        default: 'COD',
         required: true
     },
 
@@ -79,9 +81,14 @@ const orderSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ['pending', 'paid', 'shipped'],
+        enum: ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled'],
         default: 'pending'
-    }
+    },
+
+    statusHistory: [{
+        status: String,
+        updatedAt: { type: Date, default: Date.now }
+    }]
     
 }, { timestamps: true });
 
