@@ -17,29 +17,29 @@ const app = express();
 
 // cors
 app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || true,
-    credentials: true,
-  })
+    cors({
+        origin: process.env.FRONTEND_URL || true,
+        credentials: true,
+    })
 );
 
 app.use(express.json());
 
 // session
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'change_this_now',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI,
-      ttl: 14 * 24 * 60 * 60,
-    }),
-    cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24,
-    },
-  })
+    session({
+        secret: process.env.SESSION_SECRET || 'change_this_now',
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGO_URI,
+            ttl: 14 * 24 * 60 * 60,
+        }),
+        cookie: {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+        },
+    })
 );
 
 // Passport middleware
@@ -62,7 +62,7 @@ const PORT = process.env.PORT || 5000;
 // web socket
 const server = http.createServer(app);
 
-const io = new Server (server, {
+const io = new Server(server, {
     cors: {
         origin: process.env.FRONTEND_URL || '*',
         methods: ['GET', 'POST'],
