@@ -1,120 +1,128 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+require('dotenv').config({ path: '../.env' });
+const { faker } = require('@faker-js/faker');
 
-dotenv.config({ path: '../backend/.env' });
+const User = require('../models/User');
+const Product = require('../models/Product');
+const Cart = require('../models/Cart');
+const Order = require('../models/Order');
+const Discount = require('../models/Discount');
+const Session = require('../models/Session');
+const Category = require('../models/Category');
+const Review = require('../models/Review');
 
-// Import models
-const User = require('../backend/models/User');
-const Product = require('../backend/models/Product');
-const Category = require('../backend/models/Category');
-
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ecommerce';
-
-const seedData = async () => {
+const connectDB = async () => {
   try {
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
+    const uri = process.env.MONGO_URI;
+    if (!uri) throw new Error('MONGO_URI is undefined');
+    await mongoose.connect(uri);
     console.log('✅ MongoDB connected');
-
-    // Xóa dữ liệu cũ
-    // await User.deleteMany();
-    // await Category.deleteMany();
-    // await Product.deleteMany();
-
-    // console.log('🗑️ Đã xóa dữ liệu cũ');
-
-    // 1️⃣ Tạo user admin + user thường
-    const users = await User.insertMany([
-      {
-        name: 'Admin User',
-        email: 'admin@example.com',
-        password: '123456',
-        isAdmin: true,
-        addresses: [
-          { phone: '0123456789', street: '123 Trần Hưng Đạo', city: 'Hà Nội', country: 'VN', isDefault: true },
-        ],
-      },
-      {
-        name: 'Nguyen Van A',
-        email: 'user@example.com',
-        password: '123456',
-        isAdmin: false,
-        addresses: [
-          { phone: '0987654321', street: '456 Lê Lợi', city: 'HCM', country: 'VN', isDefault: true },
-          { phone: '0911222333', street: '789 Nguyễn Huệ', city: 'HCM', country: 'VN', isDefault: false },
-        ],
-      },
-    ]);
-
-    console.log('👤 Đã thêm user mẫu');
-
-    // 2️⃣ Tạo danh mục mẫu
-    const categories = await Category.insertMany([
-      { name: 'Điện thoại', slug: 'dien-thoai', description: 'Các loại điện thoại thông minh' },
-      { name: 'Laptop', slug: 'laptop', description: 'Laptop học tập, văn phòng, gaming' },
-      { name: 'Phụ kiện', slug: 'phu-kien', description: 'Tai nghe, sạc, chuột...' },
-    ]);
-
-    console.log('📂 Đã thêm category mẫu');
-
-    // 3️⃣ Tạo sản phẩm mẫu
-    const products = await Product.insertMany([
-      {
-        name: 'iPhone 15 Pro Max',
-        slug: 'iphone-15-pro-max',
-        description: 'Điện thoại Apple mới nhất, hiệu năng mạnh mẽ.',
-        category: categories[0]._id,
-        price: 35000000,
-        variants: [
-          { sku: 'IP15PM-256', name: '256GB', price: 35000000, stock: 20, attributes: [{ key: 'màu', value: 'đen' }] },
-          { sku: 'IP15PM-512', name: '512GB', price: 40000000, stock: 10, attributes: [{ key: 'màu', value: 'trắng' }] },
-        ],
-        brand: 'Apple',
-        images: [{ url: 'https://example.com/iphone15.jpg' }],
-        rating: 4.8,
-        numReviews: 120,
-      },
-      {
-        name: 'MacBook Air M2',
-        slug: 'macbook-air-m2',
-        description: 'Laptop siêu nhẹ, chip Apple M2.',
-        category: categories[1]._id,
-        price: 28000000,
-        variants: [
-          { sku: 'MBA-M2-8GB', name: '8GB RAM', price: 28000000, stock: 15, attributes: [{ key: 'màu', value: 'bạc' }] },
-          { sku: 'MBA-M2-16GB', name: '16GB RAM', price: 32000000, stock: 5, attributes: [{ key: 'màu', value: 'xám' }] },
-        ],
-        brand: 'Apple',
-        images: [{ url: 'https://example.com/macbookm2.jpg' }],
-        rating: 4.7,
-        numReviews: 90,
-      },
-      {
-        name: 'Tai nghe AirPods Pro 2',
-        slug: 'airpods-pro-2',
-        description: 'Tai nghe không dây chống ồn chủ động.',
-        category: categories[2]._id,
-        price: 5500000,
-        variants: [
-          { sku: 'APPRO2-WHT', name: 'Màu trắng', price: 5500000, stock: 100, attributes: [{ key: 'màu', value: 'trắng' }] },
-        ],
-        brand: 'Apple',
-        images: [{ url: 'https://example.com/airpodspro2.jpg' }],
-        rating: 4.5,
-        numReviews: 60,
-      },
-    ]);
-
-    console.log('📦 Đã thêm product mẫu');
-    console.log('🎉 SEED DATA HOÀN TẤT');
-    process.exit();
   } catch (err) {
-    console.error('❌ Lỗi seed dữ liệu:', err.message);
+    console.error('❌ MongoDB connection failed:', err.message);
     process.exit(1);
   }
 };
 
-seedData();
+const seed = async () => {
+  await connectDB();
+
+  await Promise.all([
+    User.deleteMany(),
+    Product.deleteMany(),
+    Cart.deleteMany(),
+    Order.deleteMany(),
+    Discount.deleteMany(),
+    Session.deleteMany(),
+    Category.deleteMany(),
+    Review.deleteMany(),
+  ]);
+
+  const users = await User.insertMany(
+    Array.from({ length: 10 }, () => ({
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      address: faker.location.streetAddress(),
+    }))
+  );
+
+  const categories = await Category.insertMany(
+    Array.from({ length: 10 }, () => ({
+      name: faker.commerce.department(),
+      description: faker.commerce.productDescription(),
+    }))
+  );
+
+  const products = await Product.insertMany(
+    Array.from({ length: 10 }, () => ({
+      name: faker.commerce.productName(),
+      description: faker.commerce.productDescription(),
+      price: parseFloat(faker.commerce.price({ min: 100000, max: 1000000 })),
+      stock: faker.number.int({ min: 10, max: 100 }),
+      category: categories[Math.floor(Math.random() * categories.length)]._id,
+    }))
+  );
+
+  const discounts = await Discount.insertMany(
+    Array.from({ length: 10 }, () => ({
+      code: faker.string.alphanumeric(8).toUpperCase(),
+      percentage: faker.number.int({ min: 5, max: 30 }),
+      active: faker.datatype.boolean(),
+    }))
+  );
+
+  const carts = await Cart.insertMany(
+    users.map(u => ({
+      user: u._id,
+      items: [
+        {
+          product: products[Math.floor(Math.random() * products.length)]._id,
+          quantity: faker.number.int({ min: 1, max: 5 }),
+        },
+      ],
+      discount: discounts[Math.floor(Math.random() * discounts.length)]._id,
+    }))
+  );
+
+  const orders = await Order.insertMany(
+    users.map(u => ({
+      user: u._id,
+      items: [
+        {
+          product: products[Math.floor(Math.random() * products.length)]._id,
+          quantity: faker.number.int({ min: 1, max: 3 }),
+        },
+      ],
+      total: faker.number.int({ min: 200000, max: 2000000 }),
+      status: faker.helpers.arrayElement(['Pending', 'Shipped', 'Delivered']),
+      createdAt: faker.date.recent({ days: 30 }),
+    }))
+  );
+
+  const sessions = await Session.insertMany(
+    users.map(u => ({
+      userId: u._id,
+      token: faker.string.uuid(),
+      device: faker.computer.model(),
+      ipAddress: faker.internet.ipv4(),
+      expiresAt: faker.date.future({ years: 1 }),
+    }))
+  );
+
+  const reviews = await Review.insertMany(
+    users.map(u => ({
+      user: u._id,
+      product: products[Math.floor(Math.random() * products.length)]._id,
+      rating: faker.number.int({ min: 1, max: 5 }),
+      comment: faker.lorem.sentence(),
+    }))
+  );
+
+  console.log('✅ Seed completed successfully');
+  await mongoose.connection.close();
+};
+
+seed().catch(err => {
+  console.error('❌ Error seeding data:', err);
+  mongoose.connection.close();
+});
