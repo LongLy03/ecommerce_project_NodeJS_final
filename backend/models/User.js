@@ -57,6 +57,11 @@ const userSchema = new mongoose.Schema(
             type: [addressSchema],
         },
 
+        loyaltyPoints: {
+            type: Number,
+            default: 0
+        },
+
         resetPasswordToken: { type: String, select: false },
 
         resetPasswordExpire: { type: Date, select: false },

@@ -23,9 +23,7 @@ const protect = (required = true) => async (req, res, next) => {
                     return next();
                 }
 
-                if (user.isBlocked) {
-                    return res.status(403).json({ message: 'Tài khoản của bạn đã bị chặn' });
-                }
+                if (user.isBlocked) return res.status(403).json({ message: 'Tài khoản của bạn đã bị chặn' });
 
                 if (user.tokenInvalidBefore && decoded && decoded.iat) {
                     const tokenIatMs = decoded.iat * 1000;
@@ -79,10 +77,9 @@ const protect = (required = true) => async (req, res, next) => {
 
 // Chỉ admin mới có thể truy cập
 const adminOnly = (req, res, next) => {
-    if (req.user && req.user.isAdmin) {
-        return next();
-    }
-    res.status(403).json({ message: 'Chỉ admin mới được truy cập' });
+    if (req.user && req.user.isAdmin) return next();
+    
+    return res.status(403).json({ message: 'Chỉ admin mới được truy cập' });
 };
 
 module.exports = { protect, adminOnly };

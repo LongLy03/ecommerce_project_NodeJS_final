@@ -13,9 +13,9 @@ const getReviews = async (req, res) => {
             .sort({ createAt: -1 })
             .lean();
             
-        res.json(reviews);
+        return res.json(reviews);
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server' });
     }
 };
 
@@ -26,17 +26,11 @@ const addReview = async (req, res) => {
         const user = req.user ? req.user : null;
         const { rating, comment, guestName, guestEmail } = req.body;
         
-        if (!comment || comment.trim().length === 0) {
-            return res.status(400).json({ message: 'Vui lòng nhập nội dung bình luận' });
-        }
+        if (!comment || comment.trim().length === 0) return res.status(400).json({ message: 'Vui lòng nhập nội dung bình luận' });
 
-        if (rating && !user) {
-            return res.status(401).json({ message: 'Bạn phải đăng nhập để đánh giá bằng sao' });
-        }
+        if (rating && !user) return res.status(401).json({ message: 'Bạn phải đăng nhập để đánh giá bằng sao' });
 
-        if (!user && (!guestName || !guestEmail)) {
-            return res.status(400).json({ message: 'Khách phải nhập tên và email' });
-        }
+        if (!user && (!guestName || !guestEmail)) return res.status(400).json({ message: 'Khách phải nhập tên và email' });
 
         let review;
 
@@ -84,13 +78,11 @@ const addReview = async (req, res) => {
             .lean();
 
         const io = req.app.get('io');
-            if (io) {
-                io.to(`product_${productId}`).emit('reviewAdded', populated);
-        }
+        if (io) io.to(`product_${productId}`).emit('reviewAdded', populated);
 
-        res.status(201).json({ message: 'Đã thêm bình luận thành công', review: populated });
+        return res.status(201).json({ message: 'Đã thêm bình luận thành công', review: populated });
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server' });
     }
 };
 

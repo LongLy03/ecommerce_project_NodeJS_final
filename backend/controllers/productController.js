@@ -39,9 +39,7 @@ const getProducts = async (req, res) => {
         }
     }
 
-    if (brand) {
-        filter.brand = brand;
-    }
+    if (brand) filter.brand = brand;
 
     if (minPrice || maxPrice) {
         filter.price = {};
@@ -49,13 +47,9 @@ const getProducts = async (req, res) => {
         if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    if (minRating) {
-        filter.rating = { $gte: Number(minRating) }
-    }
+    if (minRating) filter.rating = { $gte: Number(minRating) }
 
-    if (search) {
-        filter.$text = { $search: search };
-    }
+    if (search) filter.$text = { $search: search };
 
     const [field, order] = sort.split('_');
     const sortOption = {};
@@ -78,13 +72,12 @@ const getProducts = async (req, res) => {
         .limit(pageSize)
         .lean();
 
-    res.json({
+    return res.json({
         data: products,
         meta: { total, totalPages, page: pageNum, limit: pageSize, hasNextPage: pageNum < totalPages, hasPrev: pageNum > 1 }
     });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server' });
     }
 };
 
@@ -104,7 +97,7 @@ const getProductByIdOrSlug = async (req, res) => {
 
         return res.json(product);
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server' });
     }
 };
 
@@ -133,13 +126,13 @@ const getHomeProducts = async (req, res) => {
             byCategory[cat.slug] = { category: cat, products };
         }
 
-        res.json({
+        return res.json({
             newest,
             bestSellers,
             categories: byCategory
         });
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server' })
+        return res.status(500).json({ message: 'Lỗi server' })
     }
 }
 

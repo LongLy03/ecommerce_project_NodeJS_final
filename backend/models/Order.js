@@ -74,6 +74,16 @@ const orderSchema = new mongoose.Schema({
         default: null
     },
 
+    pointsUsed: {
+      type: Number,
+      default: 0
+    },
+    
+    pointsEarned: {
+      type: Number,
+      default: 0
+    },
+
     totalPrice: {
         type: Number,
         required: true

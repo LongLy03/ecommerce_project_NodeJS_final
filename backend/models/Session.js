@@ -7,21 +7,26 @@ const sessionSchema = new Schema(
       ref: 'User',
       required: true,
     },
+
     token: {
       type: String,
       required: true,
     },
+
     device: {
       type: String,
       default: 'unknown',
     },
+
     ipAddress: {
       type: String,
     },
+
     expiresAt: {
       type: Date,
       required: true,
     },
+    
   },
   { timestamps: true }
 );
