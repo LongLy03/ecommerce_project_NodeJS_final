@@ -4,13 +4,13 @@ import { Routes, Route } from "react-router-dom";
 
 // Import các trang React
 import LandingPage from "./pages/LandingPage";
-import CatalogPage from "./pages/CatalogPage";
-import ProductDetail from "./pages/ProductDetail";
-import CartPage from "./pages/CartPage";
-import CheckoutPage from "./pages/CheckoutPage";
-import ProfilePage from "./pages/ProfilePage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import CatalogPage from "./pages/product/CatalogPage";
+import ProductDetail from "./pages/product/ProductDetail";
+import CartPage from "./pages/product/CartPage";
+import CheckoutPage from "./pages/product/CheckoutPage";
+import ProfilePage from "./pages/user/ProfilePage";
+import LoginPage from "./pages/user/LoginPage";
+import RegisterPage from "./pages/user/RegisterPage";
 
 // Thành phần chính của ứng dụng React
 function App() {
