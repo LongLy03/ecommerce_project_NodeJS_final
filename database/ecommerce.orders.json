@@ -1,0 +1,128 @@
+[{
+  "_id": {
+    "$oid": "68f8e2fea0b95efd456da43d"
+  },
+  "user": {
+    "$oid": "68f85dd66a4174d14f9a815c"
+  },
+  "name": "Lý Tiểu Long",
+  "email": "lytieuphung.tb2@gmail.com",
+  "items": [
+    {
+      "product": {
+        "$oid": "68f100000000000000000001"
+      },
+      "name": "iPhone 15 Pro Max",
+      "quantity": 10,
+      "price": 34990000,
+      "subTotal": 349900000,
+      "_id": {
+        "$oid": "68f8e2fea0b95efd456da43e"
+      }
+    },
+    {
+      "product": {
+        "$oid": "68f100000000000000000002"
+      },
+      "name": "Samsung Galaxy S24 Ultra",
+      "quantity": 5,
+      "price": 29990000,
+      "subTotal": 149950000,
+      "_id": {
+        "$oid": "68f8e2fea0b95efd456da43f"
+      }
+    }
+  ],
+  "shippingAddress": {
+    "addressId": {
+      "$oid": "68f85dd66a4174d14f9a815d"
+    },
+    "phone": "0364127144",
+    "street": "456 Loi",
+    "city": "ĐN",
+    "country": "VN"
+  },
+  "paymentMethod": "COD",
+  "discountAmount": 49985000,
+  "discount": {
+    "$oid": "68de953bbb4ac25f533bbd9a"
+  },
+  "pointsUsed": 0,
+  "pointsEarned": 44989,
+  "totalPrice": 449895000,
+  "status": "pending",
+  "statusHistory": [
+    {
+      "status": "pending",
+      "updatedAt": {
+        "$date": "2025-10-22T13:58:22.569Z"
+      },
+      "_id": {
+        "$oid": "68f8e2fea0b95efd456da440"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-10-22T13:58:22.579Z"
+  },
+  "updatedAt": {
+    "$date": "2025-10-22T13:58:22.579Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68f8e73e03ee7a47aeb4b1de"
+  },
+  "user": {
+    "$oid": "68f8e73d03ee7a47aeb4b1db"
+  },
+  "name": "Le Thi G",
+  "email": "guestuser@example.com",
+  "items": [
+    {
+      "product": {
+        "$oid": "68f100000000000000000003"
+      },
+      "name": "Xiaomi 14 Pro",
+      "quantity": 2,
+      "price": 19990000,
+      "subTotal": 39980000,
+      "_id": {
+        "$oid": "68f8e73e03ee7a47aeb4b1df"
+      }
+    }
+  ],
+  "shippingAddress": {
+    "addressId": null,
+    "phone": "0988776655",
+    "street": "45 Lê Lợi",
+    "city": "Huế",
+    "country": "VN"
+  },
+  "paymentMethod": "COD",
+  "discountAmount": 0,
+  "discount": null,
+  "pointsUsed": 0,
+  "pointsEarned": 4001,
+  "totalPrice": 40010000,
+  "status": "pending",
+  "statusHistory": [
+    {
+      "status": "pending",
+      "updatedAt": {
+        "$date": "2025-10-22T14:16:30.056Z"
+      },
+      "_id": {
+        "$oid": "68f8e73e03ee7a47aeb4b1e0"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-10-22T14:16:30.063Z"
+  },
+  "updatedAt": {
+    "$date": "2025-10-22T14:16:30.063Z"
+  },
+  "__v": 0
+}]

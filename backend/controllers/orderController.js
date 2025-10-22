@@ -153,6 +153,9 @@ const removeCartItem = async (req, res) => {
         let cart = await Cart.findOne({ user: userId });
         if (!cart) return res.status(404).json({ message: 'Giỏ hàng trống' });
 
+        const item = cart.items.id(itemId);
+        if (!item) return res.status(404).json({ message: 'Sản phẩm không có trong giỏ' });
+
         cart.items = cart.items.filter(i => i._id.toString() !== itemId);
         await cart.save();
         cart = await populateCart(cart);
@@ -206,7 +209,7 @@ const checkout = async (req, res) => {
             usedPoints
         } = req.body;
 
-        if (!isArray.isArray(selectedItems) || selectedItems.length === 0) return res.status(400).json({ message: 'Vui lòng chọn những sản phẩm bạn muốn thanh toán' });
+        if (!Array.isArray(selectedItems) || selectedItems.length === 0) return res.status(400).json({ message: 'Vui lòng chọn những sản phẩm bạn muốn thanh toán' });
 
         const cart = await Cart.findOne({ user: userId })
             .populate('items.product', 'name price variants stock')
@@ -219,7 +222,7 @@ const checkout = async (req, res) => {
         
         if (!selectedCartItems.length) return res.status(400).json({ message: 'Không tìm thấy item được chọn trong giỏ hàng' });
 
-        const { items: orderItems, subtotal } = buildOrderItemsFromCart(selectedCartItems);
+        const { items: orderItems, subtotal } = buildOrderItemsFromCart({ items: selectedCartItems });
         let total = subtotal + SHIPPING_FEE;
 
         let discountAmount = 0;
@@ -578,7 +581,7 @@ const getOrderDetails = async (req, res) => {
   }
 };
 
-// Xem lịch sử và trạng thái đơn hàng
+// Xem trạng thái đơn hàng
 const getOrderStatusHistory = async (req, res) => {
     try {
         const { orderId } = req.params;

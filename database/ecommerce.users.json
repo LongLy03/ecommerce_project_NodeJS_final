@@ -1,0 +1,167 @@
+[
+  {
+    "_id": { "$oid": "68f96cc47b4d8c57c20f1100" },
+    "name": "Super Admin",
+    "email": "admin@example.com",
+    "password": "$2b$10$xrru9b6iog0zD1Pe9xxqUOuuT8P2OuoBha8zoG9uAadP4vmA6Upzq",
+    "isAdmin": true,
+    "isBlocked": false,
+    "addresses": [
+      {
+        "phone": "0909999999",
+        "street": "1A Nguyễn Huệ",
+        "city": "TP.HCM",
+        "country": "VN",
+        "isDefault": true,
+        "_id": { "$oid": "68f96cc47b4d8c57c20f1101" },
+        "createdAt": { "$date": "2025-10-22T09:55:00.000Z" },
+        "updatedAt": { "$date": "2025-10-22T09:55:00.000Z" }
+      },
+      {
+        "phone": "0911000000",
+        "street": "45 Hàng Bài",
+        "city": "Hà Nội",
+        "country": "VN",
+        "isDefault": false,
+        "_id": { "$oid": "68f96cc47b4d8c57c20f1102" },
+        "createdAt": { "$date": "2025-10-22T09:55:30.000Z" },
+        "updatedAt": { "$date": "2025-10-22T09:55:30.000Z" }
+      }
+    ],
+    "loyaltyPoints": 1000,
+    "createdAt": { "$date": "2025-10-22T09:55:00.000Z" },
+    "updatedAt": { "$date": "2025-10-22T09:55:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "68f85dd66a4174d14f9a815c" },
+    "name": "Nguyen Van B",
+    "email": "newusers@example.com",
+    "password": "$2b$10$xrru9b6iog0zD1Pe9xxqUOuuT8P2OuoBha8zoG9uAadP4vmA6Upzq",
+    "isAdmin": false,
+    "isBlocked": false,
+    "addresses": [
+      {
+        "phone": "0364127144",
+        "street": "456 Loi",
+        "city": "ĐN",
+        "country": "VN",
+        "isDefault": false,
+        "_id": { "$oid": "68f85dd66a4174d14f9a815d" },
+        "createdAt": { "$date": "2025-10-22T04:30:14.786Z" },
+        "updatedAt": { "$date": "2025-10-22T06:02:36.102Z" }
+      },
+      {
+        "phone": "0911222444",
+        "street": "123 Nguyễn Trãi",
+        "city": "Hà Nội",
+        "country": "VN",
+        "isDefault": true,
+        "_id": { "$oid": "68f87364be547b3aa81e846a" },
+        "createdAt": { "$date": "2025-10-22T06:02:12.264Z" },
+        "updatedAt": { "$date": "2025-10-22T06:02:36.102Z" }
+      }
+    ],
+    "loyaltyPoints": 0,
+    "createdAt": { "$date": "2025-10-22T04:30:14.788Z" },
+    "updatedAt": { "$date": "2025-10-22T09:37:55.405Z" },
+    "__v": 3,
+    "tokenInvalidBefore": { "$date": "2025-10-22T09:37:55.404Z" }
+  },
+  {
+    "_id": { "$oid": "68f95aa12b1c9a881b91c901" },
+    "name": "Tran Thi C",
+    "email": "tranthic@example.com",
+    "password": "$2b$10$xrru9b6iog0zD1Pe9xxqUOuuT8P2OuoBha8zoG9uAadP4vmA6Upzq",
+    "isAdmin": false,
+    "isBlocked": false,
+    "addresses": [
+      {
+        "phone": "0988776655",
+        "street": "22 Lý Thường Kiệt",
+        "city": "Huế",
+        "country": "VN",
+        "isDefault": true,
+        "_id": { "$oid": "68f95aa12b1c9a881b91c902" },
+        "createdAt": { "$date": "2025-10-22T09:40:00.000Z" },
+        "updatedAt": { "$date": "2025-10-22T09:40:00.000Z" }
+      }
+    ],
+    "loyaltyPoints": 120,
+    "createdAt": { "$date": "2025-10-22T09:40:00.000Z" },
+    "updatedAt": { "$date": "2025-10-22T09:40:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "68f95aa12b1c9a881b91c903" },
+    "name": "Le Minh D",
+    "email": "leminhd@example.com",
+    "password": "$2b$10$xrru9b6iog0zD1Pe9xxqUOuuT8P2OuoBha8zoG9uAadP4vmA6Upzq",
+    "isAdmin": true,
+    "isBlocked": false,
+    "addresses": [
+      {
+        "phone": "0913555333",
+        "street": "88 Nguyễn Văn Linh",
+        "city": "Đà Nẵng",
+        "country": "VN",
+        "isDefault": true,
+        "_id": { "$oid": "68f95aa12b1c9a881b91c904" },
+        "createdAt": { "$date": "2025-10-22T09:41:00.000Z" },
+        "updatedAt": { "$date": "2025-10-22T09:41:00.000Z" }
+      }
+    ],
+    "loyaltyPoints": 500,
+    "createdAt": { "$date": "2025-10-22T09:41:00.000Z" },
+    "updatedAt": { "$date": "2025-10-22T09:41:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "68f95aa12b1c9a881b91c905" },
+    "name": "Pham Van E",
+    "email": "phame@example.com",
+    "password": "$2b$10$xrru9b6iog0zD1Pe9xxqUOuuT8P2OuoBha8zoG9uAadP4vmA6Upzq",
+    "isAdmin": false,
+    "isBlocked": false,
+    "addresses": [
+      {
+        "phone": "0977222333",
+        "street": "12A Trần Hưng Đạo",
+        "city": "TP.HCM",
+        "country": "VN",
+        "isDefault": true,
+        "_id": { "$oid": "68f95aa12b1c9a881b91c906" },
+        "createdAt": { "$date": "2025-10-22T09:42:00.000Z" },
+        "updatedAt": { "$date": "2025-10-22T09:42:00.000Z" }
+      }
+    ],
+    "loyaltyPoints": 60,
+    "createdAt": { "$date": "2025-10-22T09:42:00.000Z" },
+    "updatedAt": { "$date": "2025-10-22T09:42:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "68f95aa12b1c9a881b91c907" },
+    "name": "Hoang Thi F",
+    "email": "hoangthif@example.com",
+    "password": "$2b$10$xrru9b6iog0zD1Pe9xxqUOuuT8P2OuoBha8zoG9uAadP4vmA6Upzq",
+    "isAdmin": false,
+    "isBlocked": true,
+    "addresses": [
+      {
+        "phone": "0909888777",
+        "street": "56 Lê Duẩn",
+        "city": "Hà Nội",
+        "country": "VN",
+        "isDefault": true,
+        "_id": { "$oid": "68f95aa12b1c9a881b91c908" },
+        "createdAt": { "$date": "2025-10-22T09:43:00.000Z" },
+        "updatedAt": { "$date": "2025-10-22T09:43:00.000Z" }
+      }
+    ],
+    "loyaltyPoints": 0,
+    "createdAt": { "$date": "2025-10-22T09:43:00.000Z" },
+    "updatedAt": { "$date": "2025-10-22T09:43:00.000Z" },
+    "__v": 0
+  }
+]

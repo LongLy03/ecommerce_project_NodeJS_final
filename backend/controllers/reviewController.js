@@ -59,19 +59,37 @@ const addReview = async (req, res) => {
         }
         
         // Cập nhật lại điểm trung bình và tổng số đánh giá của sản phẩm
+        let productObjectId;
+        if (mongoose.isValidObjectId(productId)) {
+            productObjectId = new mongoose.Types.ObjectId(productId);
+        } else {
+            // nếu client gửi slug, tìm product để lấy _id
+            const p = await Product.findOne({ $or: [{ _id: productId }, { slug: productId }] }).select('_id').lean();
+            if (!p) {
+                return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+            }
+            productObjectId = p._id;
+        }
+
         const stats = await Review.aggregate([
-            { $match: { product:  new mongoose.Types.ObjectId(productId), rating: { $ne: null } } },
-            { $group: { _id: '$product', avgRating: { $avg: '$rating' }, count: { $sum: 1 } } },
+            { $match: { product: productObjectId, rating: { $ne: null } } },
+            { $group: { _id: '$product', avgRating: { $avg: '$rating' }, ratingCount: { $sum: 1 } } }
         ]);
 
+        const commentsCount = await Review.countDocuments({ product: productObjectId });
+
+        let avg = 0;
+        let ratingCount = 0;
         if (stats.length > 0) {
-            await Product.findByIdAndUpdate(productId, {
-                rating: stats[0].avgRating,
-                numReviews: stats[0].count,
-            });
-        } else {
-            await Product.findByIdAndUpdate(productId, { rating: 0, numReviews: 0 });
+            avg = Number((stats[0].avgRating || 0).toFixed(1));
+            ratingCount = stats[0].ratingCount;
         }
+
+        await Product.findByIdAndUpdate(productObjectId, {
+            rating: avg,
+            numReviews: ratingCount,
+            numComments: commentsCount
+        });
 
         const populated = await Review.findById(review._id)
             .populate('user', 'name email')

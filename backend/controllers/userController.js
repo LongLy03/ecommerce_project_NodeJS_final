@@ -109,6 +109,10 @@ const updateUserProfile = async (req, res) => {
         if (user) {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
+
+            const exists = await User.findOne({ email: req.body.email });
+
+            if (exists) return res.status(400).json({ message: 'Email đã được sử dụng bởi tài khoản khác' });
             
             if (req.body.addresses) {
                 const defaultAddress = user.addresses.find(addr => addr.isDefault);
@@ -173,7 +177,7 @@ const forgotPassword = async (req, res) => {
         const resetToken = user.getResetPasswordToken();
         await user.save({ validateBeforeSave: false });
 
-        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/resetpassword/${resetToken}`;
+        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${resetToken}`;
 
         if (process.env.DEV_SEND_RESET_TOKEN === 'true') {
             return res.json({ 

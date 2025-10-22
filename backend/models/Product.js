@@ -72,6 +72,11 @@ const productSchema = new mongoose.Schema({
     numReviews: {
       type: Number,
       default: 0,
+    },
+
+    numComments: {
+      type: Number,
+      default: 0
     }
 
 }, { timestamps: true });
