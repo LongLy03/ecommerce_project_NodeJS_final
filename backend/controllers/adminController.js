@@ -13,6 +13,15 @@ const getAllUsers = (req, res) => {
         .catch(err => res.status(500).json({ message: 'Lỗi server', error: err.message }));
 };
 
+
+// Xem thông tin người dùng
+const getUser = (req, res) => {
+    const { id } = req.params;
+    User.findById(id)
+        .then(user => user ? res.json(user) : res.status(404).json({ message: 'Người dùng không tồn tại' }))
+        .catch(err => res.status(500).json({ message: 'Lỗi server', error: err.message }))
+}
+
 // Cập nhật thông tin người dùng
 const updateUser = (req, res) => {
     const { id } = req.params;
@@ -31,6 +40,20 @@ const blockUser = (req, res) => {
             return user.save();
         })
         .then(updated => res.json({ message: 'User đã bị chặn', user: updated }))
+        .catch(err => res.status(500).json({ message: 'Lỗi server', error: err.message }));
+};
+
+// Bỏ chặn người dùng
+const unBlockUser = (req, res) => {
+    const { id } = req.params;
+    User.findById(id)
+        .then(user => {
+            if (!user) return res.status(404).json({ message: 'User không tồn tại' });
+            if (!user.isBlocked) return res.status(404).json({ message: 'User không bị chặn' });
+            user.isBlocked = false;
+            return user.save();
+        })
+        .then(updated => res.json({ message: 'User đã được bỏ chặn', user: updated }))
         .catch(err => res.status(500).json({ message: 'Lỗi server', error: err.message }));
 };
 
@@ -129,8 +152,10 @@ const dashboardAdvanced = (req, res) => {
 
 module.exports = {
     getAllUsers,
+    getUser,
     updateUser,
     blockUser,
+    unBlockUser,
     createProduct,
     updateProduct,
     deleteProduct,

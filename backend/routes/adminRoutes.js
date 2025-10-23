@@ -4,8 +4,10 @@ const express = require('express');
 
 const {
     getAllUsers,
+    getUser,
     updateUser,
     blockUser,
+    unBlockUser,
     createProduct,
     updateProduct,
     deleteProduct,
@@ -23,26 +25,28 @@ const {protect, adminOnly} = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // User route
-router.get('/users', protect, adminOnly, getAllUsers);
-router.put('/users/:id', protect, adminOnly, updateUser);
-router.patch('/users/:id/block', protect, adminOnly, blockUser);
+router.get('/users', protect(true), adminOnly, getAllUsers);
+router.get('/users/:id', protect(true), adminOnly, getUser);
+router.put('/users/:id', protect(true), adminOnly, updateUser);
+router.put('/users/:id/block', protect(true), adminOnly, blockUser);
+router.put('/users/:id/unblock', protect(true), adminOnly, unBlockUser);
 
 // Product route
-router.post('/products', protect, adminOnly, createProduct);
-router.put('/products/:id', protect, adminOnly, updateProduct);
-router.delete('/products/:id', protect, adminOnly, deleteProduct);
+router.post('/products', protect(true), adminOnly, createProduct);
+router.put('/products/:id', protect(true), adminOnly, updateProduct);
+router.delete('/products/:id', protect(true), adminOnly, deleteProduct);
 
 // Order route
-router.put('/orders', protect, adminOnly, getOrders);
-router.put('/orders/:id', protect, adminOnly, getOrderDetail);
-router.patch('/orders/:id/status', protect, adminOnly, updateOrderStatus);
+router.put('/orders', protect(true), adminOnly, getOrders);
+router.put('/orders/:id', protect(true), adminOnly, getOrderDetail);
+router.put('/orders/:id/status', protect(true), adminOnly, updateOrderStatus);
 
 // Discount route
-router.post('/discounts', protect, adminOnly, createDiscountCode);
-router.get('/discounts', protect, adminOnly, getAllDiscountCodes);
+router.post('/discounts', protect(true), adminOnly, createDiscountCode);
+router.get('/discounts', protect(true), adminOnly, getAllDiscountCodes);
 
 // Dashboard route
-router.get('/dashboard/basic', protect, adminOnly, dashboardBasic);
-router.get('/dashboard/advanced', protect, adminOnly, dashboardAdvanced);
+router.get('/dashboard/basic', protect(true), adminOnly, dashboardBasic);
+router.get('/dashboard/advanced', protect(true), adminOnly, dashboardAdvanced);
 
 module.exports = router;
