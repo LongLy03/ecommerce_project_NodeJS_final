@@ -15,7 +15,7 @@ const getProducts = async (req, res) => {
         sort = 'createdAt_desc', 
         brand, 
         page = 1, 
-        limit = 10 } = req.query;
+        limit = 20 } = req.query;
 
     const pageNum = Math.max(parseInt(page), 1);
     const pageSize = Math.min(Math.max(parseInt(limit), 1), 100);

@@ -1,632 +1,1894 @@
-[
-  {
-    "_id": { "$oid": "68f100000000000000000001" },
-    "name": "iPhone 15 Pro Max",
-    "slug": "iphone-15-pro-max",
-    "description": "Smartphone cao cấp của Apple với chip A17 Pro, khung titanium, màn hình Super Retina XDR 6.7 inch và cụm camera chuyên nghiệp.",
-    "category": { "$oid": "68d9582f475f99782d11ddc0" },
-    "price": 34990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000001" }, "sku": "IP15PM-256GB", "name": "256GB", "price": 34990000, "stock": 12, "attributes": [{"key": "Màu", "value": "Titanium Xanh"}]},
-      { "_id": { "$oid": "68f110000000000000000002" }, "sku": "IP15PM-512GB", "name": "512GB", "price": 38990000, "stock": 8, "attributes": [{"key": "Màu", "value": "Titanium Tự nhiên"}]}
-    ],
-    "brand": "Apple",
-    "images": [
-      {"url": "/images/iphone15pm-1.jpg"},
-      {"url": "/images/iphone15pm-2.jpg"},
-      {"url": "/images/iphone15pm-3.jpg"}
-    ],
-    "rating": 4.9,
-    "numReviews": 125,
-    "numComments": 35
+[{
+  "_id": {
+    "$oid": "68f100000000000000000001"
   },
-  {
-    "_id": { "$oid": "68f100000000000000000002" },
-    "name": "Samsung Galaxy S24 Ultra",
-    "slug": "samsung-galaxy-s24-ultra",
-    "description": "Flagship mạnh mẽ nhất của Samsung với bút S-Pen, camera zoom 100x và hiệu năng vượt trội.",
-    "category": { "$oid": "68d9582f475f99782d11ddc0" },
-    "price": 29990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000003" }, "sku": "S24U-256GB", "name": "256GB", "price": 29990000, "stock": 10, "attributes": [{"key": "Màu", "value": "Titan Xanh"}]},
-      { "_id": { "$oid": "68f110000000000000000004" }, "sku": "S24U-512GB", "name": "512GB", "price": 33990000, "stock": 5, "attributes": [{"key": "Màu", "value": "Titan Đen"}]}
-    ],
-    "brand": "Samsung",
-    "images": [
-      {"url": "/images/s24u-1.jpg"},
-      {"url": "/images/s24u-2.jpg"},
-      {"url": "/images/s24u-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 88,
-    "numComments": 20
+  "name": "iPhone 15 Pro Max",
+  "slug": "iphone-15-pro-max",
+  "description": "Smartphone cao cấp của Apple với chip A17 Pro, khung titanium, màn hình Super Retina XDR 6.7 inch và cụm camera chuyên nghiệp.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc0"
   },
-  {
-    "_id": { "$oid": "68f100000000000000000003" },
-    "name": "Xiaomi 14 Pro",
-    "slug": "xiaomi-14-pro",
-    "description": "Điện thoại hiệu năng cao với chip Snapdragon 8 Gen 3, màn hình 2K và camera Leica sắc nét.",
-    "category": { "$oid": "68d9582f475f99782d11ddc0" },
-    "price": 19990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000005" }, "sku": "XM14P-256GB", "name": "256GB", "price": 19990000, "stock": 20, "attributes": [{"key": "Màu", "value": "Đen"}]},
-      { "_id": { "$oid": "68f110000000000000000006" }, "sku": "XM14P-512GB", "name": "512GB", "price": 22990000, "stock": 12, "attributes": [{"key": "Màu", "value": "Xanh"}]}
-    ],
-    "brand": "Xiaomi",
-    "images": [
-      {"url": "/images/xiaomi14-1.jpg"},
-      {"url": "/images/xiaomi14-2.jpg"},
-      {"url": "/images/xiaomi14-3.jpg"}
-    ],
-    "rating": 4.6,
-    "numReviews": 55,
-    "numComments": 10
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000004" },
-    "name": "Oppo Reno 11 Pro",
-    "slug": "oppo-reno-11-pro",
-    "description": "Điện thoại tầm trung cao cấp với camera chân dung, sạc nhanh SuperVOOC và thiết kế mỏng nhẹ.",
-    "category": { "$oid": "68d9582f475f99782d11ddc0" },
-    "price": 14990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000007" }, "sku": "OPR11P-128GB", "name": "128GB", "price": 14990000, "stock": 25, "attributes": [{"key": "Màu", "value": "Tím"}]},
-      { "_id": { "$oid": "68f110000000000000000008" }, "sku": "OPR11P-256GB", "name": "256GB", "price": 16990000, "stock": 18, "attributes": [{"key": "Màu", "value": "Đen"}]}
-    ],
-    "brand": "Oppo",
-    "images": [
-      {"url": "/images/opporeno11-1.jpg"},
-      {"url": "/images/opporeno11-2.jpg"},
-      {"url": "/images/opporeno11-3.jpg"}
-    ],
-    "rating": 4.5,
-    "numReviews": 70,
-    "numComments": 12
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000005" },
-    "name": "Vivo V30",
-    "slug": "vivo-v30",
-    "description": "Smartphone với camera selfie đẹp, màn hình AMOLED 120Hz và pin 5000mAh sạc nhanh 80W.",
-    "category": { "$oid": "68d9582f475f99782d11ddc0" },
-    "price": 10990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000009" }, "sku": "VV30-128GB", "name": "128GB", "price": 10990000, "stock": 22, "attributes": [{"key": "Màu", "value": "Xanh Dương"}]},
-      { "_id": { "$oid": "68f110000000000000000010" }, "sku": "VV30-256GB", "name": "256GB", "price": 12490000, "stock": 16, "attributes": [{"key": "Màu", "value": "Đen"}]}
-    ],
-    "brand": "Vivo",
-    "images": [
-      {"url": "/images/vivov30-1.jpg"},
-      {"url": "/images/vivov30-2.jpg"},
-      {"url": "/images/vivov30-3.jpg"}
-    ],
-    "rating": 4.4,
-    "numReviews": 40,
-    "numComments": 9
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000006" },
-    "name": "Realme 12 Pro+",
-    "slug": "realme-12-pro-plus",
-    "description": "Điện thoại Realme với thiết kế sang trọng, camera zoom 64MP và sạc nhanh SuperVOOC 67W.",
-    "category": { "$oid": "68d9582f475f99782d11ddc0" },
-    "price": 11990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000011" }, "sku": "RM12P-128GB", "name": "128GB", "price": 11990000, "stock": 20, "attributes": [{"key": "Màu", "value": "Vàng"}]},
-      { "_id": { "$oid": "68f110000000000000000012" }, "sku": "RM12P-256GB", "name": "256GB", "price": 13990000, "stock": 15, "attributes": [{"key": "Màu", "value": "Xanh"}]}
-    ],
-    "brand": "Realme",
-    "images": [
-      {"url": "/images/realme12-1.jpg"},
-      {"url": "/images/realme12-2.jpg"},
-      {"url": "/images/realme12-3.jpg"}
-    ],
-    "rating": 4.5,
-    "numReviews": 33,
-    "numComments": 6
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000007" },
-    "name": "Asus ROG Phone 8",
-    "slug": "asus-rog-phone-8",
-    "description": "Điện thoại gaming mạnh mẽ với Snapdragon 8 Gen 3, màn hình 165Hz và tản nhiệt nâng cao.",
-    "category": { "$oid": "68d9582f475f99782d11ddc0" },
-    "price": 25990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000013" }, "sku": "ROG8-256GB", "name": "256GB", "price": 25990000, "stock": 15, "attributes": [{"key": "Màu", "value": "Đen"}]},
-      { "_id": { "$oid": "68f110000000000000000014" }, "sku": "ROG8-512GB", "name": "512GB", "price": 28990000, "stock": 10, "attributes": [{"key": "Màu", "value": "Xanh"}]}
-    ],
-    "brand": "Asus",
-    "images": [
-      {"url": "/images/rog8-1.jpg"},
-      {"url": "/images/rog8-2.jpg"},
-      {"url": "/images/rog8-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 77,
-    "numComments": 20
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000008" },
-    "name": "Google Pixel 8 Pro",
-    "slug": "google-pixel-8-pro",
-    "description": "Điện thoại cao cấp của Google với camera AI thông minh và chip Tensor G3.",
-    "category": { "$oid": "68d9582f475f99782d11ddc0" },
-    "price": 25990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000015" }, "sku": "PXL8P-128GB", "name": "128GB", "price": 25990000, "stock": 14, "attributes": [{"key": "Màu", "value": "Xanh Biển"}]},
-      { "_id": { "$oid": "68f110000000000000000016" }, "sku": "PXL8P-256GB", "name": "256GB", "price": 27990000, "stock": 9, "attributes": [{"key": "Màu", "value": "Trắng"}]}
-    ],
-    "brand": "Google",
-    "images": [
-      {"url": "/images/pixel8-1.jpg"},
-      {"url": "/images/pixel8-2.jpg"},
-      {"url": "/images/pixel8-3.jpg"}
-    ],
-    "rating": 4.7,
-    "numReviews": 60,
-    "numComments": 18
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000009" },
-    "name": "iPad Pro M4 13 inch",
-    "slug": "ipad-pro-m4-13",
-    "description": "Máy tính bảng Apple M4 hiệu năng vượt trội, màn hình Ultra Retina XDR.",
-    "category": { "$oid": "68d9582f475f99782d11ddc3" },
-    "price": 34990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000017" }, "sku": "IPPM4-256GB", "name": "256GB", "price": 34990000, "stock": 8, "attributes": [{"key": "Màu", "value": "Bạc"}]},
-      { "_id": { "$oid": "68f110000000000000000018" }, "sku": "IPPM4-512GB", "name": "512GB", "price": 38990000, "stock": 6, "attributes": [{"key": "Màu", "value": "Xám"}]}
-    ],
-    "brand": "Apple",
-    "images": [
-      {"url": "/images/ipadpro-m4-1.jpg"},
-      {"url": "/images/ipadpro-m4-2.jpg"},
-      {"url": "/images/ipadpro-m4-3.jpg"}
-    ],
-    "rating": 4.9,
-    "numReviews": 105,
-    "numComments": 28
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000010" },
-    "name": "Samsung Galaxy Tab S9 Ultra",
-    "slug": "galaxy-tab-s9-ultra",
-    "description": "Tablet Android cao cấp với màn hình AMOLED 14.6 inch, bút S-Pen và chip Snapdragon 8 Gen 2.",
-    "category": { "$oid": "68d9582f475f99782d11ddc3" },
-    "price": 28990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000019" }, "sku": "S9U-256GB", "name": "256GB", "price": 28990000, "stock": 10, "attributes": [{"key": "Màu", "value": "Xám"}]},
-      { "_id": { "$oid": "68f110000000000000000020" }, "sku": "S9U-512GB", "name": "512GB", "price": 31990000, "stock": 8, "attributes": [{"key": "Màu", "value": "Bạc"}]}
-    ],
-    "brand": "Samsung",
-    "images": [
-      {"url": "/images/tabs9u-1.jpg"},
-      {"url": "/images/tabs9u-2.jpg"},
-      {"url": "/images/tabs9u-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 88,
-    "numComments": 25
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000011" },
-    "name": "MacBook Pro 14 inch M3 Pro",
-    "slug": "macbook-pro-14-m3pro",
-    "description": "Laptop Apple với chip M3 Pro, màn hình Liquid Retina XDR và thời lượng pin 18 giờ.",
-    "category": { "$oid": "68d9582f475f99782d11ddc1" },
-    "price": 48990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000021" }, "sku": "MBP14M3P-512GB", "name": "512GB", "price": 48990000, "stock": 7, "attributes": [{"key": "Màu", "value": "Bạc"}]},
-      { "_id": { "$oid": "68f110000000000000000022" }, "sku": "MBP14M3P-1TB", "name": "1TB", "price": 55990000, "stock": 5, "attributes": [{"key": "Màu", "value": "Xám"}]}
-    ],
-    "brand": "Apple",
-    "images": [
-      {"url": "/images/mbp14m3-1.jpg"},
-      {"url": "/images/mbp14m3-2.jpg"},
-      {"url": "/images/mbp14m3-3.jpg"}
-    ],
-    "rating": 4.9,
-    "numReviews": 150,
-    "numComments": 60
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000012" },
-    "name": "Dell XPS 15 9530",
-    "slug": "dell-xps-15-9530",
-    "description": "Laptop cao cấp với màn hình OLED 3.5K, chip Intel i7 Gen 13 và card RTX 4060.",
-    "category": { "$oid": "68d9582f475f99782d11ddc1" },
-    "price": 46990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000023" }, "sku": "XPS15-512GB", "name": "512GB", "price": 46990000, "stock": 9, "attributes": [{"key": "Màu", "value": "Bạc"}]},
-      { "_id": { "$oid": "68f110000000000000000024" }, "sku": "XPS15-1TB", "name": "1TB", "price": 52990000, "stock": 5, "attributes": [{"key": "Màu", "value": "Đen"}]}
-    ],
-    "brand": "Dell",
-    "images": [
-      {"url": "/images/dellxps15-1.jpg"},
-      {"url": "/images/dellxps15-2.jpg"},
-      {"url": "/images/dellxps15-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 90,
-    "numComments": 35
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000013" },
-    "name": "HP Spectre x360 14",
-    "slug": "hp-spectre-x360-14",
-    "description": "Laptop 2 trong 1 với màn OLED 2.8K, cảm ứng và bút stylus hỗ trợ.",
-    "category": { "$oid": "68d9582f475f99782d11ddc1" },
-    "price": 38990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000025" }, "sku": "SPX360-512GB", "name": "512GB", "price": 38990000, "stock": 10, "attributes": [{"key": "Màu", "value": "Bạc"}]},
-      { "_id": { "$oid": "68f110000000000000000026" }, "sku": "SPX360-1TB", "name": "1TB", "price": 43990000, "stock": 6, "attributes": [{"key": "Màu", "value": "Xanh"}]}
-    ],
-    "brand": "HP",
-    "images": [
-      {"url": "/images/hpspectre14-1.jpg"},
-      {"url": "/images/hpspectre14-2.jpg"},
-      {"url": "/images/hpspectre14-3.jpg"}
-    ],
-    "rating": 4.7,
-    "numReviews": 60,
-    "numComments": 20
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000014" },
-    "name": "MacBook Air M3 13 inch",
-    "slug": "macbook-air-m3-13",
-    "description": "Laptop mỏng nhẹ của Apple với chip M3 và thời lượng pin 18 tiếng.",
-    "category": { "$oid": "68d9582f475f99782d11ddc1" },
-    "price": 29990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000027" }, "sku": "MBA13M3-256GB", "name": "256GB", "price": 29990000, "stock": 14, "attributes": [{"key": "Màu", "value": "Vàng"}]},
-      { "_id": { "$oid": "68f110000000000000000028" }, "sku": "MBA13M3-512GB", "name": "512GB", "price": 34990000, "stock": 9, "attributes": [{"key": "Màu", "value": "Xám"}]}
-    ],
-    "brand": "Apple",
-    "images": [
-      {"url": "/images/mba13m3-1.jpg"},
-      {"url": "/images/mba13m3-2.jpg"},
-      {"url": "/images/mba13m3-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 80,
-    "numComments": 22
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000015" },
-    "name": "Lenovo Legion 7i Gen 9",
-    "slug": "lenovo-legion-7i-gen9",
-    "description": "Laptop gaming với Intel i9 Gen 14 và card RTX 4070, màn 240Hz QHD+.",
-    "category": { "$oid": "68d9582f475f99782d11ddc1" },
-    "price": 49990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000029" }, "sku": "LG7I-1TB", "name": "1TB SSD", "price": 49990000, "stock": 8, "attributes": [{"key": "Màu", "value": "Xám"}]},
-      { "_id": { "$oid": "68f110000000000000000030" }, "sku": "LG7I-2TB", "name": "2TB SSD", "price": 54990000, "stock": 4, "attributes": [{"key": "Màu", "value": "Đen"}]}
-    ],
-    "brand": "Lenovo",
-    "images": [
-      {"url": "/images/legion7i-1.jpg"},
-      {"url": "/images/legion7i-2.jpg"},
-      {"url": "/images/legion7i-3.jpg"}
-    ],
-    "rating": 4.9,
-    "numReviews": 95,
-    "numComments": 30
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000016" },
-    "name": "Sony WH-1000XM5",
-    "slug": "sony-wh-1000xm5",
-    "description": "Tai nghe chống ồn hàng đầu với chất âm tuyệt vời, pin 30 giờ và khả năng chống ồn chủ động.",
-    "category": { "$oid": "68d9582f475f99782d11ddc4" },
-    "price": 8990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000031" }, "sku": "WH1000XM5-BLK", "name": "Màu Đen", "price": 8990000, "stock": 20, "attributes": [{"key": "Loại", "value": "Over-ear"}]},
-      { "_id": { "$oid": "68f110000000000000000032" }, "sku": "WH1000XM5-SIL", "name": "Màu Bạc", "price": 8990000, "stock": 15, "attributes": [{"key": "Loại", "value": "Over-ear"}]}
-    ],
-    "brand": "Sony",
-    "images": [
-      {"url": "/images/wh1000xm5-1.jpg"},
-      {"url": "/images/wh1000xm5-2.jpg"},
-      {"url": "/images/wh1000xm5-3.jpg"}
-    ],
-    "rating": 4.9,
-    "numReviews": 210,
-    "numComments": 40
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000017" },
-    "name": "AirPods Pro 2",
-    "slug": "airpods-pro-2",
-    "description": "Tai nghe không dây chống ồn chủ động của Apple với chip H2 và âm thanh thích ứng.",
-    "category": { "$oid": "68d9582f475f99782d11ddc4" },
-    "price": 6390000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000033" }, "sku": "APPRO2", "name": "AirPods Pro 2", "price": 6390000, "stock": 30, "attributes": [{"key": "Loại", "value": "In-ear"}]},
-      { "_id": { "$oid": "68f110000000000000000034" }, "sku": "APPRO2-USBC", "name": "AirPods Pro 2 (USB-C)", "price": 6690000, "stock": 22, "attributes": [{"key": "Loại", "value": "In-ear"}]}
-    ],
-    "brand": "Apple",
-    "images": [
-      {"url": "/images/airpodspro2-1.jpg"},
-      {"url": "/images/airpodspro2-2.jpg"},
-      {"url": "/images/airpodspro2-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 180,
-    "numComments": 25
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000018" },
-    "name": "JBL Charge 5",
-    "slug": "jbl-charge-5",
-    "description": "Loa bluetooth di động chống nước IP67, âm bass mạnh và pin lên đến 20 giờ.",
-    "category": { "$oid": "68d9582f475f99782d11ddc4" },
-    "price": 3590000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000035" }, "sku": "JBLCH5-BLK", "name": "Đen", "price": 3590000, "stock": 25, "attributes": [{"key": "Công suất", "value": "40W"}]},
-      { "_id": { "$oid": "68f110000000000000000036" }, "sku": "JBLCH5-BLU", "name": "Xanh", "price": 3590000, "stock": 18, "attributes": [{"key": "Công suất", "value": "40W"}]}
-    ],
-    "brand": "JBL",
-    "images": [
-      {"url": "/images/jblcharge5-1.jpg"},
-      {"url": "/images/jblcharge5-2.jpg"},
-      {"url": "/images/jblcharge5-3.jpg"}
-    ],
-    "rating": 4.7,
-    "numReviews": 95,
-    "numComments": 18
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000019" },
-    "name": "Apple Watch Series 9",
-    "slug": "apple-watch-series-9",
-    "description": "Đồng hồ thông minh với chip S9, màn hình sáng hơn, cử chỉ Double Tap và đo sức khỏe toàn diện.",
-    "category": { "$oid": "68d9582f475f99782d11ddc5" },
-    "price": 11990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000037" }, "sku": "AW9-41MM", "name": "41mm", "price": 11990000, "stock": 12, "attributes": [{"key": "Màu", "value": "Hồng"}]},
-      { "_id": { "$oid": "68f110000000000000000038" }, "sku": "AW9-45MM", "name": "45mm", "price": 12990000, "stock": 10, "attributes": [{"key": "Màu", "value": "Đen"}]}
-    ],
-    "brand": "Apple",
-    "images": [
-      {"url": "/images/applewatch9-1.jpg"},
-      {"url": "/images/applewatch9-2.jpg"},
-      {"url": "/images/applewatch9-3.jpg"}
-    ],
-    "rating": 4.9,
-    "numReviews": 105,
-    "numComments": 22
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000020" },
-    "name": "Samsung Galaxy Watch 6",
-    "slug": "samsung-galaxy-watch-6",
-    "description": "Đồng hồ thông minh với màn hình Super AMOLED, theo dõi sức khỏe toàn diện và đo giấc ngủ nâng cao.",
-    "category": { "$oid": "68d9582f475f99782d11ddc5" },
-    "price": 8990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000039" }, "sku": "GW6-40MM", "name": "40mm", "price": 8990000, "stock": 15, "attributes": [{"key": "Màu", "value": "Bạc"}]},
-      { "_id": { "$oid": "68f110000000000000000040" }, "sku": "GW6-44MM", "name": "44mm", "price": 9590000, "stock": 10, "attributes": [{"key": "Màu", "value": "Đen"}]}
-    ],
-    "brand": "Samsung",
-    "images": [
-      {"url": "/images/galaxywatch6-1.jpg"},
-      {"url": "/images/galaxywatch6-2.jpg"},
-      {"url": "/images/galaxywatch6-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 78,
-    "numComments": 16
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000021" },
-    "name": "Garmin Venu 3",
-    "slug": "garmin-venu-3",
-    "description": "Đồng hồ thể thao cao cấp với GPS chính xác, đo sức khỏe chuyên sâu và pin lên tới 14 ngày.",
-    "category": { "$oid": "68d9582f475f99782d11ddc5" },
-    "price": 10990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000041" }, "sku": "VENU3-BLK", "name": "Đen", "price": 10990000, "stock": 9, "attributes": [{"key": "Màu", "value": "Đen"}]},
-      { "_id": { "$oid": "68f110000000000000000042" }, "sku": "VENU3-WHT", "name": "Trắng", "price": 10990000, "stock": 7, "attributes": [{"key": "Màu", "value": "Trắng"}]}
-    ],
-    "brand": "Garmin",
-    "images": [
-      {"url": "/images/garminvenu3-1.jpg"},
-      {"url": "/images/garminvenu3-2.jpg"},
-      {"url": "/images/garminvenu3-3.jpg"}
-    ],
-    "rating": 4.7,
-    "numReviews": 66,
-    "numComments": 13
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000022" },
-    "name": "Sạc dự phòng Anker 20,000mAh",
-    "slug": "anker-powerbank-20000",
-    "description": "Sạc dự phòng dung lượng lớn 20,000mAh hỗ trợ sạc nhanh Power Delivery 20W.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 1190000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000043" }, "sku": "ANK20K-BLK", "name": "Đen", "price": 1190000, "stock": 25, "attributes": [{"key": "Cổng sạc", "value": "USB-C"}]},
-      { "_id": { "$oid": "68f110000000000000000044" }, "sku": "ANK20K-WHT", "name": "Trắng", "price": 1190000, "stock": 18, "attributes": [{"key": "Cổng sạc", "value": "USB-A"}]}
-    ],
-    "brand": "Anker",
-    "images": [
-      {"url": "/images/anker20000-1.jpg"},
-      {"url": "/images/anker20000-2.jpg"},
-      {"url": "/images/anker20000-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 102,
-    "numComments": 20
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000023" },
-    "name": "Chuột Logitech MX Master 3S",
-    "slug": "logitech-mx-master-3s",
-    "description": "Chuột không dây cao cấp, hỗ trợ kết nối đa thiết bị và cảm biến chính xác 8000 DPI.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 2690000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000045" }, "sku": "MXM3S-GR", "name": "Graphite", "price": 2690000, "stock": 14, "attributes": [{"key": "Kết nối", "value": "Bluetooth"}]},
-      { "_id": { "$oid": "68f110000000000000000046" }, "sku": "MXM3S-LG", "name": "Light Gray", "price": 2690000, "stock": 10, "attributes": [{"key": "Kết nối", "value": "USB Receiver"}]}
-    ],
-    "brand": "Logitech",
-    "images": [
-      {"url": "/images/mxmaster3s-1.jpg"},
-      {"url": "/images/mxmaster3s-2.jpg"},
-      {"url": "/images/mxmaster3s-3.jpg"}
-    ],
-    "rating": 4.9,
-    "numReviews": 88,
-    "numComments": 17
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000024" },
-    "name": "Bàn phím Keychron K6",
-    "slug": "keychron-k6",
-    "description": "Bàn phím cơ mini 65% với đèn RGB, hỗ trợ Bluetooth và hot-swap switch.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 2490000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000047" }, "sku": "K6-RGB", "name": "RGB LED", "price": 2490000, "stock": 16, "attributes": [{"key": "Switch", "value": "Gateron Red"}]},
-      { "_id": { "$oid": "68f110000000000000000048" }, "sku": "K6-BLK", "name": "RGB Black", "price": 2590000, "stock": 12, "attributes": [{"key": "Switch", "value": "Brown"}]}
-    ],
-    "brand": "Keychron",
-    "images": [
-      {"url": "/images/keychronk6-1.jpg"},
-      {"url": "/images/keychronk6-2.jpg"},
-      {"url": "/images/keychronk6-3.jpg"}
-    ],
-    "rating": 4.7,
-    "numReviews": 54,
-    "numComments": 11
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000025" },
-    "name": "Webcam Logitech C920 HD Pro",
-    "slug": "logitech-c920-hd-pro",
-    "description": "Webcam độ phân giải Full HD 1080p, tự động cân bằng sáng, micro kép chống ồn.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 1990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000049" }, "sku": "C920-BLK", "name": "Đen", "price": 1990000, "stock": 22, "attributes": [{"key": "Độ phân giải", "value": "1080p"}]},
-      { "_id": { "$oid": "68f110000000000000000050" }, "sku": "C920-BLU", "name": "Xanh", "price": 1990000, "stock": 15, "attributes": [{"key": "Độ phân giải", "value": "1080p"}]}
-    ],
-    "brand": "Logitech",
-    "images": [
-      {"url": "/images/logitechc920-1.jpg"},
-      {"url": "/images/logitechc920-2.jpg"},
-      {"url": "/images/logitechc920-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 79,
-    "numComments": 14
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000026" },
-    "name": "Ổ cứng SSD Samsung T7 Shield 1TB",
-    "slug": "samsung-t7-shield-1tb",
-    "description": "Ổ cứng di động SSD tốc độ cao, chống sốc và chống nước chuẩn IP65.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 2990000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000051" }, "sku": "T7SH-1TB-BLK", "name": "1TB Đen", "price": 2990000, "stock": 20, "attributes": [{"key": "Chuẩn", "value": "USB 3.2"}]},
-      { "_id": { "$oid": "68f110000000000000000052" }, "sku": "T7SH-2TB-BLU", "name": "2TB Xanh", "price": 4990000, "stock": 10, "attributes": [{"key": "Chuẩn", "value": "USB 3.2"}]}
-    ],
-    "brand": "Samsung",
-    "images": [
-      {"url": "/images/t7shield-1.jpg"},
-      {"url": "/images/t7shield-2.jpg"},
-      {"url": "/images/t7shield-3.jpg"}
-    ],
-    "rating": 4.9,
-    "numReviews": 110,
-    "numComments": 20
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000027" },
-    "name": "Tai nghe Razer BlackShark V2",
-    "slug": "razer-blackshark-v2",
-    "description": "Tai nghe gaming chuyên nghiệp với micro khử ồn, âm thanh THX Spatial Audio và đệm tai memory foam.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 2490000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000053" }, "sku": "RS-BSV2-BLK", "name": "Đen", "price": 2490000, "stock": 20, "attributes": [{"key": "Loại", "value": "Over-ear"}]},
-      { "_id": { "$oid": "68f110000000000000000054" }, "sku": "RS-BSV2-GRN", "name": "Xanh Razer", "price": 2590000, "stock": 12, "attributes": [{"key": "Loại", "value": "Over-ear"}]}
-    ],
-    "brand": "Razer",
-    "images": [
-      {"url": "/images/razerblacksharkv2-1.jpg"},
-      {"url": "/images/razerblacksharkv2-2.jpg"},
-      {"url": "/images/razerblacksharkv2-3.jpg"}
-    ],
-    "rating": 4.7,
-    "numReviews": 72,
-    "numComments": 15
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000028" },
-    "name": "Balo laptop Targus 15.6 inch",
-    "slug": "targus-156-laptop-backpack",
-    "description": "Balo laptop cao cấp chống nước, đệm lưng thoáng khí và ngăn chứa rộng rãi cho laptop 15.6 inch.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 1090000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000055" }, "sku": "TG-BP156-BLK", "name": "Đen", "price": 1090000, "stock": 18, "attributes": [{"key": "Chống nước", "value": "Có"}]},
-      { "_id": { "$oid": "68f110000000000000000056" }, "sku": "TG-BP156-GRY", "name": "Xám", "price": 1090000, "stock": 15, "attributes": [{"key": "Chống nước", "value": "Có"}]}
-    ],
-    "brand": "Targus",
-    "images": [
-      {"url": "/images/targusbp-1.jpg"},
-      {"url": "/images/targusbp-2.jpg"},
-      {"url": "/images/targusbp-3.jpg"}
-    ],
-    "rating": 4.6,
-    "numReviews": 58,
-    "numComments": 10
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000029" },
-    "name": "Bàn di chuột RGB Corsair MM700",
-    "slug": "corsair-mm700-rgb",
-    "description": "Bàn di chuột kích thước lớn, đèn RGB viền 360 độ, bề mặt vải chống trượt và cổng USB passthrough.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 1290000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000057" }, "sku": "MM700-RGB-BLK", "name": "Đen RGB", "price": 1290000, "stock": 20, "attributes": [{"key": "Kích thước", "value": "930x400mm"}]},
-      { "_id": { "$oid": "68f110000000000000000058" }, "sku": "MM700-RGB-LTD", "name": "Phiên bản Limited", "price": 1490000, "stock": 8, "attributes": [{"key": "Kích thước", "value": "930x400mm"}]}
-    ],
-    "brand": "Corsair",
-    "images": [
-      {"url": "/images/mm700rgb-1.jpg"},
-      {"url": "/images/mm700rgb-2.jpg"},
-      {"url": "/images/mm700rgb-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 63,
-    "numComments": 12
-  },
-  {
-    "_id": { "$oid": "68f100000000000000000030" },
-    "name": "Giá đỡ laptop bằng nhôm UGREEN",
-    "slug": "ugreen-laptop-stand",
-    "description": "Giá đỡ laptop bằng hợp kim nhôm, điều chỉnh độ cao linh hoạt, gập gọn tiện mang theo.",
-    "category": { "$oid": "68d9582f475f99782d11ddc2" },
-    "price": 590000,
-    "variants": [
-      { "_id": { "$oid": "68f110000000000000000059" }, "sku": "UG-STAND-SIL", "name": "Bạc", "price": 590000, "stock": 25, "attributes": [{"key": "Chất liệu", "value": "Nhôm"}]},
-      { "_id": { "$oid": "68f110000000000000000060" }, "sku": "UG-STAND-GRY", "name": "Xám", "price": 590000, "stock": 20, "attributes": [{"key": "Chất liệu", "value": "Nhôm"}]}
-    ],
-    "brand": "UGREEN",
-    "images": [
-      {"url": "/images/ugreenstand-1.jpg"},
-      {"url": "/images/ugreenstand-2.jpg"},
-      {"url": "/images/ugreenstand-3.jpg"}
-    ],
-    "rating": 4.8,
-    "numReviews": 47,
-    "numComments": 9
+  "price": 34990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000001"
+      },
+      "sku": "IP15PM-256GB",
+      "name": "256GB",
+      "price": 34990000,
+      "stock": 2,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Titanium Xanh"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000002"
+      },
+      "sku": "IP15PM-512GB",
+      "name": "512GB",
+      "price": 38990000,
+      "stock": 8,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Titanium Tự nhiên"
+        }
+      ]
+    }
+  ],
+  "brand": "Apple",
+  "images": [
+    {
+      "url": "/images/iphone15pm-1.jpg"
+    },
+    {
+      "url": "/images/iphone15pm-2.jpg"
+    },
+    {
+      "url": "/images/iphone15pm-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0,
+  "updatedAt": {
+    "$date": "2025-10-22T13:58:22.544Z"
   }
-]
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000002"
+  },
+  "name": "Samsung Galaxy S24 Ultra",
+  "slug": "samsung-galaxy-s24-ultra",
+  "description": "Flagship mạnh mẽ nhất của Samsung với bút S-Pen, camera zoom 100x và hiệu năng vượt trội.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc0"
+  },
+  "price": 29990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000003"
+      },
+      "sku": "S24U-256GB",
+      "name": "256GB",
+      "price": 29990000,
+      "stock": 5,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Titan Xanh"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000004"
+      },
+      "sku": "S24U-512GB",
+      "name": "512GB",
+      "price": 33990000,
+      "stock": 5,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Titan Đen"
+        }
+      ]
+    }
+  ],
+  "brand": "Samsung",
+  "images": [
+    {
+      "url": "/images/s24u-1.jpg"
+    },
+    {
+      "url": "/images/s24u-2.jpg"
+    },
+    {
+      "url": "/images/s24u-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0,
+  "updatedAt": {
+    "$date": "2025-10-22T13:58:22.555Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000003"
+  },
+  "name": "Xiaomi 14 Pro",
+  "slug": "xiaomi-14-pro",
+  "description": "Điện thoại hiệu năng cao với chip Snapdragon 8 Gen 3, màn hình 2K và camera Leica sắc nét.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc0"
+  },
+  "price": 19990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000005"
+      },
+      "sku": "XM14P-256GB",
+      "name": "256GB",
+      "price": 19990000,
+      "stock": 18,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000006"
+      },
+      "sku": "XM14P-512GB",
+      "name": "512GB",
+      "price": 22990000,
+      "stock": 12,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xanh"
+        }
+      ]
+    }
+  ],
+  "brand": "Xiaomi",
+  "images": [
+    {
+      "url": "/images/xiaomi14-1.jpg"
+    },
+    {
+      "url": "/images/xiaomi14-2.jpg"
+    },
+    {
+      "url": "/images/xiaomi14-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0,
+  "updatedAt": {
+    "$date": "2025-10-22T14:16:29.742Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000004"
+  },
+  "name": "Oppo Reno 11 Pro",
+  "slug": "oppo-reno-11-pro",
+  "description": "Điện thoại tầm trung cao cấp với camera chân dung, sạc nhanh SuperVOOC và thiết kế mỏng nhẹ.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc0"
+  },
+  "price": 14990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000007"
+      },
+      "sku": "OPR11P-128GB",
+      "name": "128GB",
+      "price": 14990000,
+      "stock": 25,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Tím"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000008"
+      },
+      "sku": "OPR11P-256GB",
+      "name": "256GB",
+      "price": 16990000,
+      "stock": 18,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    }
+  ],
+  "brand": "Oppo",
+  "images": [
+    {
+      "url": "/images/opporeno11-1.jpg"
+    },
+    {
+      "url": "/images/opporeno11-2.jpg"
+    },
+    {
+      "url": "/images/opporeno11-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000005"
+  },
+  "name": "Vivo V30",
+  "slug": "vivo-v30",
+  "description": "Smartphone với camera selfie đẹp, màn hình AMOLED 120Hz và pin 5000mAh sạc nhanh 80W.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc0"
+  },
+  "price": 10990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000009"
+      },
+      "sku": "VV30-128GB",
+      "name": "128GB",
+      "price": 10990000,
+      "stock": 22,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xanh Dương"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000010"
+      },
+      "sku": "VV30-256GB",
+      "name": "256GB",
+      "price": 12490000,
+      "stock": 16,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    }
+  ],
+  "brand": "Vivo",
+  "images": [
+    {
+      "url": "/images/vivov30-1.jpg"
+    },
+    {
+      "url": "/images/vivov30-2.jpg"
+    },
+    {
+      "url": "/images/vivov30-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000006"
+  },
+  "name": "Realme 12 Pro+",
+  "slug": "realme-12-pro-plus",
+  "description": "Điện thoại Realme với thiết kế sang trọng, camera zoom 64MP và sạc nhanh SuperVOOC 67W.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc0"
+  },
+  "price": 11990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000011"
+      },
+      "sku": "RM12P-128GB",
+      "name": "128GB",
+      "price": 11990000,
+      "stock": 20,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Vàng"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000012"
+      },
+      "sku": "RM12P-256GB",
+      "name": "256GB",
+      "price": 13990000,
+      "stock": 15,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xanh"
+        }
+      ]
+    }
+  ],
+  "brand": "Realme",
+  "images": [
+    {
+      "url": "/images/realme12-1.jpg"
+    },
+    {
+      "url": "/images/realme12-2.jpg"
+    },
+    {
+      "url": "/images/realme12-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000007"
+  },
+  "name": "Asus ROG Phone 8",
+  "slug": "asus-rog-phone-8",
+  "description": "Điện thoại gaming mạnh mẽ với Snapdragon 8 Gen 3, màn hình 165Hz và tản nhiệt nâng cao.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc0"
+  },
+  "price": 25990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000013"
+      },
+      "sku": "ROG8-256GB",
+      "name": "256GB",
+      "price": 25990000,
+      "stock": 15,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000014"
+      },
+      "sku": "ROG8-512GB",
+      "name": "512GB",
+      "price": 28990000,
+      "stock": 10,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xanh"
+        }
+      ]
+    }
+  ],
+  "brand": "Asus",
+  "images": [
+    {
+      "url": "/images/rog8-1.jpg"
+    },
+    {
+      "url": "/images/rog8-2.jpg"
+    },
+    {
+      "url": "/images/rog8-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000008"
+  },
+  "name": "Google Pixel 8 Pro",
+  "slug": "google-pixel-8-pro",
+  "description": "Điện thoại cao cấp của Google với camera AI thông minh và chip Tensor G3.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc0"
+  },
+  "price": 25990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000015"
+      },
+      "sku": "PXL8P-128GB",
+      "name": "128GB",
+      "price": 25990000,
+      "stock": 14,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xanh Biển"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000016"
+      },
+      "sku": "PXL8P-256GB",
+      "name": "256GB",
+      "price": 27990000,
+      "stock": 9,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Trắng"
+        }
+      ]
+    }
+  ],
+  "brand": "Google",
+  "images": [
+    {
+      "url": "/images/pixel8-1.jpg"
+    },
+    {
+      "url": "/images/pixel8-2.jpg"
+    },
+    {
+      "url": "/images/pixel8-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000009"
+  },
+  "name": "iPad Pro M4 13 inch",
+  "slug": "ipad-pro-m4-13",
+  "description": "Máy tính bảng Apple M4 hiệu năng vượt trội, màn hình Ultra Retina XDR.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc3"
+  },
+  "price": 34990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000017"
+      },
+      "sku": "IPPM4-256GB",
+      "name": "256GB",
+      "price": 34990000,
+      "stock": 8,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Bạc"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000018"
+      },
+      "sku": "IPPM4-512GB",
+      "name": "512GB",
+      "price": 38990000,
+      "stock": 6,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xám"
+        }
+      ]
+    }
+  ],
+  "brand": "Apple",
+  "images": [
+    {
+      "url": "/images/ipadpro-m4-1.jpg"
+    },
+    {
+      "url": "/images/ipadpro-m4-2.jpg"
+    },
+    {
+      "url": "/images/ipadpro-m4-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000010"
+  },
+  "name": "Samsung Galaxy Tab S9 Ultra",
+  "slug": "galaxy-tab-s9-ultra",
+  "description": "Tablet Android cao cấp với màn hình AMOLED 14.6 inch, bút S-Pen và chip Snapdragon 8 Gen 2.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc3"
+  },
+  "price": 28990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000019"
+      },
+      "sku": "S9U-256GB",
+      "name": "256GB",
+      "price": 28990000,
+      "stock": 10,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xám"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000020"
+      },
+      "sku": "S9U-512GB",
+      "name": "512GB",
+      "price": 31990000,
+      "stock": 8,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Bạc"
+        }
+      ]
+    }
+  ],
+  "brand": "Samsung",
+  "images": [
+    {
+      "url": "/images/tabs9u-1.jpg"
+    },
+    {
+      "url": "/images/tabs9u-2.jpg"
+    },
+    {
+      "url": "/images/tabs9u-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000011"
+  },
+  "name": "MacBook Pro 14 inch M3 Pro",
+  "slug": "macbook-pro-14-m3pro",
+  "description": "Laptop Apple với chip M3 Pro, màn hình Liquid Retina XDR và thời lượng pin 18 giờ.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc1"
+  },
+  "price": 48990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000021"
+      },
+      "sku": "MBP14M3P-512GB",
+      "name": "512GB",
+      "price": 48990000,
+      "stock": 7,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Bạc"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000022"
+      },
+      "sku": "MBP14M3P-1TB",
+      "name": "1TB",
+      "price": 55990000,
+      "stock": 5,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xám"
+        }
+      ]
+    }
+  ],
+  "brand": "Apple",
+  "images": [
+    {
+      "url": "/images/mbp14m3-1.jpg"
+    },
+    {
+      "url": "/images/mbp14m3-2.jpg"
+    },
+    {
+      "url": "/images/mbp14m3-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000012"
+  },
+  "name": "Dell XPS 15 9530",
+  "slug": "dell-xps-15-9530",
+  "description": "Laptop cao cấp với màn hình OLED 3.5K, chip Intel i7 Gen 13 và card RTX 4060.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc1"
+  },
+  "price": 46990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000023"
+      },
+      "sku": "XPS15-512GB",
+      "name": "512GB",
+      "price": 46990000,
+      "stock": 9,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Bạc"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000024"
+      },
+      "sku": "XPS15-1TB",
+      "name": "1TB",
+      "price": 52990000,
+      "stock": 5,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    }
+  ],
+  "brand": "Dell",
+  "images": [
+    {
+      "url": "/images/dellxps15-1.jpg"
+    },
+    {
+      "url": "/images/dellxps15-2.jpg"
+    },
+    {
+      "url": "/images/dellxps15-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000013"
+  },
+  "name": "HP Spectre x360 14",
+  "slug": "hp-spectre-x360-14",
+  "description": "Laptop 2 trong 1 với màn OLED 2.8K, cảm ứng và bút stylus hỗ trợ.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc1"
+  },
+  "price": 38990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000025"
+      },
+      "sku": "SPX360-512GB",
+      "name": "512GB",
+      "price": 38990000,
+      "stock": 10,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Bạc"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000026"
+      },
+      "sku": "SPX360-1TB",
+      "name": "1TB",
+      "price": 43990000,
+      "stock": 6,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xanh"
+        }
+      ]
+    }
+  ],
+  "brand": "HP",
+  "images": [
+    {
+      "url": "/images/hpspectre14-1.jpg"
+    },
+    {
+      "url": "/images/hpspectre14-2.jpg"
+    },
+    {
+      "url": "/images/hpspectre14-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000014"
+  },
+  "name": "MacBook Air M3 13 inch",
+  "slug": "macbook-air-m3-13",
+  "description": "Laptop mỏng nhẹ của Apple với chip M3 và thời lượng pin 18 tiếng.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc1"
+  },
+  "price": 29990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000027"
+      },
+      "sku": "MBA13M3-256GB",
+      "name": "256GB",
+      "price": 29990000,
+      "stock": 14,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Vàng"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000028"
+      },
+      "sku": "MBA13M3-512GB",
+      "name": "512GB",
+      "price": 34990000,
+      "stock": 9,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xám"
+        }
+      ]
+    }
+  ],
+  "brand": "Apple",
+  "images": [
+    {
+      "url": "/images/mba13m3-1.jpg"
+    },
+    {
+      "url": "/images/mba13m3-2.jpg"
+    },
+    {
+      "url": "/images/mba13m3-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000015"
+  },
+  "name": "Lenovo Legion 7i Gen 9",
+  "slug": "lenovo-legion-7i-gen9",
+  "description": "Laptop gaming với Intel i9 Gen 14 và card RTX 4070, màn 240Hz QHD+.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc1"
+  },
+  "price": 49990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000029"
+      },
+      "sku": "LG7I-1TB",
+      "name": "1TB SSD",
+      "price": 49990000,
+      "stock": 8,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Xám"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000030"
+      },
+      "sku": "LG7I-2TB",
+      "name": "2TB SSD",
+      "price": 54990000,
+      "stock": 4,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    }
+  ],
+  "brand": "Lenovo",
+  "images": [
+    {
+      "url": "/images/legion7i-1.jpg"
+    },
+    {
+      "url": "/images/legion7i-2.jpg"
+    },
+    {
+      "url": "/images/legion7i-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000016"
+  },
+  "name": "Sony WH-1000XM5",
+  "slug": "sony-wh-1000xm5",
+  "description": "Tai nghe chống ồn hàng đầu với chất âm tuyệt vời, pin 30 giờ và khả năng chống ồn chủ động.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc4"
+  },
+  "price": 8990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000031"
+      },
+      "sku": "WH1000XM5-BLK",
+      "name": "Màu Đen",
+      "price": 8990000,
+      "stock": 20,
+      "attributes": [
+        {
+          "key": "Loại",
+          "value": "Over-ear"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000032"
+      },
+      "sku": "WH1000XM5-SIL",
+      "name": "Màu Bạc",
+      "price": 8990000,
+      "stock": 15,
+      "attributes": [
+        {
+          "key": "Loại",
+          "value": "Over-ear"
+        }
+      ]
+    }
+  ],
+  "brand": "Sony",
+  "images": [
+    {
+      "url": "/images/wh1000xm5-1.jpg"
+    },
+    {
+      "url": "/images/wh1000xm5-2.jpg"
+    },
+    {
+      "url": "/images/wh1000xm5-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000017"
+  },
+  "name": "AirPods Pro 2",
+  "slug": "airpods-pro-2",
+  "description": "Tai nghe không dây chống ồn chủ động của Apple với chip H2 và âm thanh thích ứng.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc4"
+  },
+  "price": 6390000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000033"
+      },
+      "sku": "APPRO2",
+      "name": "AirPods Pro 2",
+      "price": 6390000,
+      "stock": 30,
+      "attributes": [
+        {
+          "key": "Loại",
+          "value": "In-ear"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000034"
+      },
+      "sku": "APPRO2-USBC",
+      "name": "AirPods Pro 2 (USB-C)",
+      "price": 6690000,
+      "stock": 22,
+      "attributes": [
+        {
+          "key": "Loại",
+          "value": "In-ear"
+        }
+      ]
+    }
+  ],
+  "brand": "Apple",
+  "images": [
+    {
+      "url": "/images/airpodspro2-1.jpg"
+    },
+    {
+      "url": "/images/airpodspro2-2.jpg"
+    },
+    {
+      "url": "/images/airpodspro2-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000018"
+  },
+  "name": "JBL Charge 5",
+  "slug": "jbl-charge-5",
+  "description": "Loa bluetooth di động chống nước IP67, âm bass mạnh và pin lên đến 20 giờ.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc4"
+  },
+  "price": 3590000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000035"
+      },
+      "sku": "JBLCH5-BLK",
+      "name": "Đen",
+      "price": 3590000,
+      "stock": 25,
+      "attributes": [
+        {
+          "key": "Công suất",
+          "value": "40W"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000036"
+      },
+      "sku": "JBLCH5-BLU",
+      "name": "Xanh",
+      "price": 3590000,
+      "stock": 18,
+      "attributes": [
+        {
+          "key": "Công suất",
+          "value": "40W"
+        }
+      ]
+    }
+  ],
+  "brand": "JBL",
+  "images": [
+    {
+      "url": "/images/jblcharge5-1.jpg"
+    },
+    {
+      "url": "/images/jblcharge5-2.jpg"
+    },
+    {
+      "url": "/images/jblcharge5-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000019"
+  },
+  "name": "Apple Watch Series 9",
+  "slug": "apple-watch-series-9",
+  "description": "Đồng hồ thông minh với chip S9, màn hình sáng hơn, cử chỉ Double Tap và đo sức khỏe toàn diện.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc5"
+  },
+  "price": 11990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000037"
+      },
+      "sku": "AW9-41MM",
+      "name": "41mm",
+      "price": 11990000,
+      "stock": 12,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Hồng"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000038"
+      },
+      "sku": "AW9-45MM",
+      "name": "45mm",
+      "price": 12990000,
+      "stock": 10,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    }
+  ],
+  "brand": "Apple",
+  "images": [
+    {
+      "url": "/images/applewatch9-1.jpg"
+    },
+    {
+      "url": "/images/applewatch9-2.jpg"
+    },
+    {
+      "url": "/images/applewatch9-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000020"
+  },
+  "name": "Samsung Galaxy Watch 6",
+  "slug": "samsung-galaxy-watch-6",
+  "description": "Đồng hồ thông minh với màn hình Super AMOLED, theo dõi sức khỏe toàn diện và đo giấc ngủ nâng cao.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc5"
+  },
+  "price": 8990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000039"
+      },
+      "sku": "GW6-40MM",
+      "name": "40mm",
+      "price": 8990000,
+      "stock": 15,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Bạc"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000040"
+      },
+      "sku": "GW6-44MM",
+      "name": "44mm",
+      "price": 9590000,
+      "stock": 10,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    }
+  ],
+  "brand": "Samsung",
+  "images": [
+    {
+      "url": "/images/galaxywatch6-1.jpg"
+    },
+    {
+      "url": "/images/galaxywatch6-2.jpg"
+    },
+    {
+      "url": "/images/galaxywatch6-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000021"
+  },
+  "name": "Garmin Venu 3",
+  "slug": "garmin-venu-3",
+  "description": "Đồng hồ thể thao cao cấp với GPS chính xác, đo sức khỏe chuyên sâu và pin lên tới 14 ngày.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc5"
+  },
+  "price": 10990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000041"
+      },
+      "sku": "VENU3-BLK",
+      "name": "Đen",
+      "price": 10990000,
+      "stock": 9,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Đen"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000042"
+      },
+      "sku": "VENU3-WHT",
+      "name": "Trắng",
+      "price": 10990000,
+      "stock": 7,
+      "attributes": [
+        {
+          "key": "Màu",
+          "value": "Trắng"
+        }
+      ]
+    }
+  ],
+  "brand": "Garmin",
+  "images": [
+    {
+      "url": "/images/garminvenu3-1.jpg"
+    },
+    {
+      "url": "/images/garminvenu3-2.jpg"
+    },
+    {
+      "url": "/images/garminvenu3-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000022"
+  },
+  "name": "Sạc dự phòng Anker 20,000mAh",
+  "slug": "anker-powerbank-20000",
+  "description": "Sạc dự phòng dung lượng lớn 20,000mAh hỗ trợ sạc nhanh Power Delivery 20W.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 1190000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000043"
+      },
+      "sku": "ANK20K-BLK",
+      "name": "Đen",
+      "price": 1190000,
+      "stock": 25,
+      "attributes": [
+        {
+          "key": "Cổng sạc",
+          "value": "USB-C"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000044"
+      },
+      "sku": "ANK20K-WHT",
+      "name": "Trắng",
+      "price": 1190000,
+      "stock": 18,
+      "attributes": [
+        {
+          "key": "Cổng sạc",
+          "value": "USB-A"
+        }
+      ]
+    }
+  ],
+  "brand": "Anker",
+  "images": [
+    {
+      "url": "/images/anker20000-1.jpg"
+    },
+    {
+      "url": "/images/anker20000-2.jpg"
+    },
+    {
+      "url": "/images/anker20000-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000023"
+  },
+  "name": "Chuột Logitech MX Master 3S",
+  "slug": "logitech-mx-master-3s",
+  "description": "Chuột không dây cao cấp, hỗ trợ kết nối đa thiết bị và cảm biến chính xác 8000 DPI.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 2690000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000045"
+      },
+      "sku": "MXM3S-GR",
+      "name": "Graphite",
+      "price": 2690000,
+      "stock": 14,
+      "attributes": [
+        {
+          "key": "Kết nối",
+          "value": "Bluetooth"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000046"
+      },
+      "sku": "MXM3S-LG",
+      "name": "Light Gray",
+      "price": 2690000,
+      "stock": 10,
+      "attributes": [
+        {
+          "key": "Kết nối",
+          "value": "USB Receiver"
+        }
+      ]
+    }
+  ],
+  "brand": "Logitech",
+  "images": [
+    {
+      "url": "/images/mxmaster3s-1.jpg"
+    },
+    {
+      "url": "/images/mxmaster3s-2.jpg"
+    },
+    {
+      "url": "/images/mxmaster3s-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000024"
+  },
+  "name": "Bàn phím Keychron K6",
+  "slug": "keychron-k6",
+  "description": "Bàn phím cơ mini 65% với đèn RGB, hỗ trợ Bluetooth và hot-swap switch.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 2490000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000047"
+      },
+      "sku": "K6-RGB",
+      "name": "RGB LED",
+      "price": 2490000,
+      "stock": 16,
+      "attributes": [
+        {
+          "key": "Switch",
+          "value": "Gateron Red"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000048"
+      },
+      "sku": "K6-BLK",
+      "name": "RGB Black",
+      "price": 2590000,
+      "stock": 12,
+      "attributes": [
+        {
+          "key": "Switch",
+          "value": "Brown"
+        }
+      ]
+    }
+  ],
+  "brand": "Keychron",
+  "images": [
+    {
+      "url": "/images/keychronk6-1.jpg"
+    },
+    {
+      "url": "/images/keychronk6-2.jpg"
+    },
+    {
+      "url": "/images/keychronk6-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000025"
+  },
+  "name": "Webcam Logitech C920 HD Pro",
+  "slug": "logitech-c920-hd-pro",
+  "description": "Webcam độ phân giải Full HD 1080p, tự động cân bằng sáng, micro kép chống ồn.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 1990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000049"
+      },
+      "sku": "C920-BLK",
+      "name": "Đen",
+      "price": 1990000,
+      "stock": 22,
+      "attributes": [
+        {
+          "key": "Độ phân giải",
+          "value": "1080p"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000050"
+      },
+      "sku": "C920-BLU",
+      "name": "Xanh",
+      "price": 1990000,
+      "stock": 15,
+      "attributes": [
+        {
+          "key": "Độ phân giải",
+          "value": "1080p"
+        }
+      ]
+    }
+  ],
+  "brand": "Logitech",
+  "images": [
+    {
+      "url": "/images/logitechc920-1.jpg"
+    },
+    {
+      "url": "/images/logitechc920-2.jpg"
+    },
+    {
+      "url": "/images/logitechc920-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000026"
+  },
+  "name": "Ổ cứng SSD Samsung T7 Shield 1TB",
+  "slug": "samsung-t7-shield-1tb",
+  "description": "Ổ cứng di động SSD tốc độ cao, chống sốc và chống nước chuẩn IP65.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 2990000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000051"
+      },
+      "sku": "T7SH-1TB-BLK",
+      "name": "1TB Đen",
+      "price": 2990000,
+      "stock": 20,
+      "attributes": [
+        {
+          "key": "Chuẩn",
+          "value": "USB 3.2"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000052"
+      },
+      "sku": "T7SH-2TB-BLU",
+      "name": "2TB Xanh",
+      "price": 4990000,
+      "stock": 10,
+      "attributes": [
+        {
+          "key": "Chuẩn",
+          "value": "USB 3.2"
+        }
+      ]
+    }
+  ],
+  "brand": "Samsung",
+  "images": [
+    {
+      "url": "/images/t7shield-1.jpg"
+    },
+    {
+      "url": "/images/t7shield-2.jpg"
+    },
+    {
+      "url": "/images/t7shield-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000027"
+  },
+  "name": "Tai nghe Razer BlackShark V2",
+  "slug": "razer-blackshark-v2",
+  "description": "Tai nghe gaming chuyên nghiệp với micro khử ồn, âm thanh THX Spatial Audio và đệm tai memory foam.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 2490000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000053"
+      },
+      "sku": "RS-BSV2-BLK",
+      "name": "Đen",
+      "price": 2490000,
+      "stock": 20,
+      "attributes": [
+        {
+          "key": "Loại",
+          "value": "Over-ear"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000054"
+      },
+      "sku": "RS-BSV2-GRN",
+      "name": "Xanh Razer",
+      "price": 2590000,
+      "stock": 12,
+      "attributes": [
+        {
+          "key": "Loại",
+          "value": "Over-ear"
+        }
+      ]
+    }
+  ],
+  "brand": "Razer",
+  "images": [
+    {
+      "url": "/images/razerblacksharkv2-1.jpg"
+    },
+    {
+      "url": "/images/razerblacksharkv2-2.jpg"
+    },
+    {
+      "url": "/images/razerblacksharkv2-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000028"
+  },
+  "name": "Balo laptop Targus 15.6 inch",
+  "slug": "targus-156-laptop-backpack",
+  "description": "Balo laptop cao cấp chống nước, đệm lưng thoáng khí và ngăn chứa rộng rãi cho laptop 15.6 inch.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 1090000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000055"
+      },
+      "sku": "TG-BP156-BLK",
+      "name": "Đen",
+      "price": 1090000,
+      "stock": 18,
+      "attributes": [
+        {
+          "key": "Chống nước",
+          "value": "Có"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000056"
+      },
+      "sku": "TG-BP156-GRY",
+      "name": "Xám",
+      "price": 1090000,
+      "stock": 15,
+      "attributes": [
+        {
+          "key": "Chống nước",
+          "value": "Có"
+        }
+      ]
+    }
+  ],
+  "brand": "Targus",
+  "images": [
+    {
+      "url": "/images/targusbp-1.jpg"
+    },
+    {
+      "url": "/images/targusbp-2.jpg"
+    },
+    {
+      "url": "/images/targusbp-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000029"
+  },
+  "name": "Bàn di chuột RGB Corsair MM700",
+  "slug": "corsair-mm700-rgb",
+  "description": "Bàn di chuột kích thước lớn, đèn RGB viền 360 độ, bề mặt vải chống trượt và cổng USB passthrough.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 1290000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000057"
+      },
+      "sku": "MM700-RGB-BLK",
+      "name": "Đen RGB",
+      "price": 1290000,
+      "stock": 20,
+      "attributes": [
+        {
+          "key": "Kích thước",
+          "value": "930x400mm"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000058"
+      },
+      "sku": "MM700-RGB-LTD",
+      "name": "Phiên bản Limited",
+      "price": 1490000,
+      "stock": 8,
+      "attributes": [
+        {
+          "key": "Kích thước",
+          "value": "930x400mm"
+        }
+      ]
+    }
+  ],
+  "brand": "Corsair",
+  "images": [
+    {
+      "url": "/images/mm700rgb-1.jpg"
+    },
+    {
+      "url": "/images/mm700rgb-2.jpg"
+    },
+    {
+      "url": "/images/mm700rgb-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "68f100000000000000000030"
+  },
+  "name": "Giá đỡ laptop bằng nhôm UGREEN",
+  "slug": "ugreen-laptop-stand",
+  "description": "Giá đỡ laptop bằng hợp kim nhôm, điều chỉnh độ cao linh hoạt, gập gọn tiện mang theo.",
+  "category": {
+    "$oid": "68d9582f475f99782d11ddc2"
+  },
+  "price": 590000,
+  "variants": [
+    {
+      "_id": {
+        "$oid": "68f110000000000000000059"
+      },
+      "sku": "UG-STAND-SIL",
+      "name": "Bạc",
+      "price": 590000,
+      "stock": 25,
+      "attributes": [
+        {
+          "key": "Chất liệu",
+          "value": "Nhôm"
+        }
+      ]
+    },
+    {
+      "_id": {
+        "$oid": "68f110000000000000000060"
+      },
+      "sku": "UG-STAND-GRY",
+      "name": "Xám",
+      "price": 590000,
+      "stock": 20,
+      "attributes": [
+        {
+          "key": "Chất liệu",
+          "value": "Nhôm"
+        }
+      ]
+    }
+  ],
+  "brand": "UGREEN",
+  "images": [
+    {
+      "url": "/images/ugreenstand-1.jpg"
+    },
+    {
+      "url": "/images/ugreenstand-2.jpg"
+    },
+    {
+      "url": "/images/ugreenstand-3.jpg"
+    }
+  ],
+  "rating": 0,
+  "numReviews": 0,
+  "numComments": 0
+},
+{
+  "_id": {
+    "$oid": "6901d3b881f25a054af61d14"
+  },
+  "name": "Intel Core i7-12700K",
+  "slug": "intel-core-i7-12700k",
+  "description": "Bộ vi xử lý Intel Core thế hệ thứ 12 với hiệu năng vượt trội, phù hợp cho cả gaming và xử lý đồ họa chuyên nghiệp.",
+  "category": {
+    "$oid": "6901d157c092af8bb7fc07a5"
+  },
+  "price": 9500000,
+  "variants": [
+    {
+      "sku": "I7-12700K-BOX",
+      "name": "Hộp chính hãng",
+      "price": 9500000,
+      "stock": 15,
+      "attributes": [
+        {
+          "key": "Socket",
+          "value": "LGA 1700",
+          "_id": {
+            "$oid": "6901d3b881f25a054af61d16"
+          }
+        },
+        {
+          "key": "Số nhân",
+          "value": "12",
+          "_id": {
+            "$oid": "6901d3b881f25a054af61d17"
+          }
+        },
+        {
+          "key": "Xung nhịp",
+          "value": "3.6GHz",
+          "_id": {
+            "$oid": "6901d3b881f25a054af61d18"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "6901d3b881f25a054af61d15"
+      }
+    },
+    {
+      "sku": "I7-12700K-OEM",
+      "name": "Bản OEM mới",
+      "price": 8500000,
+      "stock": 10,
+      "attributes": [
+        {
+          "key": "Socket",
+          "value": "LGA 1600",
+          "_id": {
+            "$oid": "690232c70bd4ba7fcdf9daad"
+          }
+        },
+        {
+          "key": "Số nhân",
+          "value": "16",
+          "_id": {
+            "$oid": "690232c70bd4ba7fcdf9daae"
+          }
+        },
+        {
+          "key": "Xung nhịp",
+          "value": "4.8GHz",
+          "_id": {
+            "$oid": "690232c70bd4ba7fcdf9daaf"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "6901d3b881f25a054af61d19"
+      }
+    }
+  ],
+  "brand": "Intel",
+  "images": [
+    {
+      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-1.jpg",
+      "_id": {
+        "$oid": "6901d3b881f25a054af61d1d"
+      }
+    },
+    {
+      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-2.jpg",
+      "_id": {
+        "$oid": "6901d3b881f25a054af61d1e"
+      }
+    },
+    {
+      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-3.jpg",
+      "_id": {
+        "$oid": "6901d3b881f25a054af61d1f"
+      }
+    },
+    {
+      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-1.jpg",
+      "_id": {
+        "$oid": "690220f988278b644f69e77b"
+      }
+    }
+  ],
+  "rating": 5,
+  "numReviews": 1,
+  "numComments": 1,
+  "createdAt": {
+    "$date": "2025-10-29T08:43:36.750Z"
+  },
+  "updatedAt": {
+    "$date": "2025-10-29T15:29:11.064Z"
+  },
+  "__v": 3
+}]

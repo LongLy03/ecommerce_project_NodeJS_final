@@ -1,0 +1,1 @@
+// Viết code tự động thêm dữ liệu vào db

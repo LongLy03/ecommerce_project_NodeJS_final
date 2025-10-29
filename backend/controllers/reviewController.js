@@ -7,13 +7,65 @@ const mongoose = require('mongoose');
 const getReviews = async (req, res) => {
     try {
         const productId = req.params.idOrSlug;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const sortBy = req.query.sortBy || '-createdAt';
 
-        const reviews = await Review.find({ product: productId })
-            .populate('user', 'name')
-            .sort({ createAt: -1 })
+        if (page < 1) return res.status(400).json({ message: 'Page phải >= 1' });
+        if (limit < 1 || limit > 50) return res.status(400).json({ message: 'Limit phải từ 1-50' });
+
+        let product;
+        if (mongoose.isValidObjectId(productId)) {
+            product = await Product.findById(productId);
+        } else {
+            product = await Product.findOne({ slug: productId });
+        }
+
+        if (!product) {
+            return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+        }
+
+        const totalReviews = await Review.countDocuments({ product: product._id });
+        const totalPages = Math.ceil(totalReviews / limit);
+
+        // Nếu page vượt quá totalPages, trả về trang cuối
+        if (page > totalPages && totalPages > 0) {
+            return res.json({
+                reviews,
+                pagination: {
+                    currentPage: totalPages,
+                    totalPages,
+                    totalReviews,
+                    limit,
+                    hasNextPage: page < totalPages,
+                    hasPrevPage: page > 1,
+                    nextPage: page < totalPages ? page + 1 : null,
+                    prevPage: page > 1 ? page - 1 : null
+                }
+            });
+        }
+
+        // Query với pagination và sort
+        const reviews = await Review.find({ product: product._id })
+            .sort(sortBy)
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .populate('user', 'name email') // chỉ lấy name & email của user
             .lean();
-            
-        return res.json(reviews);
+
+        return res.json({
+            reviews,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalReviews,
+                limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1,
+                nextPage: page < totalPages ? page + 1 : null,
+                prevPage: page > 1 ? page - 1 : null
+            }
+        });
     } catch (err) {
         return res.status(500).json({ message: 'Lỗi server khi xem bình luận' });
     }

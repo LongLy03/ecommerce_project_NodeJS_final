@@ -1,0 +1,20 @@
+[{
+  "_id": {
+    "$oid": "6902281421141c24b522c54f"
+  },
+  "user": {
+    "$oid": "68f96cc47b4d8c57c20f1100"
+  },
+  "product": {
+    "$oid": "6901d3b881f25a054af61d14"
+  },
+  "rating": 5,
+  "comment": "Tuyệt vời, đáng tiền!",
+  "createdAt": {
+    "$date": "2025-10-29T14:43:32.097Z"
+  },
+  "updatedAt": {
+    "$date": "2025-10-29T14:43:32.097Z"
+  },
+  "__v": 0
+}]
