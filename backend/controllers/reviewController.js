@@ -15,7 +15,7 @@ const getReviews = async (req, res) => {
             
         return res.json(reviews);
     } catch (err) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi xem bình luận' });
     }
 };
 
@@ -100,7 +100,7 @@ const addReview = async (req, res) => {
 
         return res.status(201).json({ message: 'Đã thêm bình luận thành công', review: populated });
     } catch (err) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi bình luận và đánh giá sản phẩm' });
     }
 };
 

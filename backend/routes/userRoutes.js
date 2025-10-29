@@ -50,9 +50,7 @@ router.get('/facebook/callback',
 );
 
 // Xử lý lỗi đăng nhập OAuth
-router.get('/login-failed', (req, res) => {
-    res.status(401).json({ message: 'Đăng nhập thất bại!' });
-});
+router.get('/login-failed', (req, res) => res.status(401).json({ message: 'Đăng nhập thất bại!' }));
 
 // Hồ sơ người dùng
 router.get('/profile', protect(true), getUserProfile);
@@ -106,7 +104,7 @@ router.post('/logout', protect(true), async (req, res) => {
       return res.json({ message: 'Đã đăng xuất' });
     }
   } catch (error) {
-    return res.status(500).json({ message: 'Lỗi server' });
+    return res.status(500).json({ message: 'Lỗi server khi đăng xuất' });
   }
 });
 

@@ -11,6 +11,10 @@ const {
     createProduct,
     updateProduct,
     deleteProduct,
+    getCategories,
+    createCategory,
+    updateCategory,
+    updateStock,
     getOrders,
     getOrderDetail,
     updateOrderStatus,
@@ -35,6 +39,12 @@ router.put('/users/:id/unblock', protect(true), adminOnly, unBlockUser);
 router.post('/products', protect(true), adminOnly, createProduct);
 router.put('/products/:id', protect(true), adminOnly, updateProduct);
 router.delete('/products/:id', protect(true), adminOnly, deleteProduct);
+router.put('products/:id/stock', protect(true), adminOnly, updateStock);
+
+// Category route
+router.get('/categories', protect(true), adminOnly, getCategories);
+router.post('/categories', protect(true), adminOnly, createCategory);
+router.put('/categories/:id', protect(true), adminOnly, updateCategory);
 
 // Order route
 router.put('/orders', protect(true), adminOnly, getOrders);

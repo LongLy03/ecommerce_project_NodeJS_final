@@ -6,6 +6,7 @@ const Discount = require('../models/Discount');
 const Order = require('../models/Order');
 const User = require('../models//User');
 const sendEmail = require('../utils/sendEmail');
+const generatePassword =  require('../utils/generatePassword');
 const mongoose = require('mongoose');
 
 // Các hàm và hằng số bổ trợ
@@ -117,7 +118,7 @@ const getCart = async (req, res) => {
 
         return res.json(summary);
     } catch (err) {
-        return res.status(500).json({ message: 'Lỗi server' })
+        return res.status(500).json({ message: 'Lỗi server khi xem giỏ hàng' })
     }
 };
 
@@ -140,7 +141,7 @@ const updateCartItem = async (req, res) => {
 
     return res.json(cart);
   } catch (err) {
-    return res.status(500).json({ message: 'Lỗi server' });
+    return res.status(500).json({ message: 'Lỗi server khi điều chỉnh số lượng sản phẩm trong giỏ hàng' });
   }
 };
 
@@ -162,7 +163,7 @@ const removeCartItem = async (req, res) => {
 
         return res.json(cart);
     } catch (err) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi xóa sản phẩm ra khỏi giỏ hàng' });
     }
 };
 
@@ -190,7 +191,7 @@ const applyDiscount = async (req, res) => {
 
         return res.json(summary);
     } catch (err) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi áp dụng mã giảm giá trong giỏ hàng' });
     }
 };
 
@@ -229,11 +230,11 @@ const checkout = async (req, res) => {
         let appliedDiscount = null;
 
         // Xử lý điểm thưởng
-        const pointsToUse = Math.max(0, Math.floor(Number(usedPoints) || 0));
+        const requestedPoints = Math.max(0, Math.floor(Number(usedPoints) || 0));
         let user = null;
         let createdUser = null;
         
-        if (pointsToUse > 0 && !userId) return res.status(400).json({ message: 'Chỉ người dùng đã đăng nhập mới có thể sử dụng điểm' });
+        if (requestedPoints > 0 && !userId) return res.status(400).json({ message: 'Chỉ người dùng đã đăng nhập mới có thể sử dụng điểm' });
 
         if (userId) {
             user = await User.findById(userId);
@@ -307,19 +308,22 @@ const checkout = async (req, res) => {
                 { new: true }
             );
 
-            if (!updated) return res.status(400).json({ message: 'Mã giảm giá đã hết lượt sử dụng' });
-
+            if (!updated) {
+                await revertStockUpdates(stockUpdates);
+                return res.status(400).json({ message: 'Mã giảm giá đã hết lượt sử dụng' });
+            }
+        
             appliedDiscount = updated;
             total = subtotal - discountAmount + SHIPPING_FEE;
         }
 
-        let pointsValueVND = 0;
+        let pointsConsumed = 0;
         
-        if (pointsToUse > 0) {
-            pointsValueVND = pointsToUse * 1000;
-            const maxDeduct = Math.max(0, total);
-            const deduct = Math.min(pointsValueVND, maxDeduct);
-            total = Math.max(0, total - deduct);
+        if (requestedPoints > 0) {
+            const pointsNeededToZero = Math.ceil(total / 1000);
+            pointsConsumed = Math.min(requestedPoints, pointsNeededToZero);
+            const deductVND = pointsConsumed * 1000;
+            total = Math.max(0, total - deductVND);
         }
 
         let shippingAddress = {
@@ -371,7 +375,7 @@ const checkout = async (req, res) => {
             if (found) {
                 user = found;
             } else {
-                const defaultPassword = 'defaultPassword';
+                const defaultPassword = generatePassword(12);
 
                 const newUser = new User({
                     name: name || 'Khách hàng',
@@ -391,7 +395,7 @@ const checkout = async (req, res) => {
             }
         }
 
-        const pointsUsed = pointsToUse;
+        const pointsUsed = pointsConsumed;
         const pointsEarned = Math.floor((total * 0.1) / 1000);
 
         let order;
@@ -421,7 +425,7 @@ const checkout = async (req, res) => {
 
         if (user) {
             const prev = user.loyaltyPoints || 0;
-            const newPoints = prev - pointsUsed + pointsEarned;
+            const newPoints = prev - pointsConsumed + pointsEarned;
             user.loyaltyPoints = Math.max(0, newPoints);
             await user.save();
         }
@@ -543,7 +547,7 @@ const checkout = async (req, res) => {
         
         res.status(201).json({ message: 'Đặt hàng thành công', order });
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server', error: err.message });
+        res.status(500).json({ message: 'Lỗi server khi thanh toán đơn hàng', error: err.message });
     }
 };
 
@@ -597,7 +601,7 @@ const getOrderStatusHistory = async (req, res) => {
             history
         });
     } catch (err) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi xem trạng thái đơn hàng' });
     }
 };
 

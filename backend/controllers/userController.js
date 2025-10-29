@@ -4,14 +4,17 @@ const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
+const generatePassword = require('../utils/generatePassword');
 
 // Đăng ký người dùng
 const registerUser = async (req, res) => {
-    const { name, email, password, addresses } = req.body;
+    const { name, email, addresses } = req.body;
     try {
         const userExists = await User.findOne({ email });
 
         if (userExists) return res.status(400).json({ message: 'Email đã tồn tại!' });
+
+        const password = generatePassword(12);
 
         const user = await User.create({ name, email, password, addresses });
 
@@ -19,6 +22,37 @@ const registerUser = async (req, res) => {
             if (req.session) {
                 req.session.userId = user._id;
                 req.session.user = { id: user._id, email: user.email, name: user.name };
+            }
+
+            const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login`;
+            const html = `
+                <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: auto; border:1px solid #ddd; border-radius:8px; overflow:hidden;">
+                  <div style="background:#0d6efd; color:#fff; padding:16px; text-align:center;">
+                    <h2 style="margin:0;">E-Commerce Store</h2>
+                    <p style="margin:4px 0;">Thông tin tài khoản mới</p>
+                  </div>
+                  <div style="padding:20px;">
+                    <p>Xin chào <strong>${user.name || user.email}</strong>,</p>
+                    <p>Tài khoản của bạn đã được tạo thành công. Dưới đây là thông tin đăng nhập tạm thời:</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Mật khẩu tạm thời:</strong> <code style="background:#f1f1f1;padding:4px 6px;border-radius:4px;">${password}</code></p>
+                    <p>Vui lòng đăng nhập và đổi mật khẩu ngay sau khi đăng nhập để bảo mật tài khoản.</p>
+                    <p style="text-align:center; margin:24px 0;">
+                      <a href="${loginUrl}" style="background:#0d6efd;color:#fff;padding:12px 20px;text-decoration:none;border-radius:5px;font-weight:bold;">Đăng nhập</a>
+                    </p>
+                    <p>Nếu bạn không yêu cầu tạo tài khoản, vui lòng bỏ qua email này.</p>
+                    <p>Trân trọng,<br/><strong>Đội ngũ E-Commerce Store</strong></p>
+                  </div>
+                  <div style="background:#f8f9fa; padding:10px; text-align:center; font-size:12px; color:#666;">
+                    <p>© ${new Date().getFullYear()} E-Commerce Store. Mọi quyền được bảo lưu.</p>
+                  </div>
+                </div>
+            `;
+
+            try {
+                await sendEmail({ to: user.email, subject: 'Thông tin tài khoản mới', html });
+            } catch (sendErr) {
+                console.error('[registerUser] sendEmail error', sendErr);
             }
 
             return res.status(201).json({
@@ -34,7 +68,7 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: 'Thông tin người dùng không hợp lệ.' });
         }
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi tạo tài khoản' });
     }
 };
 
@@ -68,21 +102,13 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
         }
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi đăng nhập' });
     }
 };
 
 // Lấy thông tin profile người dùng
 const getUserProfile = async (req, res) => {
     try {
-        if (!req.user) {
-            if (req.session && req.session.userId) {
-                const userFromSession = await User.findById(req.session.userId).select('-password');
-                
-                if (userFromSession) req.user = userFromSession;
-            }
-        }
-
         if (!req.user) return res.status(401).json({ message: 'Chưa xác thực' });
 
         const defaultAddress = req.user.addresses.find(addr => addr.isDefault) || null;
@@ -97,7 +123,7 @@ const getUserProfile = async (req, res) => {
         });
     }
     catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi xem thông tin người dùng' });
     }
 };
 
@@ -139,7 +165,7 @@ const updateUserProfile = async (req, res) => {
             return res.status(404).json({ message: 'Người dùng không tồn tại' });
         }
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi cập nhật thông tin người dùng' });
     }
 };
 
@@ -159,7 +185,7 @@ const changePassword = async (req, res) => {
 
         return res.json({ message: 'Đổi mật khẩu thành công' });
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi đổi mật khẩu' });
     }
 };
 
@@ -236,7 +262,7 @@ const forgotPassword = async (req, res) => {
             return res.status(500).json({ message: 'Không thể gửi email, vui lòng thử lại sau' });
         }
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi gửi email để khôi phục mật khẩu' });
     }
 };
 
@@ -271,7 +297,7 @@ const resetPassword = async (req, res) => {
 
         return res.json({ message: 'Đặt lại mật khẩu thành công', token });
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi gửi mật khẩu mới để khổi phục mật khẩu' });
     }
 };
 
@@ -283,7 +309,7 @@ const getAddresses = async (req, res) => {
         
         return res.json(user.addresses);
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server lấy danh sách địa chỉ' });
     }
 };
 
@@ -296,7 +322,7 @@ const addAddress = async (req, res) => {
         
         return res.status(201).json(user.addresses);
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi thêm địa chỉ mới' });
     }
 };
 
@@ -313,7 +339,7 @@ const updateAddress = async (req, res) => {
 
         return res.json(address);
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi cập nhật thông tin địa chỉ' });
     }
 };
 
@@ -326,7 +352,7 @@ const deleteAddress = async (req, res) => {
         
         return res.json({ message: 'Đã xóa địa chỉ' });
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi xóa địa chỉ' });
     }
 };
 
@@ -347,7 +373,7 @@ const setDefaultAddress = async (req, res) => {
         
         return res.json({ message: 'Đã đặt địa chỉ mặc định', addresses: user.addresses });
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi cài đặt mặc định cho các địa chỉ' });
     }
 };
 

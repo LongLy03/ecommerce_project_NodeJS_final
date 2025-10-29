@@ -77,7 +77,7 @@ const getProducts = async (req, res) => {
         meta: { total, totalPages, page: pageNum, limit: pageSize, hasNextPage: pageNum < totalPages, hasPrev: pageNum > 1 }
     });
     } catch (error) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi hiển thị trang danh mục sản phẩm' });
     }
 };
 
@@ -97,7 +97,7 @@ const getProductByIdOrSlug = async (req, res) => {
 
         return res.json(product);
     } catch (err) {
-        return res.status(500).json({ message: 'Lỗi server' });
+        return res.status(500).json({ message: 'Lỗi server khi xem chi tiết sản phẩm' });
     }
 };
 
@@ -132,7 +132,7 @@ const getHomeProducts = async (req, res) => {
             categories: byCategory
         });
     } catch (err) {
-        return res.status(500).json({ message: 'Lỗi server' })
+        return res.status(500).json({ message: 'Lỗi server khi hiển thị trang chủ' })
     }
 }
 
