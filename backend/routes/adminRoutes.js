@@ -3,27 +3,27 @@
 const express = require('express');
 
 const {
-    getAllUsers,
-    getUser,
-    updateUser,
-    blockUser,
-    unBlockUser,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-    addVariantsAndImages,
-    deleteVariantsAndImages,
-    updateVariant,
-    getCategories,
-    createCategory,
-    updateCategory,
-    getOrders,
-    getOrderDetail,
-    updateOrderStatus,
-    createDiscountCode,
-    getAllDiscountCodes,
-    dashboardBasic,
-    dashboardAdvanced
+    getAllUsers,
+    getUser,
+    updateUser,
+    blockUser,
+    unBlockUser,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    addVariantsAndImages,
+    deleteVariantsAndImages,
+    updateVariant,
+    getCategories,
+    createCategory,
+    updateCategory,
+    getOrders,
+    getOrderDetail,
+    updateOrderStatus,
+    createDiscountCode,
+    getAllDiscountCodes,
+    dashboardBasic,
+    getDashboardCharts
 } = require('../controllers/adminController');
 
 const {protect, adminOnly} = require('../middleware/authMiddleware');
@@ -42,7 +42,7 @@ router.post('/products', protect(true), adminOnly, createProduct);
 router.put('/products/:id', protect(true), adminOnly, updateProduct);
 router.delete('/products/:id', protect(true), adminOnly, deleteProduct);
 router.put('/products/:id/variants-images', protect(true), adminOnly, addVariantsAndImages);
-router.delete('/products/:id/variants-images', protect(true), adminOnly, deleteVariantsAndImages);
+router.delete('/products/:id/variants-images', protect(true), adminOnly, deleteVariantsAndImages); 
 router.put('/products/:id/variants/:variantId', protect(true), adminOnly, updateVariant);
 
 // Category route
@@ -51,8 +51,8 @@ router.post('/categories', protect(true), adminOnly, createCategory);
 router.put('/categories/:id', protect(true), adminOnly, updateCategory);
 
 // Order route
-router.put('/orders', protect(true), adminOnly, getOrders);
-router.put('/orders/:id', protect(true), adminOnly, getOrderDetail);
+router.get('/orders', protect(true), adminOnly, getOrders); 
+router.get('/orders/:id', protect(true), adminOnly, getOrderDetail); 
 router.put('/orders/:id/status', protect(true), adminOnly, updateOrderStatus);
 
 // Discount route
@@ -61,6 +61,6 @@ router.get('/discounts', protect(true), adminOnly, getAllDiscountCodes);
 
 // Dashboard route
 router.get('/dashboard/basic', protect(true), adminOnly, dashboardBasic);
-router.get('/dashboard/advanced', protect(true), adminOnly, dashboardAdvanced);
+router.get('/dashboard/charts', protect(true), adminOnly, getDashboardCharts); 
 
 module.exports = router;
