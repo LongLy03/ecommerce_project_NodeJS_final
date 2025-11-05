@@ -1,40 +1,19 @@
-// Product Model: tên, giá, số lượng, tồn kho, ...
-
 const mongoose = require('mongoose');
 
 const variantSchema = new mongoose.Schema({
   sku: { type: String, required: true },
-
   name: { type: String, required: true },
-
   price: { type: Number, required: true },
-
   stock: { type: Number, default: 0 },
-
   attributes: [{key: String, value: String}],
-
 }, { _id: true });
 
 const productSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-
-    description: {
-      type: String,
-      default: '',
-    },
-
+    name: { type: String, required: true, trim: true },
+    slug: { type: String, required: true, unique: true },
+    description: { type: String, default: '' },
     category: {type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true},
-   
+
     price: {
       type: Number,
       required: true,
@@ -50,10 +29,7 @@ const productSchema = new mongoose.Schema({
       }
     },
 
-    brand: {
-      type: String,
-      default: '',
-    },
+    brand: { type: String, default: '' },
 
     images: {
       type: [{ url: String}],
@@ -63,22 +39,9 @@ const productSchema = new mongoose.Schema({
       }
     },
 
-    rating: {
-      type: Number,
-      default: 0,
-      index: true,
-    },
-
-    numReviews: {
-      type: Number,
-      default: 0,
-    },
-
-    numComments: {
-      type: Number,
-      default: 0
-    }
-
+    rating: { type: Number, default: 0, index: true },
+    numReviews: { type: Number, default: 0 },
+    numComments: { type: Number, default: 0 }
 }, { timestamps: true });
 
 productSchema.index({ name: 'text', description: 'text', brand: 'text' });

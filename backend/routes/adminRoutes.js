@@ -1,7 +1,6 @@
-// Quản lý User, sản phẩm, đơn hàng, discount, danh mục, thống kê, ...
-
 const express = require('express');
-
+const {protect, adminOnly} = require('../middleware/authMiddleware');
+const router = express.Router();
 const {
     getAllUsers,
     getUser,
@@ -25,10 +24,6 @@ const {
     dashboardBasic,
     getDashboardCharts
 } = require('../controllers/adminController');
-
-const {protect, adminOnly} = require('../middleware/authMiddleware');
-
-const router = express.Router();
 
 // User route
 router.get('/users', protect(true), adminOnly, getAllUsers);

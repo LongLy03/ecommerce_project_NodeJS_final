@@ -1,8 +1,9 @@
-// Đăng ký, đăng nhập, hồ sơ, địa chỉ, ...
-
 const express = require('express');
 const router = express.Router();
-
+const { protect } = require('../middleware/authMiddleware');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 const { 
     registerUser, 
     loginUser, 
@@ -18,20 +19,12 @@ const {
     setDefaultAddress 
 } = require('../controllers/userController');
 
-const { protect } = require('../middleware/authMiddleware');
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-
-// Đăng ký
+// Đăng ký và đăng nhập
 router.post('/register', registerUser);
-
-// Đăng nhập
 router.post('/login', loginUser);
 
 // Đăng nhập với Google
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
 router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/login-failed' }),
     (req, res) => {
@@ -41,7 +34,6 @@ router.get('/google/callback',
 
 // Đăng nhập với Facebook
 router.get('/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
-
 router.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/login-failed' }),
     (req, res) => {
@@ -56,10 +48,8 @@ router.get('/login-failed', (req, res) => res.status(401).json({ message: 'Đăn
 router.get('/profile', protect(true), getUserProfile);
 router.put('/profile', protect(true), updateUserProfile);
 
-// Đổi mật khẩu
+// Đổi mật khẩu - Quên mật khẩu - Đặt lại mật khẩu
 router.put('/change-password', protect(true), changePassword);
-
-// Quên mật khẩu - đặt lại mật khẩu
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password/:token', resetPassword);
 

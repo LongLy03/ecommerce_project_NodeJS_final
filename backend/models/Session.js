@@ -8,28 +8,11 @@ const sessionSchema = new Schema(
       required: true,
     },
 
-    token: {
-      type: String,
-      required: true,
-    },
-
-    device: {
-      type: String,
-      default: 'unknown',
-    },
-
-    ipAddress: {
-      type: String,
-    },
-
-    expiresAt: {
-      type: Date,
-      required: true,
-    },
-    
-  },
-  { timestamps: true }
-);
+    token: { type: String, required: true },
+    device: { type: String, default: 'unknown' },
+    ipAddress: { type: String },
+    expiresAt: { type: Date, required: true },
+  },{ timestamps: true });
 
 sessionSchema.pre('save', async function (next) {
   if (!this.expiresAt) {
@@ -38,8 +21,6 @@ sessionSchema.pre('save', async function (next) {
   next();
 });
 
-sessionSchema.virtual('isActive').get(function () {
-  return this.expiresAt > new Date();
-});
+sessionSchema.virtual('isActive').get(function () { return this.expiresAt > new Date(); });
 
 module.exports = model('Session', sessionSchema);

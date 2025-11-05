@@ -1,5 +1,3 @@
-// Review model: bình luận, sao, ...
-
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
@@ -8,13 +6,8 @@ const reviewSchema = new mongoose.Schema({
       ref: 'User',
     },
 
-    guestName: {
-      type: String
-    },
-
-    guestEmail: {
-      type: String
-    },
+    guestName: { type: String },
+    guestEmail: { type: String },
 
     product: {
       type: mongoose.Schema.Types.ObjectId,
@@ -22,17 +15,8 @@ const reviewSchema = new mongoose.Schema({
       required: true,
     },
 
-    rating: {
-      type: Number,
-      min: 1,
-      max: 5,
-    },
-
-    comment: {
-      type: String,
-      require: true
-    },
-
+    rating: { type: Number, min: 1, max: 5 },
+    comment: { type: String, require: true }
 },{ timestamps: true });
 
 const Review = mongoose.model('Review', reviewSchema);

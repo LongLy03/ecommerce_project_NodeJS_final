@@ -1,12 +1,10 @@
-// adminController.js
-
-const mongoose = require('mongoose');
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Discount = require('../models/Discount');
 const Category = require('../models/Category');
 
+// Quản lý người dùng
 // Lấy tất cả người dùng
 const getAllUsers = async (req, res) => {
     try {
@@ -45,7 +43,6 @@ const blockUser = async (req, res) => {
         const { id } = req.params;
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ message: 'User không tồn tại' });
-
         user.isBlocked = true;
         const updated = await user.save();
         res.json({ message: 'User đã bị chặn', user: updated });
@@ -61,7 +58,6 @@ const unBlockUser = async (req, res) => {
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ message: 'User không tồn tại' });
         if (!user.isBlocked) return res.status(400).json({ message: 'User không bị chặn' }); // 400 Bad Request
-        
         user.isBlocked = false;
         const updated = await user.save();
         res.json({ message: 'User đã được bỏ chặn', user: updated });
@@ -70,6 +66,7 @@ const unBlockUser = async (req, res) => {
     }
 };
 
+// Quản lý sản phẩm và các biến thể sản phẩm
 // Tạo mới sản phẩm
 const createProduct = async (req, res) => {
     try {
@@ -91,15 +88,17 @@ const updateProduct = async (req, res) => {
         const { slug, category } = req.body;
         const product = await Product.findById(id);
         if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+
         if (slug) {
             const slugExists = await Product.findOne({ slug });
-            // Chỉ báo lỗi nếu slug tồn tại và nó không phải là của chính sản phẩm này
             if (slugExists && slugExists._id.toString() !== id) return res.status(400).json({ message: 'Tên định danh sản phẩm đã tồn tại!' });
         }
+
         if (category) {
             const categoryExists = await Category.findById(category);
             if (!categoryExists) return res.status(404).json({ message: 'Danh mục không tồn tại' });
         }
+
         const updated = await Product.findByIdAndUpdate(id, req.body, {
             new: true,
             runValidators: true,
@@ -177,15 +176,9 @@ const deleteVariantsAndImages = async (req, res) => {
         }
 
         await product.save();
-        return res.json({ 
-            message: 'Xóa biến thể và hình ảnh thành công', 
-            product 
-        });
+        return res.json({ message: 'Xóa biến thể và hình ảnh thành công', product });
     } catch (err) {
-        return res.status(500).json({ 
-            message: 'Xóa biến thể và hình ảnh thất bại', 
-            error: err.message 
-        });
+        return res.status(500).json({ message: 'Xóa biến thể và hình ảnh thất bại', error: err.message });
     }
 }
 
@@ -198,15 +191,16 @@ const updateVariant = async (req, res) => {
         if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
         const variantIndex = product.variants.findIndex(v => v._id.toString() === variantId);
         if (variantIndex === -1) return res.status(404).json({ message: 'Biến thể không tồn tại' });
+
         if (updateData.sku) {
             const skuExists = product.variants.some(
                 v => v.sku === updateData.sku && v._id.toString() !== variantId
             );
             if (skuExists) return res.status(400).json({ message: 'SKU đã tồn tại trong sản phẩm này' });
         }
+
         const variant = product.variants[variantIndex];
         Object.keys(updateData).forEach(key => {
-            // Đảm bảo cập nhật lồng ghép (nested update) nếu có
             if (typeof updateData[key] === 'object' && !Array.isArray(updateData[key]) && variant[key]) {
                 variant[key] = { ...variant[key], ...updateData[key] };
             } else {
@@ -214,18 +208,13 @@ const updateVariant = async (req, res) => {
             }
         });
         await product.save();
-        return res.json({
-            message: 'Cập nhật biến thể thành công',
-            variant: product.variants[variantIndex]
-        });
+        return res.json({ message: 'Cập nhật biến thể thành công', variant: product.variants[variantIndex] });
     } catch (err) {
-        return res.status(500).json({
-            message: 'Cập nhật biến thể thất bại',
-            error: err.message
-        });
+        return res.status(500).json({ message: 'Cập nhật biến thể thất bại', error: err.message });
     }
 };
 
+// Quản lý danh mục sản phẩm
 // Xem các danh mục sản phẩm
 const getCategories = async (req, res) => {
     try {
@@ -236,7 +225,7 @@ const getCategories = async (req, res) => {
     }
 }
 
-// Thêm danh mục sản phẩm (Đã là async/await)
+// Thêm danh mục sản phẩm
 const createCategory = async (req, res) => {
     try {
         const { slug } = req.body;
@@ -252,17 +241,19 @@ const createCategory = async (req, res) => {
     }
 };
 
-// Chỉnh sửa danh mục sản phẩm (Đã là async/await)
+// Chỉnh sửa danh mục sản phẩm
 const updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
         const { slug } = req.body;
         const category = await Category.findById(id);
         if (!category) return res.status(404).json({ message: 'Danh mục không tồn tại' });
+
         if (slug) {
             const slugExists = await Category.findOne({ slug });
             if (slugExists && slugExists._id.toString() !== id) return res.status(400).json({ message: 'Tên định danh danh mục đã tồn tại!' });
         }
+
         const updated = await Category.findByIdAndUpdate(id, req.body, {
             new: true,
             runValidators: true,
@@ -276,13 +267,13 @@ const updateCategory = async (req, res) => {
     }
 };
 
+// Quản lý đơn hàng
+// Lấy danh sách đơn hàng với phân trang và lọc theo ngày
 const getOrders = async (req, res) => {
     try {
         const { page = 1, limit = 20, filter, startDate, endDate } = req.query;
-
         const skip = (parseInt(page) - 1) * parseInt(limit);
         const dateFilter = {};
-
         const now = new Date();
         const todayStart = new Date(now.setHours(0, 0, 0, 0));
         const yesterdayStart = new Date(new Date().setDate(now.getDate() - 1)).setHours(0, 0, 0, 0);
@@ -291,7 +282,6 @@ const getOrders = async (req, res) => {
         const dayOfWeek = now.getDay();
         const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Bắt đầu từ T2
         const thisWeekStart = new Date(new Date(now.setDate(diff)).setHours(0, 0, 0, 0));
-        
         const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
         if (filter === 'today') {
@@ -334,11 +324,10 @@ const getOrders = async (req, res) => {
     }
 };
 
-// Lấy chi tiết đơn hàng (Refactor sang async/await)
+// Lấy chi tiết đơn hàng
 const getOrderDetail = async (req, res) => {
     try {
         const { id } = req.params;
-        // Populate đầy đủ thông tin sản phẩm và người dùng
         const order = await Order.findById(id)
                                  .populate('user', 'name email phone address')
                                  .populate('products.product'); 
@@ -349,13 +338,12 @@ const getOrderDetail = async (req, res) => {
     }
 }
 
-// Cập nhật trạng thái đơn hàng (Refactor sang async/await)
+// Cập nhật trạng thái đơn hàng
 const updateOrderStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
 
-        // Thêm validate cho status nếu cần (ví dụ: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'])
         const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
         if (!validStatuses.includes(status)) {
             return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
@@ -389,12 +377,9 @@ const updateOrderStatus = async (req, res) => {
 
         order.status = status;
         const updatedOrder = await order.save({ session });
-
         await session.commitTransaction();
         session.endSession();
-
         res.json(updatedOrder);
-        
         const updated = await order.save();
         res.json(updated);
     } catch (err) {
@@ -402,26 +387,19 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
-// Tạo mã giảm giá (Refactor sang async/await)
+// Quản lý mã giảm giá
+// Tạo mã giảm giá
 const createDiscountCode = async (req, res) => {
     try {
-        // Thêm kiểm tra trùng lặp 'code'
         const { code } = req.body;
         const codeExists = await Discount.findOne({ code });
-        if (codeExists) {
-            return res.status(400).json({ message: 'Mã giảm giá này đã tồn tại' });
-        }
-        
+        if (codeExists) return res.status(400).json({ message: 'Mã giảm giá này đã tồn tại' });
         const discount = await Discount.create(req.body);
         res.status(201).json(discount);
     } catch (err) {
         await session.abortTransaction();
         session.endSession();
-        
-        res.status(500).json({ 
-            message: 'Cập nhật trạng thái thất bại. Tất cả thay đổi đã được hoàn tác.', 
-            error: err.message 
-        });
+        res.status(500).json({ message: 'Cập nhật trạng thái thất bại. Tất cả thay đổi đã được hoàn tác.', error: err.message });
     }
 };
 
@@ -430,7 +408,6 @@ const getAllDiscountCodes = async (req, res) => {
     try {        
         const discounts = await Discount.find()
             .populate('orders', 'orderId total createdAt'); // Giả sử virtual tên là 'orders'
-
         res.json(discounts);
     } catch (err) {
         res.status(500).json({ message: 'Lỗi server', error: err.message });
@@ -572,7 +549,6 @@ const getDashboardCharts = async (req, res) => {
         res.status(500).json({ message: 'Lỗi server khi lấy dữ liệu biểu đồ', error: err.message });
     }
 };
-
 
 module.exports = {
     getAllUsers,

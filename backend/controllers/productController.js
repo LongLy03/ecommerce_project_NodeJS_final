@@ -1,5 +1,3 @@
-// Lấy danh mục sản phẩm, chi tiết, lọc, ...
-
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 
@@ -48,7 +46,6 @@ const getProducts = async (req, res) => {
     }
 
     if (minRating) filter.rating = { $gte: Number(minRating) }
-
     if (search) filter.$text = { $search: search };
 
     const [field, order] = sort.split('_');
@@ -64,7 +61,6 @@ const getProducts = async (req, res) => {
 
     const total = await Product.countDocuments(filter);
     const totalPages = Math.ceil(total / pageSize);
-
     const products = await Product.find(filter)
         .select('name slug price images brand rating numReviews')
         .sort(sortOption)
@@ -94,7 +90,6 @@ const getProductByIdOrSlug = async (req, res) => {
         }
 
         if (!product) return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
-
         return res.json(product);
     } catch (err) {
         return res.status(500).json({ message: 'Lỗi server khi xem chi tiết sản phẩm' });
@@ -115,9 +110,7 @@ const getHomeProducts = async (req, res) => {
             .select('name slug price images brand rating numReviews');
 
         const categories = await Category.find({ slug: { $in: ['dien-thoai', 'laptop', 'phu-kien'] } });
-
         const byCategory = {};
-        
         for (const cat of categories) {
             const products = await Product.find({ category: cat._id })
                 .sort({ createdAt: -1 })

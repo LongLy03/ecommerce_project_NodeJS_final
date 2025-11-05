@@ -1,8 +1,6 @@
-// giỏ hàng, thanh toán, đơn hàng, ...
-
 const express = require('express');
 const router = express.Router();
-
+const { protect } = require('../middleware/authMiddleware');
 const { 
         addToCart, 
         getCart, 
@@ -14,8 +12,6 @@ const {
         getOrderDetails,
         getOrderStatusHistory
 } = require('../controllers/orderController');
-
-const { protect } = require('../middleware/authMiddleware');
 
 // Giỏ hàng
 router.post('/cart', protect(false), addToCart);

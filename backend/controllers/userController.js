@@ -1,5 +1,3 @@
-// đăng nhập, đổi mật khẩu, quản lý profile,...
-
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 const crypto = require('crypto');
@@ -11,11 +9,9 @@ const registerUser = async (req, res) => {
     const { name, email, addresses } = req.body;
     try {
         const userExists = await User.findOne({ email });
-
         if (userExists) return res.status(400).json({ message: 'Email đã tồn tại!' });
 
         const password = generatePassword(12);
-
         const user = await User.create({ name, email, password, addresses });
 
         if (user) {
@@ -48,7 +44,6 @@ const registerUser = async (req, res) => {
                   </div>
                 </div>
             `;
-
             try {
                 await sendEmail({ to: user.email, subject: 'Thông tin tài khoản mới', html });
             } catch (sendErr) {
@@ -75,14 +70,10 @@ const registerUser = async (req, res) => {
 // Đăng nhập người dùng
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
-
     try {
         const user = await User.findOne({ email }).select('+password');
-
         if (!user) return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
-
         if (user.isBlocked) return res.status(403).json({ message: 'Tài khoản của bạn đã bị khóa.' });
-
         if (await user.matchPassword(password)) {
             if (req.session) {
                 req.session.userId = user._id;
@@ -110,9 +101,7 @@ const loginUser = async (req, res) => {
 const getUserProfile = async (req, res) => {
     try {
         if (!req.user) return res.status(401).json({ message: 'Chưa xác thực' });
-
         const defaultAddress = req.user.addresses.find(addr => addr.isDefault) || null;
-        
         return res.json({
             _id: req.user._id,
             name: req.user.name,
@@ -131,13 +120,11 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
-
         if (user) {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
 
             const exists = await User.findOne({ email: req.body.email });
-
             if (exists) return res.status(400).json({ message: 'Email đã được sử dụng bởi tài khoản khác' });
             
             if (req.body.addresses) {
@@ -151,7 +138,6 @@ const updateUserProfile = async (req, res) => {
             }
 
             const updatedUser = await user.save();
-
             return res.json({
                 _id: updatedUser._id,
                 name: updatedUser.name,
@@ -172,17 +158,12 @@ const updateUserProfile = async (req, res) => {
 // Đổi mật khẩu
 const changePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
-
     try {
         const user = await User.findById(req.user._id).select('+password');
-
         if (!user) return res.status(404).json({ message: 'Người dùng không tồn tại' });
-
         if (!(await user.matchPassword(oldPassword))) return res.status(400).json({ message: 'Mật khẩu cũ không đúng' });
-
         user.password = newPassword;
         await user.save();
-
         return res.json({ message: 'Đổi mật khẩu thành công' });
     } catch (error) {
         return res.status(500).json({ message: 'Lỗi server khi đổi mật khẩu' });
@@ -193,16 +174,13 @@ const changePassword = async (req, res) => {
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
-
         if (!email) return res.status(400).json({ message: 'Vui lòng nhập email' });
 
         const user = await User.findOne({ email });
-
         if (!user) return res.status(404).json({ message: 'Không tìm thấy người dùng với email này' });
 
         const resetToken = user.getResetPasswordToken();
         await user.save({ validateBeforeSave: false });
-
         const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${resetToken}`;
 
         if (process.env.DEV_SEND_RESET_TOKEN === 'true') {
@@ -244,7 +222,6 @@ const forgotPassword = async (req, res) => {
             </div>
             </div>
             `;
-
         try {
             await sendEmail({
                 to: user.email,
@@ -253,12 +230,10 @@ const forgotPassword = async (req, res) => {
             });
             return res.json({ message: 'Đã gửi email với hướng dẫn đặt lại mật khẩu' });
         } catch (sendErr) {
-            // nếu gửi mail thất bại, xóa token để tránh rò rỉ
             user.resetPasswordToken = undefined;
             user.resetPasswordExpire = undefined;
             await user.save({ validateBeforeSave: false });
             console.error('[forgotPassword] sendEmail error', sendErr);
-            
             return res.status(500).json({ message: 'Không thể gửi email, vui lòng thử lại sau' });
         }
     } catch (error) {
@@ -273,7 +248,6 @@ const resetPassword = async (req, res) => {
         const { password: newPassword } = req.body;
         
         if (!newPassword) return res.status(400).json({ message: 'Vui lòng nhập mật khẩu mới' });
-
         const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
 
         const user = await User.findOne({
@@ -282,19 +256,15 @@ const resetPassword = async (req, res) => {
         });
 
         if (!user) return res.status(400).json({ message: 'Token đặt lại mật khẩu không hợp lệ hoặc đã hết hạn' });
-
         user.password = newPassword;
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;
         await user.save();
-
         const token = generateToken ? generateToken(user._id) : null;
-
         if (req.session) {
             req.session.userId = user._id;
             req.session.user = { id: user._id, email: user.email, name: user.name };
         }
-
         return res.json({ message: 'Đặt lại mật khẩu thành công', token });
     } catch (error) {
         return res.status(500).json({ message: 'Lỗi server khi gửi mật khẩu mới để khổi phục mật khẩu' });
@@ -306,7 +276,6 @@ const getAddresses = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         if (!user) return res.status(404).json({ message: 'Người dùng không tồn tại' });
-        
         return res.json(user.addresses);
     } catch (error) {
         return res.status(500).json({ message: 'Lỗi server lấy danh sách địa chỉ' });
@@ -318,8 +287,7 @@ const addAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         user.addresses.push(req.body);
-        await user.save();
-        
+        await user.save();    
         return res.status(201).json(user.addresses);
     } catch (error) {
         return res.status(500).json({ message: 'Lỗi server khi thêm địa chỉ mới' });
@@ -331,12 +299,9 @@ const updateAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         const address = user.addresses.id(req.params.id);
-
         if (!address) return res.status(404).json({ message: 'Địa chỉ không tồn tại' });
-
         Object.assign(address, req.body);
         await user.save();
-
         return res.json(address);
     } catch (error) {
         return res.status(500).json({ message: 'Lỗi server khi cập nhật thông tin địa chỉ' });
@@ -349,7 +314,6 @@ const deleteAddress = async (req, res) => {
         const user = await User.findById(req.user._id);
         user.addresses = user.addresses.filter(addr => addr._id.toString() !== req.params.id);
         await user.save();
-        
         return res.json({ message: 'Đã xóa địa chỉ' });
     } catch (error) {
         return res.status(500).json({ message: 'Lỗi server khi xóa địa chỉ' });
@@ -360,17 +324,11 @@ const deleteAddress = async (req, res) => {
 const setDefaultAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
-
-        user.addresses.forEach(addr => {
-            addr.isDefault = false;
-        });
-
+        user.addresses.forEach(addr => { addr.isDefault = false; });
         const address = user.addresses.id(req.params.id);
         if (!address) return res.status(404).json({ message: 'Địa chỉ không tồn tại' });
-
         address.isDefault = true;
         await user.save();
-        
         return res.json({ message: 'Đã đặt địa chỉ mặc định', addresses: user.addresses });
     } catch (error) {
         return res.status(500).json({ message: 'Lỗi server khi cài đặt mặc định cho các địa chỉ' });

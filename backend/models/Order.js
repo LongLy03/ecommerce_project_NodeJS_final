@@ -1,4 +1,3 @@
-// Import mongoose
 const mongoose = require('mongoose');
 const orderItemSchema = new mongoose.Schema({
     // ID của sản phẩm, tham chiếu 'Product'
@@ -14,29 +13,10 @@ const orderItemSchema = new mongoose.Schema({
         required: true
     },
 
-    // Tên sản phẩm (lưu lại đề phòng sản phẩm gốc bị đổi tên/xóa)
-    name: {
-        type: String,
-        required: true
-    },
-
-    // Số lượng đặt mua
-    quantity: {
-        type: Number,
-        required: true
-    },
-
-    // Giá của 1 sản phẩm (tại thời điểm đặt hàng)
-    price: {
-        type: Number,
-        required: true
-    },
-
-    // Tổng tiền cho item này (price * quantity)
-    subTotal: {
-        type: Number,
-        required: true
-    },
+    name: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true },
+    subTotal: { type: Number, required: true }
 });
 
 // --- Schema chính cho Đơn hàng ---
@@ -47,18 +27,8 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
     },
 
-    // Tên người nhận hàng
-    name: {
-        type: String,
-        required: true
-    },
-
-    // Email người nhận hàng
-    email: {
-        type: String,
-        required: true
-    },
-
+    name: { type: String, required: true },
+    email: { type: String, required: true },
     items: [orderItemSchema], 
 
     // Thông tin địa chỉ giao hàng
@@ -78,11 +48,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
 
-    // Tổng số tiền được giảm giá
-    discountAmount: {
-        type: Number,
-        required: true
-    },
+    discountAmount: { type: Number, required: true },
 
     // ID của mã giảm giá đã dùng (nếu có)
     discount: {
@@ -91,23 +57,9 @@ const orderSchema = new mongoose.Schema({
         default: null
     },
 
-    // Số điểm (point) đã dùng cho đơn này
-    pointsUsed: {
-      type: Number,
-      default: 0
-    },
-    
-    // Số điểm tích lũy được từ đơn này
-    pointsEarned: {
-      type: Number,
-      default: 0
-    },
-
-    // Tổng tiền cuối cùng khách phải trả
-    totalPrice: {
-        type: Number,
-        required: true
-    },
+    pointsUsed: { type: Number, default: 0 },
+    pointsEarned: { type: Number, default: 0 },
+    totalPrice: { type: Number, required: true },
 
     // Trạng thái đơn hàng
     status: {
@@ -121,11 +73,8 @@ const orderSchema = new mongoose.Schema({
         status: String,
         updatedAt: { type: Date, default: Date.now }
     }]
-    
+
 }, { timestamps: true }); // Tự động thêm createdAt và updatedAt
 
-// Tạo model 'Order' từ schema
 const Order = mongoose.model('Order', orderSchema);
-
-// Xuất model
 module.exports = Order;

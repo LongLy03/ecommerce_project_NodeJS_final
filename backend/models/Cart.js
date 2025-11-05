@@ -1,4 +1,3 @@
-// Import mongoose
 const mongoose = require('mongoose');
 
 // --- Schema cho một món hàng trong giỏ ---
@@ -11,17 +10,8 @@ const cartItemShema = new mongoose.Schema({
     },
 
     // ID của biến thể sản phẩm (ví dụ: size, màu)
-    variantId: {
-        type: mongoose.Schema.Types.ObjectId
-    },
-
-    // Số lượng sản phẩm
-    quantity: {
-        type: Number,
-        required: true,
-        min: 1
-    },
-
+    variantId: {type: mongoose.Schema.Types.ObjectId },
+    quantity: { type: Number, required: true, min: 1 },
 }, { _id: true }); // Bật _id cho từng item (hữu ích khi xóa/sửa item)
 
 // --- Schema chính cho giỏ hàng ---
@@ -45,8 +35,5 @@ const cartSchema = new mongoose.Schema({
     
 }, { timestamps: true }); // Tự động thêm createdAt và updatedAt
 
-// Tạo model 'Cart' từ schema
 const Cart = mongoose.model('Cart', cartSchema);
-
-// Xuất model để dùng ở file khác
 module.exports = Cart;

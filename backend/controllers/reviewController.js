@@ -10,7 +10,6 @@ const getReviews = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
         const sortBy = req.query.sortBy || '-createdAt';
-
         if (page < 1) return res.status(400).json({ message: 'Page phải >= 1' });
         if (limit < 1 || limit > 50) return res.status(400).json({ message: 'Limit phải từ 1-50' });
 
@@ -21,14 +20,10 @@ const getReviews = async (req, res) => {
             product = await Product.findOne({ slug: productId });
         }
 
-        if (!product) {
-            return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
-        }
-
+        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
         const totalReviews = await Review.countDocuments({ product: product._id });
         const totalPages = Math.ceil(totalReviews / limit);
 
-        // Nếu page vượt quá totalPages, trả về trang cuối
         if (page > totalPages && totalPages > 0) {
             return res.json({
                 reviews,
@@ -50,7 +45,7 @@ const getReviews = async (req, res) => {
             .sort(sortBy)
             .skip((page - 1) * limit)
             .limit(limit)
-            .populate('user', 'name email') // chỉ lấy name & email của user
+            .populate('user', 'name email')
             .lean();
 
         return res.json({
@@ -79,11 +74,8 @@ const addReview = async (req, res) => {
         const { rating, comment, guestName, guestEmail } = req.body;
         
         if (!comment || comment.trim().length === 0) return res.status(400).json({ message: 'Vui lòng nhập nội dung bình luận' });
-
         if (rating && !user) return res.status(401).json({ message: 'Bạn phải đăng nhập để đánh giá bằng sao' });
-
         if (!user && (!guestName || !guestEmail)) return res.status(400).json({ message: 'Khách phải nhập tên và email' });
-
         let review;
 
         if (user) {
@@ -129,9 +121,9 @@ const addReview = async (req, res) => {
         ]);
 
         const commentsCount = await Review.countDocuments({ product: productObjectId });
-
         let avg = 0;
         let ratingCount = 0;
+
         if (stats.length > 0) {
             avg = Number((stats[0].avgRating || 0).toFixed(1));
             ratingCount = stats[0].ratingCount;
@@ -149,7 +141,6 @@ const addReview = async (req, res) => {
 
         const io = req.app.get('io');
         if (io) io.to(`product_${productId}`).emit('reviewAdded', populated);
-
         return res.status(201).json({ message: 'Đã thêm bình luận thành công', review: populated });
     } catch (err) {
         return res.status(500).json({ message: 'Lỗi server khi bình luận và đánh giá sản phẩm' });

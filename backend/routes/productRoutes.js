@@ -1,19 +1,7 @@
-// Catalog, chi tiết sản phẩm, tìm kiếm, lọc, ...
-
 const express = require('express');
 const router = express.Router();
-
-const { 
-    getProducts, 
-    getProductByIdOrSlug, 
-    getHomeProducts 
-} = require('../controllers/productController');
-
-const { 
-    getReviews, 
-    addReview 
-} = require('../controllers/reviewController');
-
+const { getProducts, getProductByIdOrSlug, getHomeProducts } = require('../controllers/productController');
+const { getReviews, addReview } = require('../controllers/reviewController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Danh mục, Chi tiết sản phẩm
