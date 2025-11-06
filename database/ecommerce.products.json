@@ -17,7 +17,7 @@
       "sku": "IP15PM-256GB",
       "name": "256GB",
       "price": 34990000,
-      "stock": 2,
+      "stock": 0,
       "attributes": [
         {
           "key": "Màu",
@@ -57,7 +57,7 @@
   "numReviews": 0,
   "numComments": 0,
   "updatedAt": {
-    "$date": "2025-10-22T13:58:22.544Z"
+    "$date": "2025-11-06T11:15:13.195Z"
   }
 },
 {
@@ -141,7 +141,7 @@
       "sku": "XM14P-256GB",
       "name": "256GB",
       "price": 19990000,
-      "stock": 18,
+      "stock": 6,
       "attributes": [
         {
           "key": "Màu",
@@ -181,7 +181,7 @@
   "numReviews": 0,
   "numComments": 0,
   "updatedAt": {
-    "$date": "2025-10-22T14:16:29.742Z"
+    "$date": "2025-11-06T11:39:30.139Z"
   }
 },
 {
@@ -1823,29 +1823,29 @@
     },
     {
       "sku": "I7-12700K-OEM",
-      "name": "Bản OEM mới",
+      "name": "Bản OEM mới 2025",
       "price": 8500000,
-      "stock": 10,
+      "stock": 15,
       "attributes": [
         {
           "key": "Socket",
           "value": "LGA 1600",
           "_id": {
-            "$oid": "690232c70bd4ba7fcdf9daad"
+            "$oid": "690cbd167c7ae2ae2159cbdc"
           }
         },
         {
           "key": "Số nhân",
           "value": "16",
           "_id": {
-            "$oid": "690232c70bd4ba7fcdf9daae"
+            "$oid": "690cbd167c7ae2ae2159cbdd"
           }
         },
         {
           "key": "Xung nhịp",
           "value": "4.8GHz",
           "_id": {
-            "$oid": "690232c70bd4ba7fcdf9daaf"
+            "$oid": "690cbd167c7ae2ae2159cbde"
           }
         }
       ],
@@ -1857,27 +1857,33 @@
   "brand": "Intel",
   "images": [
     {
-      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-1.jpg",
-      "_id": {
-        "$oid": "6901d3b881f25a054af61d1d"
-      }
-    },
-    {
-      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-2.jpg",
-      "_id": {
-        "$oid": "6901d3b881f25a054af61d1e"
-      }
-    },
-    {
       "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-3.jpg",
       "_id": {
         "$oid": "6901d3b881f25a054af61d1f"
       }
     },
     {
-      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-1.jpg",
+      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-4.jpg",
       "_id": {
         "$oid": "690220f988278b644f69e77b"
+      }
+    },
+    {
+      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-5.jpg",
+      "_id": {
+        "$oid": "690cb5e2396c9188f1e13e9d"
+      }
+    },
+    {
+      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-6.jpg",
+      "_id": {
+        "$oid": "690cb5e2396c9188f1e13e9e"
+      }
+    },
+    {
+      "url": "https://cdn.tgdd.vn/Products/Images/5698/Intel-i7-12700K-7.jpg",
+      "_id": {
+        "$oid": "690cb5e2396c9188f1e13e9f"
       }
     }
   ],
@@ -1888,7 +1894,7 @@
     "$date": "2025-10-29T08:43:36.750Z"
   },
   "updatedAt": {
-    "$date": "2025-10-29T15:29:11.064Z"
+    "$date": "2025-11-06T15:21:58.501Z"
   },
-  "__v": 3
+  "__v": 6
 }]

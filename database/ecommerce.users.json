@@ -93,12 +93,12 @@
       }
     }
   ],
-  "loyaltyPoints": 44989,
+  "loyaltyPoints": 75333,
   "createdAt": {
     "$date": "2025-10-22T04:30:14.788Z"
   },
   "updatedAt": {
-    "$date": "2025-10-23T06:54:09.648Z"
+    "$date": "2025-11-06T11:39:30.181Z"
   },
   "__v": 3,
   "tokenInvalidBefore": {
@@ -253,8 +253,8 @@
   "_id": {
     "$oid": "68f8e73d03ee7a47aeb4b1db"
   },
-  "name": "Le Thi G",
-  "email": "guestuser@example.com",
+  "name": "Le Thi G Moi",
+  "email": "lethinewg@gamil.com",
   "password": "$2b$10$HGtONRHrhuSGDq9EelCAWONW.mWBgyFPdgf6LE3z1SJNZNCAgqkWu",
   "isAdmin": false,
   "isBlocked": false,
@@ -281,7 +281,7 @@
     "$date": "2025-10-22T14:16:29.818Z"
   },
   "updatedAt": {
-    "$date": "2025-10-22T14:16:30.097Z"
+    "$date": "2025-11-06T14:38:29.054Z"
   },
   "__v": 0
 },

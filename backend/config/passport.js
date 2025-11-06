@@ -63,9 +63,7 @@ passport.use(new FacebookStrategy({
     }
 }));
 
-passport.serializeUser((user, done) => {
-  done(null, user._id ? user._id.toString() : user);
-});
+passport.serializeUser((user, done) => done(null, user._id ? user._id.toString() : user));
 
 passport.deserializeUser(async (id, done) => {
   try {

@@ -7,6 +7,7 @@ const {
         updateCartItem, 
         removeCartItem, 
         applyDiscount,
+        removeDiscount,
         checkout,
         getOrderHistory,
         getOrderDetails,
@@ -19,8 +20,9 @@ router.get('/cart', protect(false), getCart);
 router.put('/cart/:itemId', protect(false), updateCartItem);
 router.delete('/cart/:itemId', protect(false), removeCartItem);
 
-// Áp dụng mã giảm giá
-router.post('/cart/discount', protect(false), applyDiscount);
+// Áp dụng và hủy áp dụng mã giảm giá
+router.post('/cart-discount', protect(false), applyDiscount);
+router.delete('/cart-discount', protect(false), removeDiscount);
 
 // Thang toán
 router.post('/checkout', protect(false), checkout);

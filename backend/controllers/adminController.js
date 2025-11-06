@@ -43,6 +43,7 @@ const blockUser = async (req, res) => {
         const { id } = req.params;
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ message: 'User không tồn tại' });
+        if (user.isBlocked) return res.status(400).json({ message: 'User đang bị chặn' });
         user.isBlocked = true;
         const updated = await user.save();
         res.json({ message: 'User đã bị chặn', user: updated });
@@ -69,149 +70,152 @@ const unBlockUser = async (req, res) => {
 // Quản lý sản phẩm và các biến thể sản phẩm
 // Tạo mới sản phẩm
 const createProduct = async (req, res) => {
-    try {
-        const { slug, category } = req.body;
-        const slugExists = await Product.findOne({ slug });
-        if (slugExists) return res.status(400).json({ message: 'Tên định danh sản phẩm đã tồn tại!' });
-        if (!(await Category.findById(category))) return res.status(404).json({ message: 'Danh mục không tồn tại' });
-        const product = await Product.create(req.body)
-        return res.status(201).json(product);
-    } catch (err) {
-        return res.status(500).json({ messgae: 'Tạo sản phẩm thất bại', error: err.message });
-    }
+    try {
+        const { slug, category } = req.body;
+        const slugExists = await Product.findOne({ slug });
+        if (slugExists) return res.status(400).json({ message: 'Tên định danh sản phẩm đã tồn tại!' });
+        if (!(await Category.findById(category))) return res.status(404).json({ message: 'Danh mục không tồn tại' });
+        const product = await Product.create(req.body)
+        return res.status(201).json(product);
+    } catch (err) {
+        return res.status(500).json({ messgae: 'Tạo sản phẩm thất bại', error: err.message });
+    }
 };
 
 // Cập nhật sản phẩm
 const updateProduct = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { slug, category } = req.body;
-        const product = await Product.findById(id);
-        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+    try {
+        const { id } = req.params;
+        const { slug, category } = req.body;
+        const product = await Product.findById(id);
+        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
 
-        if (slug) {
-            const slugExists = await Product.findOne({ slug });
-            if (slugExists && slugExists._id.toString() !== id) return res.status(400).json({ message: 'Tên định danh sản phẩm đã tồn tại!' });
-        }
+        if (slug) {
+            const slugExists = await Product.findOne({ slug });
+            if (slugExists && slugExists._id.toString() !== id) return res.status(400).json({ message: 'Tên định danh sản phẩm đã tồn tại!' });
+        }
 
-        if (category) {
-            const categoryExists = await Category.findById(category);
-            if (!categoryExists) return res.status(404).json({ message: 'Danh mục không tồn tại' });
-        }
+        if (category) {
+            const categoryExists = await Category.findById(category);
+            if (!categoryExists) return res.status(404).json({ message: 'Danh mục không tồn tại' });
+        }
 
-        const updated = await Product.findByIdAndUpdate(id, req.body, {
-            new: true,
-            runValidators: true,
-        });
-        return res.json(updated);
-    } catch (err) {
-        return res.status(500).json({ message: 'Cập nhật thất bại', error: err.message });
-    }
+        const updated = await Product.findByIdAndUpdate(id, req.body, {
+            new: true,
+            runValidators: true,
+        });
+        return res.json(updated);
+    } catch (err) {
+        return res.status(500).json({ message: 'Cập nhật thất bại', error: err.message });
+    }
 };
 
 // Xóa sản phẩm
 const deleteProduct = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const product = await Product.findById(id);
-        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
-        await Product.findByIdAndDelete(id);
-        return res.json({ message: 'Xóa sản phẩm thành công' });
-    } catch (err) {
-        return res.status(500).json({ message: 'Xóa sản phẩm thất bại', error: err.message });
-    }
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id);
+        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+        await Product.findByIdAndDelete(id);
+        return res.json({ message: 'Xóa sản phẩm thành công' });
+    } catch (err) {
+        return res.status(500).json({ message: 'Xóa sản phẩm thất bại', error: err.message });
+    }
 };
 
 // Thêm biến thể sản phẩm và thêm hình ảnh
 const addVariantsAndImages = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { variants = [], images = [] } = req.body;
-        const product = await Product.findById(id);
-        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
-        if (!Array.isArray(variants)) return res.status(400).json({ message: 'variants phải là mảng' });
-        if (!Array.isArray(images)) return res.status(400).json({ message: 'images phải là mảng' });
-        for (const v of variants) {
-            if (v.sku && product.variants.some(ev => ev.sku === v.sku)) {
-                return res.status(400).json({ message: `Variant SKU đã tồn tại: ${v.sku}` });
-            }
-        }
-        if (variants.length) product.variants.push(...variants);
-        if (images.length) product.images.push(...images);
-        await product.save();
-        return res.json({ message: 'Cập nhật biến thể, hình ảnh thành công', product });
-    } catch (err) {
-        return res.status(500).json({ message: 'Thêm biến thể, hình ảnh không thành công', error: err.message });
-    }
+    try {
+        const { id } = req.params;
+        const { variants = [], images = [] } = req.body;
+        const product = await Product.findById(id);
+        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+        if (!Array.isArray(variants)) return res.status(400).json({ message: 'variants phải là mảng' });
+        if (!Array.isArray(images)) return res.status(400).json({ message: 'images phải là mảng' });
+
+        for (const v of variants) {
+            if (v.sku && product.variants.some(ev => ev.sku === v.sku)) return res.status(400).json({ message: `Variant SKU đã tồn tại: ${v.sku}` });
+        }
+
+        if (variants.length) product.variants.push(...variants);
+        if (images.length) product.images.push(...images);
+
+        await product.save();
+        return res.json({ message: 'Cập nhật biến thể, hình ảnh thành công', product });
+    } catch (err) {
+        return res.status(500).json({ message: 'Thêm biến thể, hình ảnh không thành công', error: err.message });
+    }
 }
 
 // Xóa biến thể sản phẩm và hình ảnh
 const deleteVariantsAndImages = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { variantIds = [], imageIds = [] } = req.body;
-        if (!Array.isArray(variantIds)) return res.status(400).json({ message: 'variantIds phải là mảng' });
-        if (!Array.isArray(imageIds)) return res.status(400).json({ message: 'imageIds phải là mảng' });
-        const product = await Product.findById(id);
-        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+    try {
+        const { id } = req.params;
+        const { variantIds = [], imageIds = [] } = req.body;
 
-        // Xóa variants
-        if (variantIds.length > 0) {
-            product.variants = product.variants.filter(
-                v => !variantIds.includes(v._id.toString())
-            );
-        }
+        if (!Array.isArray(variantIds)) return res.status(400).json({ message: 'variantIds phải là mảng' });
+        if (!Array.isArray(imageIds)) return res.status(400).json({ message: 'imageIds phải là mảng' });
 
-        // Xóa images bằng _id
-        if (imageIds.length > 0) {
+        const product = await Product.findById(id);
+        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+
+        // Xóa variants
+        if (variantIds.length > 0) {
+            product.variants = product.variants.filter(
+                v => !variantIds.includes(v._id.toString())
+            );
+        }
+
+        // Xóa images bằng _id
+        if (imageIds.length > 0) {
             // Kiểm tra số lượng ảnh trước khi xóa
             if (product.images.length - imageIds.length < 3) {
                  return res.status(400).json({
                      message: 'Không thể xóa - sản phẩm phải giữ ít nhất 3 ảnh'
                  });
             }
-            product.images = product.images.filter(
-                img => !imageIds.includes(img._id.toString())
-            );
-        }
+            product.images = product.images.filter(
+                img => !imageIds.includes(img._id.toString())
+            );
+        }
 
-        await product.save();
-        return res.json({ message: 'Xóa biến thể và hình ảnh thành công', product });
-    } catch (err) {
-        return res.status(500).json({ message: 'Xóa biến thể và hình ảnh thất bại', error: err.message });
-    }
+        await product.save();
+        return res.json({ message: 'Xóa biến thể và hình ảnh thành công', product });
+    } catch (err) {
+        return res.status(500).json({ message: 'Xóa biến thể và hình ảnh thất bại', error: err.message });
+    }
 }
 
 // Chỉnh sửa biến thể sản phẩm
 const updateVariant = async (req, res) => {
-    try {
-        const { id: productId, variantId } = req.params;
-        const updateData = req.body;
-        const product = await Product.findById(productId);
-        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
-        const variantIndex = product.variants.findIndex(v => v._id.toString() === variantId);
-        if (variantIndex === -1) return res.status(404).json({ message: 'Biến thể không tồn tại' });
+    try {
+        const { id: productId, variantId } = req.params;
+        const updateData = req.body;
+        const product = await Product.findById(productId);
+        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+        const variantIndex = product.variants.findIndex(v => v._id.toString() === variantId);
+        if (variantIndex === -1) return res.status(404).json({ message: 'Biến thể không tồn tại' });
 
-        if (updateData.sku) {
-            const skuExists = product.variants.some(
-                v => v.sku === updateData.sku && v._id.toString() !== variantId
-            );
-            if (skuExists) return res.status(400).json({ message: 'SKU đã tồn tại trong sản phẩm này' });
-        }
+        if (updateData.sku) {
+            const skuExists = product.variants.some(
+                v.sku === updateData.sku && v._id.toString() !== variantId
+            );
+            if (skuExists) return res.status(400).json({ message: 'SKU đã tồn tại trong sản phẩm này' });
+        }
 
-        const variant = product.variants[variantIndex];
-        Object.keys(updateData).forEach(key => {
-            if (typeof updateData[key] === 'object' && !Array.isArray(updateData[key]) && variant[key]) {
+        const variant = product.variants[variantIndex];
+        Object.keys(updateData).forEach(key => {
+            if (typeof updateData[key] === 'object' && !Array.isArray(updateData[key]) && variant[key]) {
                 variant[key] = { ...variant[key], ...updateData[key] };
             } else {
-                variant[key] = updateData[key];
+                variant[key] = updateData[key];
             }
-        });
-        await product.save();
-        return res.json({ message: 'Cập nhật biến thể thành công', variant: product.variants[variantIndex] });
-    } catch (err) {
-        return res.status(500).json({ message: 'Cập nhật biến thể thất bại', error: err.message });
-    }
+        });
+        await product.save();
+        return res.json({ message: 'Cập nhật biến thể thành công', variant: product.variants[variantIndex] });
+    } catch (err) {
+        return res.status(500).json({ message: 'Cập nhật biến thể thất bại', error: err.message });
+    }
 };
 
 // Quản lý danh mục sản phẩm
@@ -227,51 +231,51 @@ const getCategories = async (req, res) => {
 
 // Thêm danh mục sản phẩm
 const createCategory = async (req, res) => {
-    try {
-        const { slug } = req.body;
-        const slugExists = await Category.findOne({ slug });
-        if (slugExists) return res.status(400).json({ message: 'Tên định danh danh mục đã tồn tại!' });
-        const category = await Category.create(req.body);
-        return res.status(201).json(category);
-    } catch (err) {
-        return res.status(500).json({
-            message: 'Lỗi server khi thêm danh mục sản phẩm',
-            error: err.message,
-        });
-    }
+    try {
+        const { slug } = req.body;
+        const slugExists = await Category.findOne({ slug });
+        if (slugExists) return res.status(400).json({ message: 'Tên định danh danh mục đã tồn tại!' });
+        const category = await Category.create(req.body);
+        return res.status(201).json(category);
+    } catch (err) {
+        return res.status(500).json({ message: 'Lỗi server khi thêm danh mục sản phẩm', error: err.message });
+    }
 };
 
 // Chỉnh sửa danh mục sản phẩm
 const updateCategory = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { slug } = req.body;
-        const category = await Category.findById(id);
-        if (!category) return res.status(404).json({ message: 'Danh mục không tồn tại' });
+    try {
+        const { id } = req.params;
+        const { slug } = req.body;
+        const category = await Category.findById(id);
+        if (!category) return res.status(404).json({ message: 'Danh mục không tồn tại' });
 
-        if (slug) {
-            const slugExists = await Category.findOne({ slug });
-            if (slugExists && slugExists._id.toString() !== id) return res.status(400).json({ message: 'Tên định danh danh mục đã tồn tại!' });
-        }
+        if (slug) {
+            const slugExists = await Category.findOne({ slug });
+            if (slugExists && slugExists._id.toString() !== id) return res.status(400).json({ message: 'Tên định danh danh mục đã tồn tại!' });
+        }
 
-        const updated = await Category.findByIdAndUpdate(id, req.body, {
-            new: true,
-            runValidators: true,
-        });
-        return res.json(updated);
-    } catch (err) {
-        return res.status(500).json({
-            message: 'Lỗi server khi chỉnh sửa danh mục sản phẩm',
-            error: err.message,
-        });
-    }
+        const updated = await Category.findByIdAndUpdate(id, req.body, {
+            new: true,
+            runValidators: true,
+        });
+        return res.json(updated);
+    } catch (err) {
+        return res.status(500).json({ message: 'Lỗi server khi chỉnh sửa danh mục sản phẩm', error: err.message });
+    }
 };
 
 // Quản lý đơn hàng
 // Lấy danh sách đơn hàng với phân trang và lọc theo ngày
 const getOrders = async (req, res) => {
     try {
-        const { page = 1, limit = 20, filter, startDate, endDate } = req.query;
+        const { 
+            page = 1, 
+            limit = 20, 
+            filter, 
+            startDate, 
+            endDate } = req.query;
+
         const skip = (parseInt(page) - 1) * parseInt(limit);
         const dateFilter = {};
         const now = new Date();
@@ -328,15 +332,73 @@ const getOrders = async (req, res) => {
 const getOrderDetail = async (req, res) => {
     try {
         const { id } = req.params;
+
         const order = await Order.findById(id)
-                                 .populate('user', 'name email phone address')
-                                 .populate('products.product'); 
-        
-        order ? res.json(order) : res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+            .populate('user', 'name email')
+            .populate({
+                path: 'items.product',
+                select: 'name images variants'
+            })
+            .populate('discount', 'code value')
+            .lean();
+
+        if (!order) {
+            return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+        }
+
+        // Thêm thông tin variant cho mỗi item nếu có
+        order.items = order.items.map(item => {
+            const product = item.product;
+            if (item.variantId && product.variants) {
+                const variant = product.variants.find(
+                    v => v._id.toString() === item.variantId.toString()
+                );
+                if (variant) {
+                    item.variantInfo = {
+                        name: variant.name,
+                        sku: variant.sku,
+                        attributes: variant.attributes
+                    };
+                }
+            }
+            return item;
+        });
+
+        const formattedOrder = {
+            _id: order._id,
+            orderNumber: order.orderNumber,
+            user: order.user,
+            items: order.items.map(item => ({
+                product: {
+                    _id: item.product._id,
+                    name: item.product.name,
+                    image: item.product.images[0]
+                },
+                variantInfo: item.variantInfo,
+                quantity: item.quantity,
+                price: item.price,
+                subTotal: item.subTotal
+            })),
+            shippingAddress: order.shippingAddress,
+            paymentMethod: order.paymentMethod,
+            status: order.status,
+            statusHistory: order.statusHistory,
+            discount: order.discount,
+            discountAmount: order.discountAmount,
+            pointsUsed: order.pointsUsed,
+            pointsEarned: order.pointsEarned,
+            subtotal: order.items.reduce((sum, item) => sum + item.subTotal, 0),
+            shipping: 30000,
+            totalPrice: order.totalPrice,
+            createdAt: order.createdAt,
+            updatedAt: order.updatedAt
+        };
+
+        return res.json(formattedOrder);
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server', error: err.message });
+        return res.status(500).json({ message: 'Lỗi server khi xem chi tiết đơn hàng', error: err.message });
     }
-}
+};
 
 // Cập nhật trạng thái đơn hàng
 const updateOrderStatus = async (req, res) => {
