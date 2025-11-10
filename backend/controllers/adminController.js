@@ -407,45 +407,79 @@ const updateOrderStatus = async (req, res) => {
         const { status } = req.body;
 
         const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
-        if (!validStatuses.includes(status)) {
-            return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
-        }
+        if (!validStatuses.includes(status)) return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
 
-        const order = await Order.findById(id);
+        const order = await Order.findById(id)
+            .populate({
+                path: 'items.product',
+                select: 'name variants'
+            })
+            .populate('user')
+            .populate('discount');
+
         if (!order) return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
-        
-        order.status = status;
-        if (status === 'cancelled' && order.status !== 'cancelled') {
-            const stockUpdateOperations = order.items.map(item => { 
-                
-                if (!item.variantId) {
-                    throw new Error(`Sản phẩm ${item.product} (item ${item._id}) trong đơn hàng ${order._id} thiếu variantId.`);
-                }
-                
-                return Product.updateOne(
-                    {
-                        _id: item.product, 
-                        'variants._id': item.variantId // Tìm đúng variant
-                    },
-                    {
-                        $inc: { 'variants.$.stock': item.quantity } // Hoàn kho
-                    },
-                    { session } 
-                );
-            });
+        if (order.status === 'cancelled') return res.status(400).json({ message: 'Đơn hàng đã bị hủy, không thể cập nhật trạng thái' });
+        if (order.status === 'delivered') return res.status(400).json({ message: 'Đơn hàng đã giao thành công, không thể cập nhật trạng thái' });
 
-            await Promise.all(stockUpdateOperations);
+        // Xử lý khi hủy đơn hàng
+        if (status === 'cancelled' && order.status !== 'cancelled') {
+            try {
+                // 1. Hoàn tồn kho
+                const stockUpdatePromises = order.items.map(item => {
+                    if (!item.variantId) {
+                        console.warn(`Missing variantId for item in order ${order._id}`);
+                        return Promise.resolve(); // Skip if no variantId
+                    }
+                    return Product.updateOne(
+                        { 
+                            _id: item.product._id, 
+                            'variants._id': item.variantId 
+                        },
+                        { 
+                            $inc: { 'variants.$.stock': item.quantity } 
+                        }
+                    );
+                });
+                await Promise.all(stockUpdatePromises.filter(p => p)); // Filter out skipped updates
+
+                // 2. Hoàn lại lượt sử dụng mã giảm giá
+                if (order.discount) {
+                    await Discount.findByIdAndUpdate(
+                        order.discount._id,
+                        { $inc: { usedCount: -1 } }
+                    );
+                }
+
+                // 3. Hoàn điểm thưởng
+                if (order.user && (order.pointsUsed > 0 || order.pointsEarned > 0)) {
+                    const pointsToRestore = order.pointsUsed - order.pointsEarned;
+                    await User.findByIdAndUpdate(
+                        order.user._id,
+                        { $inc: { loyaltyPoints: pointsToRestore } }
+                    );
+                }
+            } catch (updateError) {
+                return res.status(500).json({ message: 'Lỗi khi cập nhật dữ liệu liên quan', error: updateError.message });
+            }
         }
 
+        // Cập nhật trạng thái đơn hàng
         order.status = status;
-        const updatedOrder = await order.save({ session });
-        await session.commitTransaction();
-        session.endSession();
-        res.json(updatedOrder);
-        const updated = await order.save();
-        res.json(updated);
+        order.statusHistory.push({ status, updatedAt: new Date() });
+        const updatedOrder = await Order.findByIdAndUpdate(
+            id,
+            {
+                status: order.status,
+                statusHistory: order.statusHistory
+            },
+            { new: true }
+        ).populate('user', 'name email')
+          .populate('discount', 'code value');
+
+        return res.json({ message: `Cập nhật trạng thái đơn hàng thành ${status}`, order: updatedOrder });
+
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server khi cập nhật trạng thái', error: err.message });
+        return res.status(500).json({ message: 'Lỗi server khi cập nhật trạng thái đơn hàng', error: err.message });
     }
 };
 
@@ -459,156 +493,379 @@ const createDiscountCode = async (req, res) => {
         const discount = await Discount.create(req.body);
         res.status(201).json(discount);
     } catch (err) {
-        await session.abortTransaction();
-        session.endSession();
-        res.status(500).json({ message: 'Cập nhật trạng thái thất bại. Tất cả thay đổi đã được hoàn tác.', error: err.message });
+        res.status(500).json({ message: 'Lỗi server khi tạo mã giảm giá mới', error: err.message });
     }
 };
 
 // Lấy tất cả mã giảm giá (Cập nhật để populate đơn hàng)
 const getAllDiscountCodes = async (req, res) => {
-    try {        
+    try {
         const discounts = await Discount.find()
-            .populate('orders', 'orderId total createdAt'); // Giả sử virtual tên là 'orders'
-        res.json(discounts);
+            .populate({
+                path: 'appliedOrders',
+                select: '_id name email totalPrice discountAmount createdAt status',
+                options: { sort: { createdAt: -1 } }
+            });
+
+        const formattedDiscounts = discounts.map(discount => {
+            // Lọc orders có tồn tại (không null/undefined)
+            const validOrders = (discount.appliedOrders || []).filter(order => order);
+            
+            return {
+                _id: discount._id,
+                code: discount.code,
+                value: discount.value,
+                usageLimit: discount.usageLimit,
+                usedCount: discount.usedCount,
+                remainingUses: discount.usageLimit - discount.usedCount,
+                createdAt: discount.createdAt,
+                updatedAt: discount.updatedAt,
+                orders: validOrders.map(order => ({
+                    _id: order._id,
+                    customerName: order.name,
+                    customerEmail: order.email,
+                    orderTotal: order.totalPrice,
+                    discountAmount: order.discountAmount,
+                    orderDate: order.createdAt,
+                    status: order.status
+                })),
+                stats: {
+                    totalOrders: validOrders.length,
+                    totalDiscountAmount: validOrders.reduce((sum, order) => sum + (order.discountAmount || 0), 0),
+                    averageDiscount: validOrders.length > 0 
+                        ? Math.round(validOrders.reduce((sum, order) => sum + (order.discountAmount || 0), 0) / validOrders.length)
+                        : 0
+                }
+            };
+        });
+
+        return res.json({ discounts: formattedDiscounts });
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server', error: err.message });
+        return res.status(500).json({ message: 'Lỗi server khi lấy danh sách mã giảm giá', error: err.message });
     }
 };
 
+// Dashboard Admin
 // Thống kê cơ bản (Cập nhật để thêm 'người dùng mới' và 'sản phẩm bán chạy')
 const dashboardBasic = async (req, res) => {
     try {
-        // 1. Tính ngày bắt đầu của tháng này
+        // Tính thời gian
         const now = new Date();
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
-        // 2. Dùng Promise.all để chạy song song các truy vấn
+        // Chạy song song các truy vấn thống kê
         const [
-            totalUsers,
-            newUsersThisMonth,
-            totalOrders,
-            revenueResult,
-            bestSellingProducts
+            userStats,
+            orderStats,
+            bestSellers,
+            revenueByMonth
         ] = await Promise.all([
-            // 1. Tổng người dùng
-            User.countDocuments(),
-            // 2. Người dùng mới (trong tháng này)
-            User.countDocuments({ createdAt: { $gte: startOfMonth } }),
-            // 3. Tổng đơn hàng
-            Order.countDocuments(),
-            // 4. Tổng doanh thu (chỉ đơn hàng đã hoàn thành - 'delivered', nếu có)
-            Order.aggregate([
-                // { $match: { status: 'delivered' } }, // Bỏ comment nếu bạn chỉ muốn tính doanh thu đơn đã giao
-                { $group: { _id: null, total: { $sum: "$total" } } }
+            // 1. Thống kê người dùng
+            User.aggregate([
+                {
+                    $facet: {
+                        'total': [{ $count: 'count' }],
+                        'newUsers': [
+                            { $match: { createdAt: { $gte: startOfMonth } } },
+                            { $count: 'count' }
+                        ],
+                        'userGrowth': [
+                            {
+                                $group: {
+                                    _id: { 
+                                        year: { $year: '$createdAt' },
+                                        month: { $month: '$createdAt' }
+                                    },
+                                    count: { $sum: 1 }
+                                }
+                            },
+                            { $sort: { '_id.year': -1, '_id.month': -1 } },
+                            { $limit: 6 }
+                        ]
+                    }
+                }
             ]),
-            // 5. Sản phẩm bán chạy nhất
+
+            // 2. Thống kê đơn hàng
             Order.aggregate([
-                { $unwind: "$products" }, // Tách mảng products ra
+                {
+                    $facet: {
+                        'total': [{ $count: 'count' }],
+                        'byStatus': [
+                            {
+                                $group: {
+                                    _id: '$status',
+                                    count: { $sum: 1 }
+                                }
+                            }
+                        ],
+                        'recentOrders': [
+                            { $sort: { createdAt: -1 } },
+                            { $limit: 5 },
+                            {
+                                $project: {
+                                    _id: 1,
+                                    name: 1,
+                                    totalPrice: 1,
+                                    status: 1,
+                                    createdAt: 1
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]),
+
+            // 3. Top sản phẩm bán chạy
+            Order.aggregate([
+                { $unwind: '$items' },
                 {
                     $group: {
-                        _id: "$products.product", // Nhóm theo ID sản phẩm
-                        totalSold: { $sum: "$products.quantity" } // Tính tổng số lượng bán
+                        _id: '$items.product',
+                        name: { $first: '$items.name' },
+                        totalQuantity: { $sum: '$items.quantity' },
+                        totalRevenue: { $sum: '$items.subTotal' }
                     }
                 },
-                { $sort: { totalSold: -1 } }, // Sắp xếp
-                { $limit: 5 }, // Lấy 5 sản phẩm
+                { $sort: { totalQuantity: -1 } },
+                { $limit: 5 }
+            ]),
+
+            // 4. Doanh thu theo tháng (6 tháng gần nhất)
+            Order.aggregate([
                 {
-                    $lookup: { // Join với bảng products để lấy tên
-                        from: 'products',
-                        localField: '_id',
-                        foreignField: '_id',
-                        as: 'productDetails'
+                    $group: {
+                        _id: {
+                            year: { $year: '$createdAt' },
+                            month: { $month: '$createdAt' }
+                        },
+                        revenue: { $sum: '$totalPrice' },
+                        orderCount: { $sum: 1 }
                     }
                 },
-                { $unwind: "$productDetails" } // Tách mảng productDetails
+                { $sort: { '_id.year': -1, '_id.month': -1 } },
+                { $limit: 6 }
             ])
         ]);
 
-        res.json({
-            totalUsers,
-            newUsersThisMonth,
-            totalOrders,
-            totalRevenue: revenueResult[0]?.total || 0,
-            bestSellingProducts
-        });
-    } catch (err) {
-        res.status(500).json({ message: 'Lỗi server khi lấy thống kê dashboard', error: err.message });
-    }
-};
-
-const getDashboardCharts = async (req, res) => {
-    try {
-        const { startDate, endDate, groupBy = 'day' } = req.query;
-
-        if (!startDate || !endDate) {
-            return res.status(400).json({ message: 'Vui lòng cung cấp startDate và endDate' });
-        }
-
-        const matchStage = {
-            createdAt: {
-                $gte: new Date(startDate),
-                $lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1)) // Bao gồm cả ngày cuối
+        // Format response
+        const response = {
+            users: {
+                total: userStats[0].total[0]?.count || 0,
+                newThisMonth: userStats[0].newUsers[0]?.count || 0,
+                growthChart: userStats[0].userGrowth.reverse()
+            },
+            orders: {
+                total: orderStats[0].total[0]?.count || 0,
+                byStatus: orderStats[0].byStatus.reduce((acc, curr) => {
+                    acc[curr._id] = curr.count;
+                    return acc;
+                }, {}),
+                recent: orderStats[0].recentOrders
+            },
+            bestSellers: bestSellers,
+            revenue: {
+                monthly: revenueByMonth.reverse(),
+                total: revenueByMonth.reduce((sum, month) => sum + month.revenue, 0),
+                thisMonth: revenueByMonth.find(m => 
+                    m._id.year === now.getFullYear() && 
+                    m._id.month === (now.getMonth() + 1)
+                )?.revenue || 0
             }
         };
 
-        let groupStage = {};
-        let sortStage = {};
+        return res.json({ dashboard: response });
+    } catch (err) {
+        return res.status(500).json({ message: 'Lỗi server khi lấy thông tin dashboard', error: err.message });
+    }
+};
 
-        // Tùy chỉnh việc nhóm theo yêu cầu (day, month, year)
+// Thống kê nâng cao (bao gồm các biểu đồ biểu diễn các chỉ số trong cửa hàng)
+const getDashboardCharts = async (req, res) => {
+    try {
+        const { startDate, endDate, groupBy = 'day', margin = 20, comparePrev = 'false' } = req.query;
+
+        if (!startDate || !endDate) return res.status(400).json({ message: 'Vui lòng cung cấp startDate và endDate' });
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+
+        // Build _id grouping expression
+        let idExpr;
+        let sortStage;
         switch (groupBy) {
             case 'year':
-                groupStage = {
-                    _id: { year: { $year: "$createdAt" } },
+                idExpr = { year: { $year: '$createdAt' } };
+                sortStage = { '_id.year': 1 };
+                break;
+            case 'quarter':
+                idExpr = {
+                    year: { $year: '$createdAt' },
+                    quarter: { $ceil: { $divide: [{ $month: '$createdAt' }, 3] } }
                 };
-                sortStage = { "_id.year": 1 };
+                sortStage = { '_id.year': 1, '_id.quarter': 1 };
                 break;
             case 'month':
-                groupStage = {
-                    _id: {
-                        year: { $year: "$createdAt" },
-                        month: { $month: "$createdAt" }
-                    },
-                };
-                sortStage = { "_id.year": 1, "_id.month": 1 };
+                idExpr = { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } };
+                sortStage = { '_id.year': 1, '_id.month': 1 };
                 break;
             case 'week':
-                 groupStage = {
-                    _id: {
-                        year: { $year: "$createdAt" },
-                        week: { $week: "$createdAt" }
-                    },
-                };
-                sortStage = { "_id.year": 1, "_id.week": 1 };
+                idExpr = { year: { $year: '$createdAt' }, week: { $week: '$createdAt' } };
+                sortStage = { '_id.year': 1, '_id.week': 1 };
                 break;
             case 'day':
             default:
-                groupStage = {
-                    _id: {
-                        year: { $year: "$createdAt" },
-                        month: { $month: "$createdAt" },
-                        day: { $dayOfMonth: "$createdAt" }
-                    },
-                };
-                 sortStage = { "_id.year": 1, "_id.month": 1, "_id.day": 1 };
+                idExpr = { year: { $year: '$createdAt' }, month: { $month: '$createdAt' }, day: { $dayOfMonth: '$createdAt' } };
+                sortStage = { '_id.year': 1, '_id.month': 1, '_id.day': 1 };
                 break;
         }
 
-        // Thêm các chỉ số cần thống kê vào groupStage
-        groupStage.totalRevenue = { $sum: "$total" };
-        groupStage.totalOrders = { $sum: 1 };
-        groupStage.totalProductsSold = { $sum: { $sum: "$products.quantity" } }; // Tổng số lượng sản phẩm bán ra
+        // Main pipelines: orders aggregated by period, items aggregated by period, top products
+        const matchStage = { createdAt: { $gte: start, $lte: end } };
 
-        const chartData = await Order.aggregate([
+        const ordersPipeline = [
             { $match: matchStage },
-            { $group: groupStage },
+            {
+                $group: {
+                    _id: idExpr,
+                    revenue: { $sum: '$totalPrice' },
+                    ordersCount: { $sum: 1 }
+                }
+            },
             { $sort: sortStage }
+        ];
+
+        const itemsPipeline = [
+            { $match: matchStage },
+            { $unwind: '$items' },
+            {
+                $group: {
+                    _id: idExpr,
+                    productsSold: { $sum: '$items.quantity' },
+                    itemsRevenue: { $sum: '$items.subTotal' }
+                }
+            },
+            { $sort: sortStage }
+        ];
+
+        const topProductsPipeline = [
+            { $match: matchStage },
+            { $unwind: '$items' },
+            {
+                $group: {
+                    _id: '$items.product',
+                    totalQuantity: { $sum: '$items.quantity' },
+                    totalRevenue: { $sum: '$items.subTotal' }
+                }
+            },
+            { $sort: { totalQuantity: -1, totalRevenue: -1 } },
+            { $limit: 10 }
+        ];
+
+        const [ordersAgg, itemsAgg, topProducts] = await Promise.all([
+            Order.aggregate(ordersPipeline),
+            Order.aggregate(itemsPipeline),
+            Order.aggregate(topProductsPipeline)
         ]);
 
-        res.json({ chartData });
+        // merge ordersAgg and itemsAgg by _id
+        const mapKey = id => JSON.stringify(id);
+        const map = new Map();
+        ordersAgg.forEach(o => {
+            map.set(mapKey(o._id), { period: o._id, revenue: o.revenue || 0, ordersCount: o.ordersCount || 0, productsSold: 0, itemsRevenue: 0 });
+        });
+        itemsAgg.forEach(i => {
+            const key = mapKey(i._id);
+            if (map.has(key)) {
+                const entry = map.get(key);
+                entry.productsSold = i.productsSold || 0;
+                entry.itemsRevenue = i.itemsRevenue || 0;
+            } else {
+                map.set(key, { period: i._id, revenue: 0, ordersCount: 0, productsSold: i.productsSold || 0, itemsRevenue: i.itemsRevenue || 0 });
+            }
+        });
 
+        // Build chart array sorted by key
+        const chartData = Array.from(map.values()).sort((a, b) => {
+            const ka = JSON.stringify(a.period), kb = JSON.stringify(b.period);
+            return ka < kb ? -1 : ka > kb ? 1 : 0;
+        }).map(r => {
+            const revenue = r.revenue || r.itemsRevenue || 0;
+            const profit = revenue * (Number(margin) / 100);
+            const avgOrderValue = r.ordersCount ? Math.round(revenue / r.ordersCount) : 0;
+            return {
+                period: r.period,
+                revenue,
+                formattedRevenue: revenue,
+                profit,
+                formattedProfit: profit,
+                productsSold: r.productsSold || 0,
+                ordersCount: r.ordersCount || 0,
+                avgOrderValue
+            };
+        });
+
+        // compute totals for range
+        const totals = chartData.reduce((acc, cur) => {
+            acc.revenue += cur.revenue;
+            acc.profit += cur.profit;
+            acc.productsSold += cur.productsSold;
+            acc.ordersCount += cur.ordersCount;
+            return acc;
+        }, { revenue: 0, profit: 0, productsSold: 0, ordersCount: 0 });
+        totals.avgOrderValue = totals.ordersCount ? Math.round(totals.revenue / totals.ordersCount) : 0;
+
+        // optional previous period comparison
+        let prevTotals = null;
+        if (String(comparePrev).toLowerCase() === 'true') {
+            const rangeMs = end.getTime() - start.getTime();
+            const prevEnd = new Date(start.getTime() - 1);
+            const prevStart = new Date(prevEnd.getTime() - rangeMs);
+            const prevMatch = { createdAt: { $gte: prevStart, $lte: prevEnd } };
+
+            const [prevOrders, prevItems] = await Promise.all([
+                Order.aggregate([
+                    { $match: prevMatch },
+                    { $group: { _id: null, revenue: { $sum: '$totalPrice' }, ordersCount: { $sum: 1 } } }
+                ]),
+                Order.aggregate([
+                    { $match: prevMatch },
+                    { $unwind: '$items' },
+                    { $group: { _id: null, productsSold: { $sum: '$items.quantity' }, itemsRevenue: { $sum: '$items.subTotal' } } }
+                ])
+            ]);
+
+            const prevRevenue = (prevOrders[0]?.revenue || 0) || (prevItems[0]?.itemsRevenue || 0);
+            const prevProductsSold = prevItems[0]?.productsSold || 0;
+            const prevOrdersCount = prevOrders[0]?.ordersCount || 0;
+            const prevProfit = prevRevenue * (Number(margin) / 100);
+
+            prevTotals = {
+                revenue: prevRevenue,
+                profit: prevProfit,
+                productsSold: prevProductsSold,
+                ordersCount: prevOrdersCount,
+                avgOrderValue: prevOrdersCount ? Math.round(prevRevenue / prevOrdersCount) : 0,
+                period: { start: prevStart, end: prevEnd }
+            };
+        }
+
+        return res.json({
+            chart: {
+                groupBy,
+                start,
+                end,
+                marginPercent: Number(margin),
+                data: chartData,
+                totals
+            },
+            topProducts,
+            prevTotals
+        });
     } catch (err) {
-        res.status(500).json({ message: 'Lỗi server khi lấy dữ liệu biểu đồ', error: err.message });
+        return res.status(500).json({ message: 'Lỗi server khi lấy dữ liệu biểu đồ', error: err.message });
     }
 };
 

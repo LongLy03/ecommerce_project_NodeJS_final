@@ -13,9 +13,13 @@ const discountSchema = new mongoose.Schema({
     value: { type: Number, required: true, min: 1, max: 100 },
     usageLimit: { type: Number, default: 10, max: 10 },
     usedCount: { type: Number, default: 0 }
-}, { timestamps: true });
+}, { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
-discountSchema.virtual('orders', {
+discountSchema.virtual('appliedOrders', {
     ref: 'Order',
     localField: '_id',
     foreignField: 'discount'
