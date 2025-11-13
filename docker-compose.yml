@@ -77,4 +77,3 @@ volumes:
 networks:
   ecommerce-network:
     driver: bridge
-#tsst
