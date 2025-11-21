@@ -1,35 +1,116 @@
 // src/services/api.js
-const API_BASE = (typeof window !== 'undefined' && window.__API_BASE__) || 'http://localhost:5000';
+import axios from 'axios';
 
-async function request(path, { method = 'GET', data, headers = {}, auth = false } = {}) {
-    const opts = { method, headers: { 'Content-Type': 'application/json', ...headers }, credentials: 'include' };
-    if (data) opts.body = JSON.stringify(data);
+// Lấy URL từ biến môi trường hoặc mặc định localhost
+const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-    const res = await fetch(`${API_BASE}${path}`, opts);
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok) {
-        const msg = json.message || `HTTP ${res.status}`;
-        throw new Error(msg);
+// 1. Khởi tạo Axios Instance
+const api = axios.create({
+    baseURL: API_BASE,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// 2. Interceptor: Tự động gắn Token vào mọi request nếu đã đăng nhập
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token'); // Lấy token từ LocalStorage
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+// 3. Interceptor: Xử lý lỗi trả về (Ví dụ: Token hết hạn -> Tự logout)
+api.interceptors.response.use(
+    (response) => response.data, // Trả về data trực tiếp cho gọn
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // Nếu lỗi 401 (Unauthorized), có thể clear token và redirect về login
+            // localStorage.removeItem('token');
+            // window.location.href = '/login';
+        }
+        // Trả về lỗi để component xử lý hiển thị alert
+        return Promise.reject(error.response ? error.response.data : error);
     }
-    return json;
-}
+);
 
-// Products
+// --- ĐỊNH NGHĨA CÁC API ENDPOINTS (Khớp với Backend Routes) ---
+
 export const ProductAPI = {
-        list: (q) => request(`/api/products${q ? `?q=${encodeURIComponent(q)}` : ''}`),
-  get: (id) => request(`/api/products/${id}`)
+    // Lấy danh sách sản phẩm (hỗ trợ lọc, tìm kiếm, phân trang)
+    // Backend: GET /products?page=1&limit=20&search=...
+    getAll: (params) => api.get('/products', { params }),
+
+    // Lấy chi tiết sản phẩm (theo ID hoặc Slug)
+    // Backend: GET /products/:idOrSlug
+    getDetail: (idOrSlug) => api.get(`/products/${idOrSlug}`),
+
+    // Lấy dữ liệu cho trang chủ (Mới, Bán chạy, Category)
+    // Backend: GET /products/home/sections
+    getHomeSections: () => api.get('/products/home/sections'),
+
+    // Lấy bình luận
+    getReviews: (idOrSlug, params) => api.get(`/products/${idOrSlug}/reviews`, { params }),
+    addReview: (idOrSlug, data) => api.post(`/products/${idOrSlug}/reviews`, data),
 };
 
-// Auth
 export const AuthAPI = {
-  register: (payload) => request('/api/users/register', { method: 'POST', data: payload }),
-  login: (payload) => request('/api/users/login', { method: 'POST', data: payload }),
-  me: () => request('/api/users/profile', { auth: true }),
-  logout: () => request('/api/users/logout', { method: 'POST' }),
+    // Backend: POST /users/login
+    login: (data) => api.post('/users/login', data),
+
+    // Backend: POST /users/register
+    register: (data) => api.post('/users/register', data),
+
+    // Backend: GET /users/profile
+    getProfile: () => api.get('/users/profile'),
+
+    // Backend: PUT /users/profile
+    updateProfile: (data) => api.put('/users/profile', data),
+
+    // Backend: PUT /users/change-password
+    changePassword: (data) => api.put('/users/change-password', data),
+
+    // Backend: POST /users/logout
+    logout: () => api.post('/users/logout'),
 };
 
-// Orders
 export const OrderAPI = {
-  create: (payload) => request('/api/orders', { method: 'POST', data: payload }),
-  myOrders: () => request('/api/orders/my', { method: 'GET' })
+    // --- GIỎ HÀNG ---
+    // Backend: POST /orders/cart (Thêm vào giỏ)
+    addToCart: (data) => api.post('/orders/cart', data),
+
+    // Backend: GET /orders/cart (Xem giỏ)
+    getCart: () => api.get('/orders/cart'),
+
+    // Backend: PUT /orders/cart/:itemId (Sửa số lượng)
+    updateCartItem: (itemId, quantity) => api.put(`/orders/cart/${itemId}`, { quantity }),
+
+    // Backend: DELETE /orders/cart/:itemId (Xóa item)
+    removeCartItem: (itemId) => api.delete(`/orders/cart/${itemId}`),
+
+    // --- THANH TOÁN & ĐƠN HÀNG ---
+    // Backend: POST /orders/cart-discount (Áp mã giảm giá)
+    applyCoupon: (code) => api.post('/orders/cart-discount', { code }),
+
+    // Backend: POST /orders/checkout (Đặt hàng)
+    checkout: (data) => api.post('/orders/checkout', data),
+
+    // Backend: GET /orders/history (Lịch sử đơn hàng)
+    getHistory: () => api.get('/orders/history'),
+
+    // Backend: GET /orders/:orderId (Chi tiết đơn hàng)
+    getDetail: (orderId) => api.get(`/orders/${orderId}`),
 };
+
+// Admin API (Sẽ bổ sung sau nếu cần)
+export const AdminAPI = {
+    getDashboard: () => api.get('/admin/dashboard/basic'),
+    getCharts: (params) => api.get('/admin/dashboard/charts', { params }),
+    // ... thêm các api quản lý khác
+};
+
+export default api;

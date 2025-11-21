@@ -1,22 +1,33 @@
-// src/index.js
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./app";
+import App from "./App";
 
-// 👉 Nếu bạn muốn sử dụng Api & CartStore trong toàn app React
-//    thì import chúng và gắn vào React Context hoặc export ra module riêng
+// Import Bootstrap CSS (Bắt buộc để giao diện đẹp)
+import "bootstrap/dist/css/bootstrap.min.css"; 
+// Import CSS cho Toast thông báo
+import "react-toastify/dist/ReactToastify.css"; 
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 import * as Api from "./services/api";
 import { CartStore } from "./services/storage";
 
-// (Tùy chọn) — nếu bạn muốn có thể truy cập từ console khi debug
-window.Api = Api;
-window.Cart = CartStore;
+// Debug: Gán vào window để test console trình duyệt (Tùy chọn)
+if (process.env.NODE_ENV !== 'production' && typeof window !== "undefined") {
+  window.Api = Api;
+  window.Cart = CartStore;
+}
 
-// Khởi động ứng dụng React
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const container = document.getElementById("root");
+if (!container) {
+  throw new Error('Root element with id "root" not found');
+}
+
+const root = ReactDOM.createRoot(container);
+
 root.render(
-  <React.StrictMode>
+  // Xóa React.StrictMode nếu muốn tránh render 2 lần lúc dev (tùy chọn)
+  <React.StrictMode> 
     <BrowserRouter>
       <App />
     </BrowserRouter>
