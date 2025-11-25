@@ -6,7 +6,7 @@ const Category = require('../models/Category');
 
 // Quản lý người dùng
 // Lấy tất cả người dùng
-const getAllUsers = async (req, res) => {
+const getAllUsers = async(req, res) => {
     try {
         const users = await User.find();
         res.json(users);
@@ -16,7 +16,7 @@ const getAllUsers = async (req, res) => {
 };
 
 // Xem thông tin người dùng
-const getUser = async (req, res) => {
+const getUser = async(req, res) => {
     try {
         const { id } = req.params;
         const user = await User.findById(id);
@@ -27,7 +27,7 @@ const getUser = async (req, res) => {
 }
 
 // Cập nhật thông tin người dùng
-const updateUser = async (req, res) => {
+const updateUser = async(req, res) => {
     try {
         const { id } = req.params;
         const user = await User.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
@@ -38,7 +38,7 @@ const updateUser = async (req, res) => {
 };
 
 // Chặn người dùng
-const blockUser = async (req, res) => {
+const blockUser = async(req, res) => {
     try {
         const { id } = req.params;
         const user = await User.findById(id);
@@ -53,7 +53,7 @@ const blockUser = async (req, res) => {
 };
 
 // Bỏ chặn người dùng
-const unBlockUser = async (req, res) => {
+const unBlockUser = async(req, res) => {
     try {
         const { id } = req.params;
         const user = await User.findById(id);
@@ -69,7 +69,7 @@ const unBlockUser = async (req, res) => {
 
 // Quản lý sản phẩm và các biến thể sản phẩm
 // Tạo mới sản phẩm
-const createProduct = async (req, res) => {
+const createProduct = async(req, res) => {
     try {
         const { slug, category } = req.body;
         const slugExists = await Product.findOne({ slug });
@@ -83,7 +83,7 @@ const createProduct = async (req, res) => {
 };
 
 // Cập nhật sản phẩm
-const updateProduct = async (req, res) => {
+const updateProduct = async(req, res) => {
     try {
         const { id } = req.params;
         const { slug, category } = req.body;
@@ -111,7 +111,7 @@ const updateProduct = async (req, res) => {
 };
 
 // Xóa sản phẩm
-const deleteProduct = async (req, res) => {
+const deleteProduct = async(req, res) => {
     try {
         const { id } = req.params;
         const product = await Product.findById(id);
@@ -124,7 +124,7 @@ const deleteProduct = async (req, res) => {
 };
 
 // Thêm biến thể sản phẩm và thêm hình ảnh
-const addVariantsAndImages = async (req, res) => {
+const addVariantsAndImages = async(req, res) => {
     try {
         const { id } = req.params;
         const { variants = [], images = [] } = req.body;
@@ -148,7 +148,7 @@ const addVariantsAndImages = async (req, res) => {
 }
 
 // Xóa biến thể sản phẩm và hình ảnh
-const deleteVariantsAndImages = async (req, res) => {
+const deleteVariantsAndImages = async(req, res) => {
     try {
         const { id } = req.params;
         const { variantIds = [], imageIds = [] } = req.body;
@@ -170,9 +170,9 @@ const deleteVariantsAndImages = async (req, res) => {
         if (imageIds.length > 0) {
             // Kiểm tra số lượng ảnh trước khi xóa
             if (product.images.length - imageIds.length < 3) {
-                 return res.status(400).json({
-                     message: 'Không thể xóa - sản phẩm phải giữ ít nhất 3 ảnh'
-                 });
+                return res.status(400).json({
+                    message: 'Không thể xóa - sản phẩm phải giữ ít nhất 3 ảnh'
+                });
             }
             product.images = product.images.filter(
                 img => !imageIds.includes(img._id.toString())
@@ -187,7 +187,7 @@ const deleteVariantsAndImages = async (req, res) => {
 }
 
 // Chỉnh sửa biến thể sản phẩm
-const updateVariant = async (req, res) => {
+const updateVariant = async(req, res) => {
     try {
         const { id: productId, variantId } = req.params;
         const updateData = req.body;
@@ -206,7 +206,7 @@ const updateVariant = async (req, res) => {
         const variant = product.variants[variantIndex];
         Object.keys(updateData).forEach(key => {
             if (typeof updateData[key] === 'object' && !Array.isArray(updateData[key]) && variant[key]) {
-                variant[key] = { ...variant[key], ...updateData[key] };
+                variant[key] = {...variant[key], ...updateData[key] };
             } else {
                 variant[key] = updateData[key];
             }
@@ -220,7 +220,7 @@ const updateVariant = async (req, res) => {
 
 // Quản lý danh mục sản phẩm
 // Xem các danh mục sản phẩm
-const getCategories = async (req, res) => {
+const getCategories = async(req, res) => {
     try {
         const categories = await Category.find();
         res.json(categories);
@@ -230,7 +230,7 @@ const getCategories = async (req, res) => {
 }
 
 // Thêm danh mục sản phẩm
-const createCategory = async (req, res) => {
+const createCategory = async(req, res) => {
     try {
         const { slug } = req.body;
         const slugExists = await Category.findOne({ slug });
@@ -243,7 +243,7 @@ const createCategory = async (req, res) => {
 };
 
 // Chỉnh sửa danh mục sản phẩm
-const updateCategory = async (req, res) => {
+const updateCategory = async(req, res) => {
     try {
         const { id } = req.params;
         const { slug } = req.body;
@@ -266,55 +266,60 @@ const updateCategory = async (req, res) => {
 };
 
 // Quản lý đơn hàng
-// Lấy danh sách đơn hàng với phân trang và lọc theo ngày
-const getOrders = async (req, res) => {
+// Lấy danh sách đơn hàng với phân trang và lọc theo ngày VÀ TRẠNG THÁI
+const getOrders = async(req, res) => {
     try {
-        const { 
-            page = 1, 
-            limit = 20, 
-            filter, 
-            startDate, 
-            endDate } = req.query;
+        const {
+            page = 1,
+                limit = 20,
+                filter,
+                status, // <--- Thêm tham số status vào đây
+                startDate,
+                endDate
+        } = req.query;
 
         const skip = (parseInt(page) - 1) * parseInt(limit);
-        const dateFilter = {};
+        const queryConditions = {}; // Đổi tên biến cho rõ nghĩa (không chỉ là dateFilter nữa)
+
         const now = new Date();
         const todayStart = new Date(now.setHours(0, 0, 0, 0));
         const yesterdayStart = new Date(new Date().setDate(now.getDate() - 1)).setHours(0, 0, 0, 0);
-        
-        // Tính ngày đầu tuần (Chủ Nhật là 0, Thứ Hai là 1)
+
         const dayOfWeek = now.getDay();
-        const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Bắt đầu từ T2
+        const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
         const thisWeekStart = new Date(new Date(now.setDate(diff)).setHours(0, 0, 0, 0));
         const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
+        // 1. Lọc theo thời gian
         if (filter === 'today') {
-            dateFilter.createdAt = { $gte: todayStart };
+            queryConditions.createdAt = { $gte: todayStart };
         } else if (filter === 'yesterday') {
-            dateFilter.createdAt = { $gte: new Date(yesterdayStart), $lt: todayStart };
+            queryConditions.createdAt = { $gte: new Date(yesterdayStart), $lt: todayStart };
         } else if (filter === 'thisweek') {
-            dateFilter.createdAt = { $gte: thisWeekStart };
+            queryConditions.createdAt = { $gte: thisWeekStart };
         } else if (filter === 'thismonth') {
-            dateFilter.createdAt = { $gte: thisMonthStart };
+            queryConditions.createdAt = { $gte: thisMonthStart };
         } else if (startDate && endDate) {
-            // Đảm bảo endDate bao gồm cả ngày đó (đến 23:59:59)
             const endOfDay = new Date(endDate);
             endOfDay.setHours(23, 59, 59, 999);
-
-            dateFilter.createdAt = {
+            queryConditions.createdAt = {
                 $gte: new Date(startDate),
                 $lt: endOfDay
             };
         }
-        
-        // Lấy tổng số đơn hàng (để phân trang) và danh sách đơn hàng trong 1 lần query
+
+        // 2. Lọc theo trạng thái (Logic Mới)
+        if (status && status !== '') {
+            queryConditions.status = status;
+        }
+
         const [orders, totalOrders] = await Promise.all([
-            Order.find(dateFilter)
-                .sort({ createdAt: -1 }) // Sắp xếp mới nhất trước
-                .skip(skip)
-                .limit(parseInt(limit))
-                .populate('user', 'name email'), // Chỉ lấy tên và email user
-            Order.countDocuments(dateFilter)
+            Order.find(queryConditions)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit))
+            .populate('user', 'name email'),
+            Order.countDocuments(queryConditions)
         ]);
 
         res.json({
@@ -329,7 +334,7 @@ const getOrders = async (req, res) => {
 };
 
 // Lấy chi tiết đơn hàng
-const getOrderDetail = async (req, res) => {
+const getOrderDetail = async(req, res) => {
     try {
         const { id } = req.params;
 
@@ -401,12 +406,12 @@ const getOrderDetail = async (req, res) => {
 };
 
 // Cập nhật trạng thái đơn hàng
-const updateOrderStatus = async (req, res) => {
+const updateOrderStatus = async(req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
 
-        const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+        const validStatuses = ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled']; // Lưu ý: 'shipping' không phải 'shipped' nếu frontend gửi 'shipping'
         if (!validStatuses.includes(status)) return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
 
         const order = await Order.findById(id)
@@ -428,25 +433,21 @@ const updateOrderStatus = async (req, res) => {
                 const stockUpdatePromises = order.items.map(item => {
                     if (!item.variantId) {
                         console.warn(`Missing variantId for item in order ${order._id}`);
-                        return Promise.resolve(); // Skip if no variantId
+                        return Promise.resolve();
                     }
-                    return Product.updateOne(
-                        { 
-                            _id: item.product._id, 
-                            'variants._id': item.variantId 
-                        },
-                        { 
-                            $inc: { 'variants.$.stock': item.quantity } 
-                        }
-                    );
+                    return Product.updateOne({
+                        _id: item.product._id,
+                        'variants._id': item.variantId
+                    }, {
+                        $inc: { 'variants.$.stock': item.quantity }
+                    });
                 });
-                await Promise.all(stockUpdatePromises.filter(p => p)); // Filter out skipped updates
+                await Promise.all(stockUpdatePromises.filter(p => p));
 
                 // 2. Hoàn lại lượt sử dụng mã giảm giá
                 if (order.discount) {
                     await Discount.findByIdAndUpdate(
-                        order.discount._id,
-                        { $inc: { usedCount: -1 } }
+                        order.discount._id, { $inc: { usedCount: -1 } }
                     );
                 }
 
@@ -454,8 +455,7 @@ const updateOrderStatus = async (req, res) => {
                 if (order.user && (order.pointsUsed > 0 || order.pointsEarned > 0)) {
                     const pointsToRestore = order.pointsUsed - order.pointsEarned;
                     await User.findByIdAndUpdate(
-                        order.user._id,
-                        { $inc: { loyaltyPoints: pointsToRestore } }
+                        order.user._id, { $inc: { loyaltyPoints: pointsToRestore } }
                     );
                 }
             } catch (updateError) {
@@ -467,14 +467,12 @@ const updateOrderStatus = async (req, res) => {
         order.status = status;
         order.statusHistory.push({ status, updatedAt: new Date() });
         const updatedOrder = await Order.findByIdAndUpdate(
-            id,
-            {
-                status: order.status,
-                statusHistory: order.statusHistory
-            },
-            { new: true }
-        ).populate('user', 'name email')
-          .populate('discount', 'code value');
+                id, {
+                    status: order.status,
+                    statusHistory: order.statusHistory
+                }, { new: true }
+            ).populate('user', 'name email')
+            .populate('discount', 'code value');
 
         return res.json({ message: `Cập nhật trạng thái đơn hàng thành ${status}`, order: updatedOrder });
 
@@ -485,7 +483,7 @@ const updateOrderStatus = async (req, res) => {
 
 // Quản lý mã giảm giá
 // Tạo mã giảm giá
-const createDiscountCode = async (req, res) => {
+const createDiscountCode = async(req, res) => {
     try {
         const { code } = req.body;
         const codeExists = await Discount.findOne({ code });
@@ -498,7 +496,7 @@ const createDiscountCode = async (req, res) => {
 };
 
 // Lấy tất cả mã giảm giá (Cập nhật để populate đơn hàng)
-const getAllDiscountCodes = async (req, res) => {
+const getAllDiscountCodes = async(req, res) => {
     try {
         const discounts = await Discount.find()
             .populate({
@@ -508,9 +506,8 @@ const getAllDiscountCodes = async (req, res) => {
             });
 
         const formattedDiscounts = discounts.map(discount => {
-            // Lọc orders có tồn tại (không null/undefined)
             const validOrders = (discount.appliedOrders || []).filter(order => order);
-            
+
             return {
                 _id: discount._id,
                 code: discount.code,
@@ -532,9 +529,8 @@ const getAllDiscountCodes = async (req, res) => {
                 stats: {
                     totalOrders: validOrders.length,
                     totalDiscountAmount: validOrders.reduce((sum, order) => sum + (order.discountAmount || 0), 0),
-                    averageDiscount: validOrders.length > 0 
-                        ? Math.round(validOrders.reduce((sum, order) => sum + (order.discountAmount || 0), 0) / validOrders.length)
-                        : 0
+                    averageDiscount: validOrders.length > 0 ?
+                        Math.round(validOrders.reduce((sum, order) => sum + (order.discountAmount || 0), 0) / validOrders.length) : 0
                 }
             };
         });
@@ -547,7 +543,7 @@ const getAllDiscountCodes = async (req, res) => {
 
 // Dashboard Admin
 // Thống kê cơ bản (Cập nhật để thêm 'người dùng mới' và 'sản phẩm bán chạy')
-const dashboardBasic = async (req, res) => {
+const dashboardBasic = async(req, res) => {
     try {
         // Tính thời gian
         const now = new Date();
@@ -562,60 +558,53 @@ const dashboardBasic = async (req, res) => {
             revenueByMonth
         ] = await Promise.all([
             // 1. Thống kê người dùng
-            User.aggregate([
-                {
-                    $facet: {
-                        'total': [{ $count: 'count' }],
-                        'newUsers': [
-                            { $match: { createdAt: { $gte: startOfMonth } } },
-                            { $count: 'count' }
-                        ],
-                        'userGrowth': [
-                            {
-                                $group: {
-                                    _id: { 
-                                        year: { $year: '$createdAt' },
-                                        month: { $month: '$createdAt' }
-                                    },
-                                    count: { $sum: 1 }
-                                }
-                            },
-                            { $sort: { '_id.year': -1, '_id.month': -1 } },
-                            { $limit: 6 }
-                        ]
-                    }
+            User.aggregate([{
+                $facet: {
+                    'total': [{ $count: 'count' }],
+                    'newUsers': [
+                        { $match: { createdAt: { $gte: startOfMonth } } },
+                        { $count: 'count' }
+                    ],
+                    'userGrowth': [{
+                            $group: {
+                                _id: {
+                                    year: { $year: '$createdAt' },
+                                    month: { $month: '$createdAt' }
+                                },
+                                count: { $sum: 1 }
+                            }
+                        },
+                        { $sort: { '_id.year': -1, '_id.month': -1 } },
+                        { $limit: 6 }
+                    ]
                 }
-            ]),
+            }]),
 
             // 2. Thống kê đơn hàng
-            Order.aggregate([
-                {
-                    $facet: {
-                        'total': [{ $count: 'count' }],
-                        'byStatus': [
-                            {
-                                $group: {
-                                    _id: '$status',
-                                    count: { $sum: 1 }
-                                }
+            Order.aggregate([{
+                $facet: {
+                    'total': [{ $count: 'count' }],
+                    'byStatus': [{
+                        $group: {
+                            _id: '$status',
+                            count: { $sum: 1 }
+                        }
+                    }],
+                    'recentOrders': [
+                        { $sort: { createdAt: -1 } },
+                        { $limit: 5 },
+                        {
+                            $project: {
+                                _id: 1,
+                                name: 1,
+                                totalPrice: 1,
+                                status: 1,
+                                createdAt: 1
                             }
-                        ],
-                        'recentOrders': [
-                            { $sort: { createdAt: -1 } },
-                            { $limit: 5 },
-                            {
-                                $project: {
-                                    _id: 1,
-                                    name: 1,
-                                    totalPrice: 1,
-                                    status: 1,
-                                    createdAt: 1
-                                }
-                            }
-                        ]
-                    }
+                        }
+                    ]
                 }
-            ]),
+            }]),
 
             // 3. Top sản phẩm bán chạy
             Order.aggregate([
@@ -633,8 +622,7 @@ const dashboardBasic = async (req, res) => {
             ]),
 
             // 4. Doanh thu theo tháng (6 tháng gần nhất)
-            Order.aggregate([
-                {
+            Order.aggregate([{
                     $group: {
                         _id: {
                             year: { $year: '$createdAt' },
@@ -652,12 +640,12 @@ const dashboardBasic = async (req, res) => {
         // Format response
         const response = {
             users: {
-                total: userStats[0].total[0]?.count || 0,
-                newThisMonth: userStats[0].newUsers[0]?.count || 0,
+                total: userStats[0].total[0].count || 0,
+                newThisMonth: userStats[0].newUsers[0].count || 0,
                 growthChart: userStats[0].userGrowth.reverse()
             },
             orders: {
-                total: orderStats[0].total[0]?.count || 0,
+                total: orderStats[0].total[0].count || 0,
                 byStatus: orderStats[0].byStatus.reduce((acc, curr) => {
                     acc[curr._id] = curr.count;
                     return acc;
@@ -668,10 +656,10 @@ const dashboardBasic = async (req, res) => {
             revenue: {
                 monthly: revenueByMonth.reverse(),
                 total: revenueByMonth.reduce((sum, month) => sum + month.revenue, 0),
-                thisMonth: revenueByMonth.find(m => 
-                    m._id.year === now.getFullYear() && 
+                thisMonth: revenueByMonth.find(m =>
+                    m._id.year === now.getFullYear() &&
                     m._id.month === (now.getMonth() + 1)
-                )?.revenue || 0
+                ).revenue || 0
             }
         };
 
@@ -682,7 +670,7 @@ const dashboardBasic = async (req, res) => {
 };
 
 // Thống kê nâng cao (bao gồm các biểu đồ biểu diễn các chỉ số trong cửa hàng)
-const getDashboardCharts = async (req, res) => {
+const getDashboardCharts = async(req, res) => {
     try {
         const { startDate, endDate, groupBy = 'day', margin = 20, comparePrev = 'false' } = req.query;
 
@@ -789,7 +777,8 @@ const getDashboardCharts = async (req, res) => {
 
         // Build chart array sorted by key
         const chartData = Array.from(map.values()).sort((a, b) => {
-            const ka = JSON.stringify(a.period), kb = JSON.stringify(b.period);
+            const ka = JSON.stringify(a.period),
+                kb = JSON.stringify(b.period);
             return ka < kb ? -1 : ka > kb ? 1 : 0;
         }).map(r => {
             const revenue = r.revenue || r.itemsRevenue || 0;
@@ -837,9 +826,9 @@ const getDashboardCharts = async (req, res) => {
                 ])
             ]);
 
-            const prevRevenue = (prevOrders[0]?.revenue || 0) || (prevItems[0]?.itemsRevenue || 0);
-            const prevProductsSold = prevItems[0]?.productsSold || 0;
-            const prevOrdersCount = prevOrders[0]?.ordersCount || 0;
+            const prevRevenue = (prevOrders[0].revenue || 0) || (prevItems[0].itemsRevenue || 0);
+            const prevProductsSold = prevItems[0].productsSold || 0;
+            const prevOrdersCount = prevOrders[0].ordersCount || 0;
             const prevProfit = prevRevenue * (Number(margin) / 100);
 
             prevTotals = {
@@ -870,25 +859,25 @@ const getDashboardCharts = async (req, res) => {
 };
 
 module.exports = {
-    getAllUsers,
-    getUser,
-    updateUser,
-    blockUser,
-    unBlockUser,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-    addVariantsAndImages,
-    deleteVariantsAndImages,
-    updateVariant,
-    getCategories,
-    createCategory,
-    updateCategory,
-    getOrders,
-    getOrderDetail,
-    updateOrderStatus,
-    createDiscountCode,
-    getAllDiscountCodes,
-    dashboardBasic,
-    getDashboardCharts
+    getAllUsers,
+    getUser,
+    updateUser,
+    blockUser,
+    unBlockUser,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    addVariantsAndImages,
+    deleteVariantsAndImages,
+    updateVariant,
+    getCategories,
+    createCategory,
+    updateCategory,
+    getOrders,
+    getOrderDetail,
+    updateOrderStatus,
+    createDiscountCode,
+    getAllDiscountCodes,
+    dashboardBasic,
+    getDashboardCharts
 };

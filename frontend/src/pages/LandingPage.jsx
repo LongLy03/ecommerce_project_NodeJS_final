@@ -1,8 +1,8 @@
-// src/pages/LandingPage.jsx
 import React, { useEffect, useState } from "react";
 import { ProductAPI } from "../services/api";
 import ProductCard from "../components/product/ProductCard";
 import { Link } from "react-router-dom";
+import Loader from "../components/common/Loader";
 
 const LandingPage = () => {
   const [data, setData] = useState({
@@ -26,30 +26,25 @@ const LandingPage = () => {
     fetchData();
   }, []);
 
-  if (loading)
-    return (
-      <div className="text-center mt-5">
-        <div className="spinner-border text-primary" role="status"></div>
-      </div>
-    );
+  if (loading) return <Loader />;
 
   return (
     <div className="container my-4">
-      {/* Banner Quảng cáo */}
-      <div className="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
+      {/* Banner */}
+      <div className="p-5 mb-5 bg-light rounded-3 shadow-sm text-center border">
         <h1 className="display-5 fw-bold text-primary">Máy Tính & Linh Kiện</h1>
-        <p className="col-md-8 fs-4 mx-auto">
+        <p className="col-md-8 fs-4 mx-auto text-muted">
           Cấu hình mạnh mẽ - Giá cả hợp lý - Bảo hành chính hãng
         </p>
-        <Link to="/catalog" className="btn btn-primary btn-lg" type="button">
+        <Link to="/catalog" className="btn btn-primary btn-lg px-4 mt-3 shadow-sm">
           Mua ngay
         </Link>
       </div>
 
-      {/* Section: Sản phẩm mới */}
+      {/* 1. Sản phẩm mới */}
       <section className="mb-5">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <h3 className="fw-bold border-start border-4 border-primary ps-3">
+        <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+          <h3 className="fw-bold text-primary border-start border-4 border-primary ps-3 mb-0">
             Sản phẩm mới
           </h3>
           <Link to="/catalog?sort=createdAt_desc" className="btn btn-sm btn-outline-secondary">
@@ -57,38 +52,47 @@ const LandingPage = () => {
           </Link>
         </div>
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-3">
-          {data.newest.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
+          {data.newest && data.newest.length > 0 ? (
+            data.newest.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))
+          ) : (
+            <p className="text-muted ms-3">Chưa có sản phẩm mới.</p>
+          )}
         </div>
       </section>
 
-      {/* Section: Bán chạy */}
+      {/* 2. Bán chạy nhất */}
       <section className="mb-5">
-        <h3 className="fw-bold border-start border-4 border-danger ps-3 mb-3">
-          Bán chạy nhất
-        </h3>
+        <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+          <h3 className="fw-bold text-danger border-start border-4 border-danger ps-3 mb-0">
+            Bán chạy nhất
+          </h3>
+        </div>
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-3">
-          {data.bestSellers.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
+          {data.bestSellers && data.bestSellers.length > 0 ? (
+            data.bestSellers.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))
+          ) : (
+            <p className="text-muted ms-3">Chưa có dữ liệu bán chạy.</p>
+          )}
         </div>
       </section>
 
-      {/* Section: Các danh mục (Laptop, PC...) */}
-      {Object.keys(data.categories).map((key) => {
+      {/* 3. Các danh mục nổi bật */}
+      {data.categories && Object.keys(data.categories).map((key) => {
         const catData = data.categories[key];
-        // Bỏ qua nếu danh mục không có sản phẩm
-        if (!catData.products || catData.products.length === 0) return null;
+        if (!catData || !catData.products || catData.products.length === 0) return null;
 
         return (
-          <section className="mb-5" key={catData.category._id}>
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h3 className="fw-bold border-start border-4 border-success ps-3">
-                {catData.category.name}
+          <section className="mb-5" key={key}>
+            <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+              <h3 className="fw-bold text-dark border-start border-4 border-dark ps-3 mb-0">
+                {catData.category?.name || key}
               </h3>
               <Link
-                to={`/catalog?category=${catData.category.slug}`}
+                to={`/catalog?category=${catData.category?.slug}`}
                 className="btn btn-sm btn-outline-secondary"
               >
                 Xem thêm

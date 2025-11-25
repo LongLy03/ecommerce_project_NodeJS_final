@@ -1,4 +1,3 @@
-// src/services/api.js
 import axios from 'axios';
 
 // Lấy URL từ biến môi trường hoặc mặc định localhost
@@ -24,14 +23,19 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// 3. Interceptor: Xử lý lỗi trả về (Ví dụ: Token hết hạn -> Tự logout)
+// 3. Interceptor: Xử lý lỗi trả về
 api.interceptors.response.use(
     (response) => response.data, // Trả về data trực tiếp cho gọn
     (error) => {
+        // Xử lý lỗi 401 (Hết hạn token hoặc chưa đăng nhập)
         if (error.response && error.response.status === 401) {
-            // Nếu lỗi 401 (Unauthorized), có thể clear token và redirect về login
-            // localStorage.removeItem('token');
-            // window.location.href = '/login';
+            // Chỉ logout nếu không phải đang ở trang login (tránh lặp vô tận)
+            if (window.location.pathname !== '/login') {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userInfo');
+                // Có thể redirect về login hoặc reload trang
+                // window.location.href = '/login'; 
+            }
         }
         // Trả về lỗi để component xử lý hiển thị alert
         return Promise.reject(error.response ? error.response.data : error);
@@ -110,7 +114,31 @@ export const OrderAPI = {
 export const AdminAPI = {
     getDashboard: () => api.get('/admin/dashboard/basic'),
     getCharts: (params) => api.get('/admin/dashboard/charts', { params }),
-    // ... thêm các api quản lý khác
+    // Quản lý Users
+    getUsers: () => api.get('/admin/users'),
+    blockUser: (id) => api.put(`/admin/users/${id}/block`),
+    unblockUser: (id) => api.put(`/admin/users/${id}/unblock`),
+
+    // Quản lý Products
+    addProduct: (data) => api.post('/admin/products', data),
+    updateProduct: (id, data) => api.put(`/admin/products/${id}`, data),
+    deleteProduct: (id) => api.delete(`/admin/products/${id}`),
+
+    // Quản lý Orders
+    getOrders: (params) => api.get('/admin/orders', { params }),
+    updateOrderStatus: (id, status) => api.put(`/admin/orders/${id}/status`, { status }),
+
+    // Discount
+    getDiscounts: () => api.get('/admin/discounts'),
+    createDiscount: (data) => api.post('/admin/discounts', data),
+
+    // Users
+    getUsers: () => api.get('/admin/users'),
+    blockUser: (id) => api.put(`/admin/users/${id}/block`),
+    unblockUser: (id) => api.put(`/admin/users/${id}/unblock`),
+
+    // Categories
+    getCategories: () => api.get('/admin/categories'),
 };
 
 export default api;

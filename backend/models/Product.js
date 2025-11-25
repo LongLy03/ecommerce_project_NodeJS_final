@@ -1,50 +1,65 @@
 const mongoose = require('mongoose');
 
-const variantSchema = new mongoose.Schema({
-  sku: { type: String, required: true },
-  name: { type: String, required: true },
-  price: { type: Number, required: true },
-  stock: { type: Number, default: 0 },
-  attributes: [{key: String, value: String}],
-}, { _id: true });
-
 const productSchema = new mongoose.Schema({
-    name: { type: String, required: true, trim: true },
-    slug: { type: String, required: true, unique: true },
-    description: { type: String, default: '' },
-    category: {type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true},
-
+    name: {
+        type: String,
+        required: [true, 'Vui lòng nhập tên sản phẩm'],
+        trim: true
+    },
+    slug: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    description: {
+        type: String,
+        required: [true, 'Vui lòng nhập mô tả sản phẩm']
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
+    },
+    brand: {
+        type: String,
+        required: true
+    },
     price: {
-      type: Number,
-      required: true,
-      index: true,
-      min: 0,
+        type: Number,
+        required: [true, 'Vui lòng nhập giá sản phẩm'],
+        default: 0
     },
+    // CẤU HÌNH QUAN TRỌNG: Cho phép images nhận cả String hoặc Object
+    // Để tương thích với mọi loại dữ liệu bạn đang có
+    images: [mongoose.Schema.Types.Mixed],
 
-    variants: {
-      type: [variantSchema],
-      validate: {
-        validator: v => Array.isArray(v) && v.length >= 2,
-        message: 'Sản phẩm phải có ít nhất 2 biến thể'
-      }
+    variants: [{
+        sku: String,
+        name: String,
+        price: Number,
+        stock: Number,
+        attributes: [{
+            key: String,
+            value: String
+        }]
+    }],
+    rating: {
+        type: Number,
+        default: 0
     },
-
-    brand: { type: String, default: '' },
-
-    images: {
-      type: [{ url: String}],
-      validate: {
-        validator: a => Array.isArray(a) && a.length >= 3,
-        message: 'Sản phẩm phải có ít nhất 3 ảnh minh họa'
-      }
+    numReviews: {
+        type: Number,
+        default: 0
     },
+    numComments: {
+        type: Number,
+        default: 0
+    }
+}, {
+    timestamps: true
+});
 
-    rating: { type: Number, default: 0, index: true },
-    numReviews: { type: Number, default: 0 },
-    numComments: { type: Number, default: 0 }
-}, { timestamps: true });
+// Tạo index tìm kiếm
+productSchema.index({ name: 'text', description: 'text' });
 
-productSchema.index({ name: 'text', description: 'text', brand: 'text' });
-
-const Product = mongoose.model('Product', productSchema);
-module.exports = Product;
+module.exports = mongoose.model('Product', productSchema);

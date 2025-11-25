@@ -28,6 +28,9 @@ import ChangePassword from "./pages/user/ChangePassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProductList from "./pages/admin/ProductList";
 import AdminOrderList from "./pages/admin/OrderList";
+import ProductEdit from "./pages/admin/ProductEdit";     // Import trang sửa sản phẩm
+import AdminUserList from "./pages/admin/UserList";         // Import trang quản lý user
+import AdminDiscountList from "./pages/admin/DiscountList"; // Import trang quản lý mã giảm giá
 
 function App() {
   return (
@@ -61,8 +64,20 @@ function App() {
           {/* path="/admin" ở đây làm prefix cho các route con */}
           <Route path="/admin" element={<PrivateRoute role="admin" />}>
             <Route index element={<AdminDashboard />} /> {/* /admin */}
+            
+            {/* Quản lý Sản phẩm */}
             <Route path="products" element={<AdminProductList />} /> {/* /admin/products */}
+            <Route path="products/new" element={<ProductEdit />} /> {/* Thêm mới */}
+            <Route path="products/:id" element={<ProductEdit />} /> {/* Chỉnh sửa */}
+            
+            {/* Quản lý Đơn hàng */}
             <Route path="orders" element={<AdminOrderList />} /> {/* /admin/orders */}
+            
+            {/* Quản lý Người dùng (Mới thêm) */}
+            <Route path="users" element={<AdminUserList />} /> {/* /admin/users */}
+            
+            {/* Quản lý Mã giảm giá (Mới thêm) */}
+            <Route path="discounts" element={<AdminDiscountList />} /> {/* /admin/discounts */}
           </Route>
 
           {/* --- 404 Not Found --- */}

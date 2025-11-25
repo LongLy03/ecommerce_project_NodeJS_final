@@ -45,7 +45,5 @@ Hướng dẫn cho giảng viên đối với bài final môn Lập trình web v
 
 ## Hướng dẫn cho giảng viên
 
-(Phần này bạn có thể ghi chú thêm về các tài khoản admin, các chức năng đã hoàn thành, hoặc các lưu ý đặc biệt khi chấm bài.)
-
 * **Tài khoản Admin:** `admin@example.com` / `admin123`
 * **Tài khoản User:** `user@example.com` / `user123`

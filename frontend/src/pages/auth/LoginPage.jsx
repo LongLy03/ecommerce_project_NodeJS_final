@@ -6,7 +6,7 @@ import { AuthAPI } from "../../services/api";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State quản lý hiện/ẩn
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -20,18 +20,27 @@ const LoginPage = () => {
       setLoading(true);
       const data = await AuthAPI.login({ email, password });
       
+      // DEBUG: Kiểm tra xem user này có phải admin không
+      console.log("Thông tin đăng nhập:", data);
+
+      // Lưu thông tin
       localStorage.setItem("token", data.token);
       localStorage.setItem("userInfo", JSON.stringify(data));
 
-      toast.success("Đăng nhập thành công!");
+      toast.success(`Chào mừng ${data.name} quay trở lại!`);
 
+      // LOGIC CHUYỂN HƯỚNG QUAN TRỌNG
       if (data.isAdmin) {
-        navigate("/admin");
+        console.log(">> User là ADMIN -> Chuyển sang trang Admin");
+        navigate("/admin"); // Chuyển sang Dashboard
       } else {
-        navigate("/");
+        console.log(">> User là KHÁCH -> Về trang chủ");
+        navigate("/"); // Về trang chủ
       }
+
     } catch (error) {
-      toast.error(error.message || "Đăng nhập thất bại");
+      console.error("Login Error:", error);
+      toast.error(error.message || "Đăng nhập thất bại. Vui lòng kiểm tra lại.");
     } finally {
       setLoading(false);
     }
@@ -62,19 +71,18 @@ const LoginPage = () => {
                   <label className="form-label fw-bold">Mật khẩu</label>
                   <div className="input-group">
                     <input
-                      /* Logic chuyển đổi type ở đây */
-                      type={showPassword ? "text" : "password"} 
+                      type={showPassword ? "text" : "password"}
                       className="form-control"
                       placeholder="Nhập mật khẩu..."
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
-                    {/* Nút con mắt */}
                     <button 
                       className="btn btn-outline-secondary" 
-                      type="button" // Quan trọng: type="button" để không submit form
+                      type="button"
                       onClick={() => setShowPassword(!showPassword)}
+                      tabIndex="-1"
                     >
                       <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
                     </button>
@@ -94,6 +102,8 @@ const LoginPage = () => {
                 <p className="small text-muted">
                   Chưa có tài khoản? <Link to="/register" className="text-decoration-none">Đăng ký ngay</Link>
                 </p>
+                {/* Nút tiện ích: Quên mật khẩu */}
+                <Link to="/forgot-password" class="small text-muted d-block mt-1">Quên mật khẩu?</Link>
               </div>
             </div>
           </div>
