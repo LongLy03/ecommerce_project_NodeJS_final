@@ -17,6 +17,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 // Pages - Auth
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 // Pages - User (Cần đăng nhập)
 import ProfilePage from "./pages/user/ProfilePage";
@@ -26,11 +28,14 @@ import ChangePassword from "./pages/user/ChangePassword";
 
 // Pages - Admin (Cần quyền Admin)
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminTaskbar from "./pages/admin/AdminTaskbar";
 import AdminProductList from "./pages/admin/ProductList";
 import AdminOrderList from "./pages/admin/OrderList";
 import ProductEdit from "./pages/admin/ProductEdit";     // Import trang sửa sản phẩm
 import AdminUserList from "./pages/admin/UserList";         // Import trang quản lý user
 import AdminDiscountList from "./pages/admin/DiscountList"; // Import trang quản lý mã giảm giá
+import AdminCategoryList from "./pages/admin/CategoryList";
+
 
 function App() {
   return (
@@ -51,6 +56,8 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} /> 
 
           {/* --- USER ROUTES (Cần Login) --- */}
           <Route element={<PrivateRoute role="user" />}>
@@ -60,11 +67,13 @@ function App() {
             <Route path="/orders/:id" element={<OrderDetailPage />} />
           </Route>
 
-          {/* --- ADMIN ROUTES (Cần Login + Role Admin) --- */}
-          {/* path="/admin" ở đây làm prefix cho các route con */}
+          {/* --- ADMIN ROUTES --- */}
           <Route path="/admin" element={<PrivateRoute role="admin" />}>
             <Route index element={<AdminDashboard />} /> {/* /admin */}
             
+            {/* Quản lý Danh mục */}
+            <Route path="categories" element={<AdminCategoryList />} />
+
             {/* Quản lý Sản phẩm */}
             <Route path="products" element={<AdminProductList />} /> {/* /admin/products */}
             <Route path="products/new" element={<ProductEdit />} /> {/* Thêm mới */}

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { ProductAPI, OrderAPI } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../../components/common/Loader"; // Nhớ dùng Loader đã tạo
+import ReviewSection from "../../components/product/ReviewSection";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -164,12 +165,19 @@ const ProductDetail = () => {
           </div>
           
           <hr />
+
           <div className="mt-4">
              <h5 className="fw-bold">Mô tả sản phẩm:</h5>
              <p style={{whiteSpace: 'pre-line', color: '#555'}}>{product.description || "Đang cập nhật..."}</p>
           </div>
         </div>
       </div>
+      
+      {/* --- PHẦN BÌNH LUẬN --- */}
+      <div className="mb-5">
+         <ReviewSection productId={product._id} />
+      </div>
+
     </div>
   );
 };

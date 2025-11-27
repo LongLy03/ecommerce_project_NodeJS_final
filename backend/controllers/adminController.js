@@ -147,6 +147,44 @@ const addVariantsAndImages = async(req, res) => {
     }
 }
 
+// Chỉnh sửa biến thể sản phẩm
+const updateVariant = async(req, res) => {
+    try {
+        const { id: productId, variantId } = req.params;
+        const updateData = req.body;
+
+        const product = await Product.findById(productId);
+        if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+
+        const variantIndex = product.variants.findIndex(v => v._id.toString() === variantId);
+        if (variantIndex === -1) return res.status(404).json({ message: 'Biến thể không tồn tại' });
+
+        // Kiểm tra trùng SKU nếu có update SKU
+        if (updateData.sku) {
+            const skuExists = product.variants.some(
+                v => v.sku === updateData.sku && v._id.toString() !== variantId
+            );
+            if (skuExists) return res.status(400).json({ message: 'SKU đã tồn tại trong sản phẩm này' });
+        }
+
+        // Cập nhật dữ liệu
+        const variant = product.variants[variantIndex];
+        Object.keys(updateData).forEach(key => {
+            // Xử lý nested object nếu cần (ví dụ attributes)
+            if (typeof updateData[key] === 'object' && !Array.isArray(updateData[key]) && variant[key]) {
+                variant[key] = {...variant[key], ...updateData[key] };
+            } else {
+                variant[key] = updateData[key];
+            }
+        });
+
+        await product.save();
+        return res.json({ message: 'Cập nhật biến thể thành công', variant: product.variants[variantIndex] });
+    } catch (err) {
+        return res.status(500).json({ message: 'Cập nhật biến thể thất bại', error: err.message });
+    }
+};
+
 // Xóa biến thể sản phẩm và hình ảnh
 const deleteVariantsAndImages = async(req, res) => {
     try {

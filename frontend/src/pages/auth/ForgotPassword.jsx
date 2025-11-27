@@ -1,54 +1,93 @@
-(function() {
-    const root = document.getElementById("app");
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AuthAPI } from "../../services/api";
+import Loader from "../../components/common/Loader";
 
-    root.innerHTML = `
-      <div style="
-        max-width:400px;
-        margin:60px auto;
-        padding:24px;
-        border:1px solid #e5e7eb;
-        border-radius:12px;
-        background:#fff;
-        box-shadow:0 2px 6px rgba(0,0,0,0.05)">
-        <h2 style="text-align:center;margin-bottom:20px;color:#111827">Quên mật khẩu</h2>
-        <form id="forgotForm">
-          <div style="margin:12px 0">
-            <label style="font-size:14px;font-weight:500">Nhập email để đặt lại mật khẩu</label><br/>
-            <input type="email" id="email" required
-              placeholder="you@example.com" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px"/>
+const ForgotPassword = () => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) return toast.error("Vui lòng nhập email của bạn");
+
+    try {
+      setLoading(true);
+      // Gọi API từ services/api.js. Bạn cần bổ sung hàm forgotPassword vào AuthAPI trong api.js nếu chưa có
+      // Backend: POST /users/forgot-password
+      await AuthAPI.forgotPassword({ email });
+      
+      setIsSubmitted(true);
+      toast.success("Đã gửi yêu cầu! Vui lòng kiểm tra email.");
+    } catch (error) {
+      toast.error(error.message || "Không tìm thấy tài khoản với email này");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-4">
+          <div className="card shadow border-0">
+            <div className="card-body p-4">
+              <div className="text-center mb-4">
+                <i className="fas fa-lock fa-3x text-primary mb-3"></i>
+                <h3 className="fw-bold">Quên Mật Khẩu?</h3>
+                <p className="text-muted small">
+                  Đừng lo lắng! Nhập email của bạn và chúng tôi sẽ gửi hướng dẫn khôi phục.
+                </p>
+              </div>
+
+              {isSubmitted ? (
+                <div className="alert alert-success text-center">
+                  <i className="fas fa-envelope-open-text fa-2x mb-2"></i>
+                  <p className="mb-0">Link đặt lại mật khẩu đã được gửi đến <strong>{email}</strong>.</p>
+                  <p className="small mt-2">Vui lòng kiểm tra hộp thư đến (hoặc mục Spam).</p>
+                  <Link to="/login" className="btn btn-outline-success btn-sm mt-2">
+                    Quay lại Đăng nhập
+                  </Link>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">Email đăng ký</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      autoFocus
+                    />
+                  </div>
+
+                  <div className="d-grid gap-2">
+                    <button 
+                        type="submit" 
+                        className="btn btn-primary py-2 fw-bold"
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <span><span className="spinner-border spinner-border-sm me-2"></span>Đang gửi...</span>
+                        ) : "Gửi yêu cầu"}
+                    </button>
+                    <Link to="/login" className="btn btn-light text-muted">
+                        Hủy bỏ
+                    </Link>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
-          <button type="submit"
-            style="width:100%;padding:12px;background:#111827;color:#fff;border:none;border-radius:6px;cursor:pointer">
-            Gửi yêu cầu đặt lại
-          </button>
-          <p id="msg" style="margin-top:14px;text-align:center;color:#dc2626;font-size:14px"></p>
-        </form>
-        <p style="margin-top:16px;text-align:center">
-          <a href="#/login" style="color:#2563eb;text-decoration:none">← Quay lại đăng nhập</a>
-        </p>
+        </div>
       </div>
-    `;
+    </div>
+  );
+};
 
-    document.getElementById("forgotForm").onsubmit = async(e) => {
-        e.preventDefault();
-        const email = document.getElementById("email").value.trim();
-        const msg = document.getElementById("msg");
-
-        try {
-            msg.textContent = "Đang gửi yêu cầu...";
-            const res = await fetch("/api/auth/forgot-password", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Không thể gửi email đặt lại mật khẩu");
-            msg.style.color = "#16a34a";
-            msg.textContent = "✅ Kiểm tra hộp thư của bạn để nhận hướng dẫn đặt lại mật khẩu!";
-            document.getElementById("forgotForm").reset();
-        } catch (err) {
-            msg.style.color = "#dc2626";
-            msg.textContent = "❌ " + err.message;
-        }
-    };
-})();
+export default ForgotPassword;

@@ -40,7 +40,7 @@ const OrderDetail = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
            <Link to="/orders" className="text-decoration-none text-secondary mb-2 d-inline-block">
-             <i className="fas fa-arrow-left me-1"></i> Quay lại danh sách
+             <i className="fas fa-arrow-left me-1"></i> Quay lại
            </Link>
            <h4>Chi tiết đơn hàng <span className="text-primary">#{order._id.slice(-6).toUpperCase()}</span></h4>
            <span className="text-muted">Ngày đặt: {formatDate(order.createdAt)}</span>

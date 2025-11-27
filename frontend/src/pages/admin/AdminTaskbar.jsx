@@ -14,6 +14,10 @@ const AdminTaskbar = () => {
         <i className="fas fa-tachometer-alt me-1"></i> Dashboard
       </Link>
 
+      <Link to="/admin/categories" className={`btn btn-sm ${location.pathname.includes("/categories") ? "btn-secondary" : "btn-outline-secondary"}`}>
+          <i className="fas fa-list-alt me-1"></i> Danh mục
+      </Link>
+
       <Link to="/admin/products" className={`btn btn-sm ${location.pathname.includes("/products") ? "btn-success" : "btn-outline-success"}`}>
         <i className="fas fa-box-open me-1"></i> Sản phẩm
       </Link>

@@ -25,6 +25,7 @@ Hướng dẫn cho giảng viên đối với bài final môn Lập trình web v
     ```bash
     cd ../frontend
     npm install
+    npm install sweetalert2
     ```
 
 ## Hướng dẫn chạy dự án
@@ -45,5 +46,5 @@ Hướng dẫn cho giảng viên đối với bài final môn Lập trình web v
 
 ## Hướng dẫn cho giảng viên
 
-* **Tài khoản Admin:** `admin@example.com` / `admin123`
+* **Tài khoản Admin:** `admin@gmail.com` / `Admin123@`
 * **Tài khoản User:** `user@example.com` / `user123`

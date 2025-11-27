@@ -78,6 +78,19 @@ export const AuthAPI = {
     // Backend: PUT /users/change-password
     changePassword: (data) => api.put('/users/change-password', data),
 
+    // Backend: POST /users/forgot-password
+    forgotPassword: (data) => api.post('/users/forgot-password', data),
+
+    // Backend: POST /users/reset-password/:token
+    resetPassword: (token, data) => api.post(`/users/reset-password/${token}`, data),
+
+    // --- QUẢN LÝ ĐỊA CHỈ ---
+    getAddresses: () => api.get('/users/addresses'),
+    addAddress: (data) => api.post('/users/addresses', data),
+    updateAddress: (id, data) => api.put(`/users/addresses/${id}`, data),
+    deleteAddress: (id) => api.delete(`/users/addresses/${id}`),
+    setDefaultAddress: (id) => api.put(`/users/addresses/default/${id}`),
+
     // Backend: POST /users/logout
     logout: () => api.post('/users/logout'),
 };
@@ -100,6 +113,9 @@ export const OrderAPI = {
     // Backend: POST /orders/cart-discount (Áp mã giảm giá)
     applyCoupon: (code) => api.post('/orders/cart-discount', { code }),
 
+    // Backend: DELETE /orders/cart-discount (Huỷ mã giảm giá)
+    removeDiscount: () => api.delete('/orders/cart-discount'),
+
     // Backend: POST /orders/checkout (Đặt hàng)
     checkout: (data) => api.post('/orders/checkout', data),
 
@@ -114,10 +130,17 @@ export const OrderAPI = {
 export const AdminAPI = {
     getDashboard: () => api.get('/admin/dashboard/basic'),
     getCharts: (params) => api.get('/admin/dashboard/charts', { params }),
+
     // Quản lý Users
     getUsers: () => api.get('/admin/users'),
     blockUser: (id) => api.put(`/admin/users/${id}/block`),
     unblockUser: (id) => api.put(`/admin/users/${id}/unblock`),
+    updateUser: (id, data) => api.put(`/admin/users/${id}`, data),
+
+    // Quản lý Danh mục
+    getCategories: () => api.get('/admin/categories'),
+    createCategory: (data) => api.post('/admin/categories', data),
+    updateCategory: (id, data) => api.put(`/admin/categories/${id}`, data),
 
     // Quản lý Products
     addProduct: (data) => api.post('/admin/products', data),
@@ -126,19 +149,12 @@ export const AdminAPI = {
 
     // Quản lý Orders
     getOrders: (params) => api.get('/admin/orders', { params }),
+    getOrderDetail: (id) => api.get(`/admin/orders/${id}`),
     updateOrderStatus: (id, status) => api.put(`/admin/orders/${id}/status`, { status }),
 
     // Discount
     getDiscounts: () => api.get('/admin/discounts'),
     createDiscount: (data) => api.post('/admin/discounts', data),
-
-    // Users
-    getUsers: () => api.get('/admin/users'),
-    blockUser: (id) => api.put(`/admin/users/${id}/block`),
-    unblockUser: (id) => api.put(`/admin/users/${id}/unblock`),
-
-    // Categories
-    getCategories: () => api.get('/admin/categories'),
 };
 
 export default api;
