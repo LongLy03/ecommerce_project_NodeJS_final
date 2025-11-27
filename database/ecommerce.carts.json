@@ -1,32 +1,32 @@
 [{
   "_id": {
-    "$oid": "68f8da857cba25c6b309bc70"
+    "$oid": "69285ac9625bfaa1fff78477"
   },
   "user": {
-    "$oid": "68f85dd66a4174d14f9a815c"
+    "$oid": "692857c8625bfaa1fff783eb"
   },
-  "items": [],
-  "discount": null,
+  "items": [
+    {
+      "product": {
+        "$oid": "68f100000000000000000026"
+      },
+      "variantId": {
+        "$oid": "68f110000000000000000051"
+      },
+      "quantity": 1,
+      "_id": {
+        "$oid": "69285b49625bfaa1fff78500"
+      }
+    }
+  ],
+  "discount": {
+    "$oid": "68de953bbb4ac25f533bbd9a"
+  },
   "createdAt": {
-    "$date": "2025-10-22T13:22:13.138Z"
+    "$date": "2025-11-27T14:06:01.832Z"
   },
   "updatedAt": {
-    "$date": "2025-11-06T11:39:30.187Z"
+    "$date": "2025-11-27T14:11:42.888Z"
   },
-  "__v": 16
-},
-{
-  "_id": {
-    "$oid": "68f8e69e03ee7a47aeb4b1a8"
-  },
-  "user": null,
-  "items": [],
-  "discount": null,
-  "createdAt": {
-    "$date": "2025-10-22T14:13:50.573Z"
-  },
-  "updatedAt": {
-    "$date": "2025-10-22T14:16:30.110Z"
-  },
-  "__v": 2
+  "__v": 5
 }]

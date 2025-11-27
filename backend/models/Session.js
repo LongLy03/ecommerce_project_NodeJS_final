@@ -16,7 +16,7 @@ const sessionSchema = new Schema(
 
 sessionSchema.pre('save', async function (next) {
   if (!this.expiresAt) {
-    this.expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+    this.expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 2);
   }
   next();
 });
