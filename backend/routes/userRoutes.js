@@ -4,10 +4,13 @@ const { protect } = require('../middleware/authMiddleware');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { 
-    registerUser, 
-    loginUser, 
-    getUserProfile, 
+// QUAN TRỌNG: Import hàm generateToken để tạo token cho Google Login
+const generateToken = require('../utils/generateToken');
+
+const {
+    registerUser,
+    loginUser,
+    getUserProfile,
     changePassword,
     updateUserProfile,
     forgotPassword,
@@ -16,19 +19,36 @@ const {
     addAddress,
     updateAddress,
     deleteAddress,
-    setDefaultAddress 
+    setDefaultAddress
 } = require('../controllers/userController');
 
 // Đăng ký và đăng nhập
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 
-// Đăng nhập với Google
+// --- ĐĂNG NHẬP GOOGLE (ĐÃ SỬA) ---
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
 router.get('/google/callback',
+    // 1. Middleware xác thực của Passport (Sửa lại dòng này, bỏ wrapper thừa)
     passport.authenticate('google', { failureRedirect: '/login-failed' }),
+
+    // 2. Hàm xử lý sau khi đăng nhập thành công
     (req, res) => {
-        res.json(req.user);
+        // Tạo token
+        const token = generateToken(req.user._id);
+
+        // Chuyển object user thành chuỗi để gửi qua URL
+        const userInfo = JSON.stringify({
+            _id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            isAdmin: req.user.isAdmin
+        });
+
+        // Redirect về Frontend kèm Token và Info
+        // Lưu ý: Đảm bảo port 3000 là port của Frontend React
+        res.redirect(`http://localhost:3000/login-success?token=${token}&user=${encodeURIComponent(userInfo)}`);
     }
 );
 
@@ -37,7 +57,17 @@ router.get('/facebook', passport.authenticate('facebook', { scope: ['email', 'pu
 router.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/login-failed' }),
     (req, res) => {
-        res.json(req.user);
+        // Bạn cũng nên sửa logic Facebook tương tự như Google ở trên để redirect về Frontend
+        // Hiện tại đang res.json(req.user) sẽ bị lỗi hiển thị JSON trên màn hình
+
+        const token = generateToken(req.user._id);
+        const userInfo = JSON.stringify({
+            _id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            isAdmin: req.user.isAdmin
+        });
+        res.redirect(`http://localhost:3000/login-success?token=${token}&user=${encodeURIComponent(userInfo)}`);
     }
 );
 
@@ -61,41 +91,40 @@ router.delete('/addresses/:id', protect(true), deleteAddress);
 router.put('/addresses/default/:id', protect(true), setDefaultAddress);
 
 // Đăng xuất
-router.post('/logout', protect(true), async (req, res) => {
-  try {
-    let userId = null;
+router.post('/logout', protect(true), async(req, res) => {
+    try {
+        let userId = null;
 
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      try {
-        const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        userId = decoded.id;
-      } catch (err) {
-      }
-    }
-
-    if (!userId && req.session && req.session.userId) {
-      userId = req.session.userId;
-    }
-
-    if (userId) {
-      await User.findByIdAndUpdate(userId, { tokenInvalidBefore: new Date() });
-    }
-
-    if (req.session) {
-      req.session.destroy(err => {
-        res.clearCookie('connect.sid');
-        if (err) {
-          return res.status(500).json({ message: 'Đăng xuất thất bại' });
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            try {
+                const token = req.headers.authorization.split(' ')[1];
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                userId = decoded.id;
+            } catch (err) {}
         }
-        return res.json({ message: 'Đã đăng xuất' });
-      });
-    } else {
-      return res.json({ message: 'Đã đăng xuất' });
+
+        if (!userId && req.session && req.session.userId) {
+            userId = req.session.userId;
+        }
+
+        if (userId) {
+            await User.findByIdAndUpdate(userId, { tokenInvalidBefore: new Date() });
+        }
+
+        if (req.session) {
+            req.session.destroy(err => {
+                res.clearCookie('connect.sid');
+                if (err) {
+                    return res.status(500).json({ message: 'Đăng xuất thất bại' });
+                }
+                return res.json({ message: 'Đã đăng xuất' });
+            });
+        } else {
+            return res.json({ message: 'Đã đăng xuất' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Lỗi server khi đăng xuất' });
     }
-  } catch (error) {
-    return res.status(500).json({ message: 'Lỗi server khi đăng xuất' });
-  }
 });
 
 module.exports = router;

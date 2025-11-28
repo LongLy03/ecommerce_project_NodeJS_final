@@ -235,6 +235,15 @@ const ProfilePage = () => {
                         </div>
                     </div>
                     <div className="row mb-2">
+                        <div className="col-sm-3 text-muted">Điểm thưởng:</div>
+                        <div className="col-sm-9">
+                            <span className="text-warning fw-bold fs-5">
+                                {new Intl.NumberFormat('vi-VN').format(user.loyaltyPoints || 0)}
+                            </span>
+                            <span className="small text-muted ms-1">điểm</span>
+                        </div>
+                    </div>
+                    <div className="row mb-2">
                         <div className="col-sm-3 text-muted">Vai trò:</div>
                         <div className="col-sm-9">
                             <span className={`badge ${user.isAdmin ? 'bg-danger' : 'bg-success'}`}>

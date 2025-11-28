@@ -19,6 +19,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import LoginSuccess from "./pages/auth/LoginSuccess";
 
 // Pages - User (Cần đăng nhập)
 import ProfilePage from "./pages/user/ProfilePage";
@@ -58,6 +59,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} /> 
+          <Route path="/login-success" element={<LoginSuccess />} />
 
           {/* --- USER ROUTES (Cần Login) --- */}
           <Route element={<PrivateRoute role="user" />}>

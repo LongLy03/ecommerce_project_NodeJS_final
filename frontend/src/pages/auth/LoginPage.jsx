@@ -10,6 +10,9 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Lấy URL Backend từ biến môi trường để gọi Social Login
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -20,22 +23,17 @@ const LoginPage = () => {
       setLoading(true);
       const data = await AuthAPI.login({ email, password });
       
-      // DEBUG: Kiểm tra xem user này có phải admin không
-      console.log("Thông tin đăng nhập:", data);
-
       // Lưu thông tin
       localStorage.setItem("token", data.token);
       localStorage.setItem("userInfo", JSON.stringify(data));
 
       toast.success(`Chào mừng ${data.name} quay trở lại!`);
 
-      // LOGIC CHUYỂN HƯỚNG QUAN TRỌNG
+      // Chuyển hướng
       if (data.isAdmin) {
-        console.log(">> User là ADMIN -> Chuyển sang trang Admin");
-        navigate("/admin"); // Chuyển sang Dashboard
+        navigate("/admin"); 
       } else {
-        console.log(">> User là KHÁCH -> Về trang chủ");
-        navigate("/"); // Về trang chủ
+        navigate("/"); 
       }
 
     } catch (error) {
@@ -46,12 +44,19 @@ const LoginPage = () => {
     }
   };
 
+  // Hàm xử lý khi bấm nút Social Login
+  const handleSocialLogin = (provider) => {
+      // Chuyển hướng trình duyệt sang trang đăng nhập của Backend
+      // Ví dụ: http://localhost:5000/api/users/google
+      window.location.href = `${API_URL}/users/${provider}`;
+  };
+
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 mb-5">
       <div className="row justify-content-center">
-        <div className="col-md-6 col-lg-4">
+        <div className="col-md-6 col-lg-5">
           <div className="card shadow border-0">
-            <div className="card-body p-4">
+            <div className="card-body p-5">
               <h3 className="text-center mb-4 fw-bold text-primary">Đăng Nhập</h3>
               
               <form onSubmit={handleSubmit}>
@@ -67,7 +72,7 @@ const LoginPage = () => {
                   />
                 </div>
 
-                <div className="mb-4">
+                <div className="mb-3">
                   <label className="form-label fw-bold">Mật khẩu</label>
                   <div className="input-group">
                     <input
@@ -88,22 +93,51 @@ const LoginPage = () => {
                     </button>
                   </div>
                 </div>
+                
+                <div className="d-flex justify-content-end mb-4">
+                    <Link to="/forgot-password" class="small text-decoration-none">Quên mật khẩu?</Link>
+                </div>
 
                 <button 
                   type="submit" 
-                  className="btn btn-primary w-100 py-2 fw-bold"
+                  className="btn btn-primary w-100 py-2 fw-bold mb-3"
                   disabled={loading}
                 >
                   {loading ? "Đang xử lý..." : "Đăng nhập"}
                 </button>
+
+                {/* --- PHẦN SOCIAL LOGIN MỚI --- */}
+                <div className="text-center mb-3">
+                    <span className="text-muted small">hoặc đăng nhập với</span>
+                </div>
+
+                <div className="d-grid gap-2">
+                    {/* Nút Google */}
+                    <button 
+                        type="button"
+                        className="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2"
+                        onClick={() => handleSocialLogin('google')}
+                    >
+                        <i className="fab fa-google"></i> Đăng nhập với Google
+                    </button>
+
+                    {/* Nút Facebook */}
+                    <button 
+                        type="button"
+                        className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2"
+                        onClick={() => handleSocialLogin('facebook')}
+                    >
+                        <i className="fab fa-facebook-f"></i> Đăng nhập với Facebook
+                    </button>
+                </div>
+                {/* --------------------------- */}
+
               </form>
 
-              <div className="text-center mt-3">
-                <p className="small text-muted">
-                  Chưa có tài khoản? <Link to="/register" className="text-decoration-none">Đăng ký ngay</Link>
+              <div className="text-center mt-4 pt-3 border-top">
+                <p className="small text-muted mb-0">
+                  Chưa có tài khoản? <Link to="/register" className="text-decoration-none fw-bold">Đăng ký ngay</Link>
                 </p>
-                {/* Nút tiện ích: Quên mật khẩu */}
-                <Link to="/forgot-password" class="small text-muted d-block mt-1">Quên mật khẩu?</Link>
               </div>
             </div>
           </div>
