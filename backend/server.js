@@ -4,8 +4,8 @@ dotenv.config();
 
 const connectDB = require('./config/db');
 const passport = require('./config/passport');
-const http = require('http');
-const { Server } = require('socket.io');
+const http = require('http'); // Import http
+const { Server } = require('socket.io'); // Import socket.io
 const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -13,17 +13,17 @@ const MongoStore = require('connect-mongo');
 connectDB();
 const app = express();
 
-// cors
+// Cấu hình CORS
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL || true,
+        origin: process.env.FRONTEND_URL || "http://localhost:3000", // Đặt cứng localhost:3000 nếu biến môi trường lỗi
         credentials: true,
     })
 );
 
 app.use(express.json());
 
-// session
+// Cấu hình Session
 app.use(
     session({
         secret: process.env.SESSION_SECRET || 'change_this_now',
@@ -35,7 +35,7 @@ app.use(
         }),
         cookie: {
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 2,
+            maxAge: 1000 * 60 * 60 * 24,
         },
     })
 );
@@ -43,6 +43,35 @@ app.use(
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// --- TẠO HTTP SERVER VÀ SOCKET.IO ---
+const server = http.createServer(app); // Bọc app bằng http server
+
+const io = new Server(server, {
+    cors: {
+        origin: process.env.FRONTEND_URL || "http://localhost:3000",
+        methods: ['GET', 'POST'],
+        credentials: true,
+    }
+});
+
+// Chia sẻ biến io để dùng ở controller (req.app.get('io'))
+app.set('io', io);
+
+// Xử lý kết nối Socket
+io.on('connection', (socket) => {
+    console.log('Client đã kết nối socket:', socket.id);
+
+    // Lắng nghe sự kiện client join vào room sản phẩm
+    socket.on('join', (room) => {
+        socket.join(room);
+        console.log(`Socket ${socket.id} đã vào phòng: ${room}`);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Client đã ngắt kết nối socket');
+    });
+});
 
 // Routes
 const userRoutes = require('./routes/userRoutes');
@@ -53,38 +82,15 @@ const orderRoutes = require('./routes/orderRoutes');
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes)
+app.use('/api/orders', orderRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-// web socket
-const server = http.createServer(app);
-
-const io = new Server(server, {
-    cors: {
-        origin: process.env.FRONTEND_URL || '*',
-        methods: ['GET', 'POST'],
-        credentials: true,
-    }
-});
-
-app.set('io', io);
-
-io.on('connection', (socket) => {
-    console.log('Client đã kết nối');
-
-    socket.on('joinProductRoom', (productId) => {
-        console.log('Client tham gia phòng ${productId}');
-        socket.join(productId);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Client đã ngắt kết nối');
-    });
-});
-
-module.exports = { io };
-
-app.listen(PORT, () => {
+// --- KHỞI ĐỘNG SERVER BẰNG HTTP SERVER (QUAN TRỌNG) ---
+server.listen(PORT, () => {
     console.log(`Server đang chạy tại port ${PORT}`);
+    console.log(`Socket.io đã sẵn sàng!`);
 });
+
+// Export io nếu cần dùng ở nơi khác (tùy chọn, vì đã dùng app.set)
+module.exports = { io };

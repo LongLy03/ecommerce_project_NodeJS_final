@@ -1,1 +1,0 @@
-Quản lý state (giỏ hàng, trạng thái đăng nhập)

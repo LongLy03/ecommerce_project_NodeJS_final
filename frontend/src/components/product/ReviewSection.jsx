@@ -40,19 +40,32 @@ const ReviewSection = ({ productId }) => {
 
     // 2. Thiết lập kết nối Socket.io
     socketRef.current = io(API_URL, {
-        transports: ['websocket'], // Ưu tiên websocket để nhanh hơn
+        transports: ['websocket', 'polling'],
     });
 
     // Tham gia vào "phòng" (room) của sản phẩm này
-    // Backend cần hỗ trợ: socket.join('product_' + productId)
     socketRef.current.emit("join", `product_${productId}`);
 
-    // 3. Lắng nghe sự kiện có review mới
+    // 3. Lắng nghe sự kiện có review mới (HOẶC CẬP NHẬT)
     socketRef.current.on("reviewAdded", (newReview) => {
-      // Kiểm tra xem review này có đúng của sản phẩm đang xem không (đề phòng backend emit lộn xộn)
-      if (newReview.product === productId || (typeof newReview.product === 'object' && newReview.product._id === productId)) {
-          // Thêm review mới vào ĐẦU danh sách
-          setReviews((prevReviews) => [newReview, ...prevReviews]);
+      // Kiểm tra xem review này có đúng của sản phẩm đang xem không
+      const reviewProductId = typeof newReview.product === 'object' ? newReview.product._id : newReview.product;
+
+      if (reviewProductId === productId) {
+          setReviews((prevReviews) => {
+              // --- LOGIC SỬA LỖI ---
+              // Kiểm tra xem review này đã có trong danh sách chưa (dựa vào _id)
+              const exists = prevReviews.find(r => r._id === newReview._id);
+
+              if (exists) {
+                  // Nếu đã có -> Cập nhật lại nội dung (Thay thế cái cũ)
+                  // Ta dùng map để tạo mảng mới, thay thế phần tử trùng ID
+                  return prevReviews.map(r => r._id === newReview._id ? newReview : r);
+              } else {
+                  // Nếu chưa có -> Thêm mới vào đầu danh sách
+                  return [newReview, ...prevReviews];
+              }
+          });
       }
     });
 
@@ -84,17 +97,13 @@ const ReviewSection = ({ productId }) => {
 
       await ProductAPI.addReview(productId, payload);
       
-      toast.success("Đã gửi bình luận!");
+      toast.success("Đã gửi đánh giá thành công!");
       // Reset form
       setComment("");
-      setRating(5);
-      setGuestInfo({ name: "", email: "" });
+      if (user) setRating(5); // Reset sao về 5 nếu là user
+      // Giữ lại thông tin khách để họ comment tiếp cho tiện
       
-      // LƯU Ý QUAN TRỌNG:
-      // Ta KHÔNG CẦN tự tay thêm review vào list ở đây (setReviews...)
-      // Vì Backend sau khi lưu xong sẽ emit sự kiện "reviewAdded".
-      // Socket ở trên (useEffect) sẽ bắt sự kiện đó và tự cập nhật giao diện.
-      // Điều này đảm bảo tính nhất quán dữ liệu 100%.
+      // KHÔNG CẦN setReviews ở đây vì Socket sẽ tự động cập nhật
       
     } catch (error) {
       toast.error(error.message || "Gửi bình luận thất bại");
@@ -145,6 +154,7 @@ const ReviewSection = ({ productId }) => {
                       </div>
                       <small className="text-muted" style={{fontSize: '0.8rem'}}>
                         {new Date(rev.createdAt).toLocaleString('vi-VN')}
+                        {rev.createdAt !== rev.updatedAt && <span className="ms-2 fst-italic">(Đã chỉnh sửa)</span>}
                       </small>
                   </div>
                   <div className="mt-2 p-3 bg-light rounded position-relative">

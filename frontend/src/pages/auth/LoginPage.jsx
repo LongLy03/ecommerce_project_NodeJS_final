@@ -120,15 +120,6 @@ const LoginPage = () => {
                     >
                         <i className="fab fa-google"></i> Đăng nhập với Google
                     </button>
-
-                    {/* Nút Facebook */}
-                    <button 
-                        type="button"
-                        className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2"
-                        onClick={() => handleSocialLogin('facebook')}
-                    >
-                        <i className="fab fa-facebook-f"></i> Đăng nhập với Facebook
-                    </button>
                 </div>
                 {/* --------------------------- */}
 
