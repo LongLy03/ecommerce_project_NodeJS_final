@@ -4,7 +4,6 @@ const { protect } = require('../middleware/authMiddleware');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const generateToken = require('../utils/generateToken');
 
 const {
     registerUser,
@@ -34,14 +33,7 @@ router.get('/google/callback',
 
     // 2. Hàm xử lý sau khi đăng nhập thành công
     (req, res) => {
-        const userInfo = JSON.stringify({
-            _id: req.user._id,
-            name: req.user.name,
-            email: req.user.email,
-            isAdmin: req.user.isAdmin
-        });
-
-        res.redirect(`http://localhost:3000/login-success?token=${req.user.token}&user=${encodeURIComponent(userInfo)}`);
+        res.redirect(`http://localhost:3000/login-success?token=${req.user.token}`);
     }
 );
 
@@ -50,15 +42,19 @@ router.get('/facebook', passport.authenticate('facebook', { scope: ['email', 'pu
 router.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/login-failed' }),
     (req, res) => {
-        const userInfo = JSON.stringify({
-            _id: req.user._id,
-            name: req.user.name,
-            email: req.user.email,
-            isAdmin: req.user.isAdmin
-        });
-        res.redirect(`http://localhost:3000/login-success?token=${req.user.token}&user=${encodeURIComponent(userInfo)}`);
+        res.redirect(`http://localhost:3000/login-success?token=${req.user.token}`);
     }
 );
+
+// Lấy dữ liệu cho tài khoản đăng nhập bằng gg và fb
+router.get('/me', protect(), async (req, res) => {
+    res.json({
+        _id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        isAdmin: req.user.isAdmin
+    });
+});
 
 // Xử lý lỗi đăng nhập OAuth
 router.get('/login-failed', (req, res) => res.status(401).json({ message: 'Đăng nhập thất bại!' }));
