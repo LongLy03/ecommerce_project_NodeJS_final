@@ -4,7 +4,6 @@ const { protect } = require('../middleware/authMiddleware');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-// QUAN TRỌNG: Import hàm generateToken để tạo token cho Google Login
 const generateToken = require('../utils/generateToken');
 
 const {
@@ -35,10 +34,6 @@ router.get('/google/callback',
 
     // 2. Hàm xử lý sau khi đăng nhập thành công
     (req, res) => {
-        // Tạo token
-        const token = generateToken(req.user._id);
-
-        // Chuyển object user thành chuỗi để gửi qua URL
         const userInfo = JSON.stringify({
             _id: req.user._id,
             name: req.user.name,
@@ -46,9 +41,7 @@ router.get('/google/callback',
             isAdmin: req.user.isAdmin
         });
 
-        // Redirect về Frontend kèm Token và Info
-        // Lưu ý: Đảm bảo port 3000 là port của Frontend React
-        res.redirect(`http://localhost:3000/login-success?token=${token}&user=${encodeURIComponent(userInfo)}`);
+        res.redirect(`http://localhost:3000/login-success?token=${req.user.token}&user=${encodeURIComponent(userInfo)}`);
     }
 );
 
@@ -57,17 +50,13 @@ router.get('/facebook', passport.authenticate('facebook', { scope: ['email', 'pu
 router.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/login-failed' }),
     (req, res) => {
-        // Bạn cũng nên sửa logic Facebook tương tự như Google ở trên để redirect về Frontend
-        // Hiện tại đang res.json(req.user) sẽ bị lỗi hiển thị JSON trên màn hình
-
-        const token = generateToken(req.user._id);
         const userInfo = JSON.stringify({
             _id: req.user._id,
             name: req.user.name,
             email: req.user.email,
             isAdmin: req.user.isAdmin
         });
-        res.redirect(`http://localhost:3000/login-success?token=${token}&user=${encodeURIComponent(userInfo)}`);
+        res.redirect(`http://localhost:3000/login-success?token=${req.user.token}&user=${encodeURIComponent(userInfo)}`);
     }
 );
 
