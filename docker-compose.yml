@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: ecommerce-mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password123
+      # Tự động tạo DB tên là ecommerce_db khi khởi tạo
+      - MONGO_INITDB_DATABASE=ecommerce_db 
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+      
+      # QUAN TRỌNG: Mount cả thư mục database vào entrypoint
+      # Docker sẽ tự chạy file .sh và nhìn thấy các file .json ở đó luôn
+      - ./database:/docker-entrypoint-initdb.d
+
+volumes:
+  mongo_data:
