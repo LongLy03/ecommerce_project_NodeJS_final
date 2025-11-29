@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AdminAPI } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../../components/common/Loader";
-import AdminTaskbar from "./AdminTaskbar"; // Import thanh điều hướng
+import AdminTaskbar from "./AdminTaskbar";
 
 const AdminDiscountList = () => {
   const [discounts, setDiscounts] = useState([]);

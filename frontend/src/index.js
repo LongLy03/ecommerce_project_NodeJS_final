@@ -21,7 +21,6 @@ if (!container) {
 const root = ReactDOM.createRoot(container);
 
 root.render(
-  // Cấu hình future flags để tắt cảnh báo React Router v7
   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
     <App />
   </BrowserRouter>

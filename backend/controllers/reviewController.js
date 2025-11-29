@@ -73,22 +73,17 @@ const addReview = async(req, res) => {
 
         let review;
 
-        // --- LOGIC QUAN TRỌNG: CHECK UPDATE HAY CREATE ---
         if (user) {
-            // Nếu là User đã đăng nhập -> Kiểm tra xem đã review sản phẩm này chưa
             review = await Review.findOne({ product: productObjectId, user: user._id });
 
             if (review) {
-                // NẾU ĐÃ CÓ -> CẬP NHẬT (UPDATE)
                 review.comment = comment;
-                // Chỉ update rating nếu người dùng có gửi lên rating mới
                 if (rating) {
                     review.rating = Number(rating);
                 }
-                review.updatedAt = Date.now(); // Cập nhật thời gian
+                review.updatedAt = Date.now();
                 await review.save();
             } else {
-                // NẾU CHƯA CÓ -> TẠO MỚI (CREATE)
                 review = await Review.create({
                     product: productObjectId,
                     user: user._id,
@@ -97,7 +92,6 @@ const addReview = async(req, res) => {
                 });
             }
         } else {
-            // Nếu là Khách (Guest) -> Luôn tạo mới (vì khách không có ID để check trùng)
             if (!guestName || !guestEmail) {
                 return res.status(400).json({ message: 'Khách phải nhập tên và email' });
             }
@@ -106,12 +100,10 @@ const addReview = async(req, res) => {
                 guestName,
                 guestEmail,
                 comment,
-                rating: null, // Khách không được đánh giá sao
+                rating: null,
             });
         }
 
-        // --- TÍNH TOÁN LẠI ĐIỂM TRUNG BÌNH (RATING) ---
-        // Chỉ tính trên các review có rating (nghĩa là của user đăng nhập)
         const stats = await Review.aggregate([
             { $match: { product: productObjectId, rating: { $ne: null } } },
             {
@@ -149,12 +141,7 @@ const addReview = async(req, res) => {
 
         const io = req.app.get('io');
         if (io) {
-            // Emit sự kiện reviewAdded vào room của sản phẩm
-            // Frontend sẽ nghe sự kiện này để update list mà không cần reload
             io.to(`product_${productId}`).emit('reviewAdded', populatedReview);
-
-            // Nếu dùng slug để join room thì emit cả vào room slug (tùy frontend join cái nào)
-            // io.to(`product_${product.slug}`).emit('reviewAdded', populatedReview);
         }
 
         // Trả về kết quả

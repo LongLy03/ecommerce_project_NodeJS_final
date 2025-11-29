@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ProductAPI, OrderAPI } from "../../services/api";
 import { toast } from "react-toastify";
-import Loader from "../../components/common/Loader"; // Nhớ dùng Loader đã tạo
+import Loader from "../../components/common/Loader";
 import ReviewSection from "../../components/product/ReviewSection";
 
 const ProductDetail = () => {

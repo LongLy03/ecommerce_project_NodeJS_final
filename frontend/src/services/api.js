@@ -29,15 +29,11 @@ api.interceptors.response.use(
     (error) => {
         // Xử lý lỗi 401 (Hết hạn token hoặc chưa đăng nhập)
         if (error.response && error.response.status === 401) {
-            // Chỉ logout nếu không phải đang ở trang login (tránh lặp vô tận)
             if (window.location.pathname !== '/login') {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userInfo');
-                // Có thể redirect về login hoặc reload trang
-                // window.location.href = '/login'; 
             }
         }
-        // Trả về lỗi để component xử lý hiển thị alert
         return Promise.reject(error.response ? error.response.data : error);
     }
 );

@@ -62,17 +62,9 @@ const AdminUserList = () => {
   const handleSaveUser = async (e) => {
     e.preventDefault();
     try {
-      // Chuẩn bị payload. Lưu ý: Backend adminController.updateUser nhận body trực tiếp
-      // Tùy vào logic backend của bạn xử lý 'addresses' thế nào.
-      // Nếu backend chỉ update field cấp 1 (name, email), ta gửi name, email.
-      // Nếu backend hỗ trợ update address, ta cần gửi cấu trúc phù hợp.
-      // Ở đây giả định backend cho phép update name/email. Việc update address phức tạp hơn thường cần API riêng hoặc logic backend xử lý mảng.
-      // Tạm thời ta update Name và Email trước.
-      
       const payload = {
         name: formData.name,
         email: formData.email
-        // Phần address nếu muốn update từ admin cần backend hỗ trợ logic tìm và sửa trong mảng addresses
       };
 
       await AdminAPI.updateUser(editingUser._id, payload);

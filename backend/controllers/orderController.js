@@ -57,9 +57,8 @@ const computeSummary = (cart) => {
     const discountAmount = discount ? (subtotal * (discount.value || 0)) / 100 : 0;
     const total = subtotal - discountAmount + SHIPPING_FEE;
 
-    // Trả về cấu trúc chuẩn cho Frontend
     return {
-        items, // Danh sách item đã được làm sạch và tính tiền
+        items,
         subtotal,
         shipping: SHIPPING_FEE,
         discount,
@@ -108,7 +107,7 @@ const addToCart = async(req, res) => {
 
         await cart.save();
         cart = await populateCart(cart);
-        const summary = computeSummary(cart); // Trả về summary thay vì cart thô
+        const summary = computeSummary(cart);
         return res.json(summary);
     } catch (err) {
         return res.status(500).json({ message: 'Lỗi server khi thêm vào giỏ hàng', error: err.message });

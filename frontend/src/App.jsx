@@ -32,9 +32,9 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminTaskbar from "./pages/admin/AdminTaskbar";
 import AdminProductList from "./pages/admin/ProductList";
 import AdminOrderList from "./pages/admin/OrderList";
-import ProductEdit from "./pages/admin/ProductEdit";     // Import trang sửa sản phẩm
-import AdminUserList from "./pages/admin/UserList";         // Import trang quản lý user
-import AdminDiscountList from "./pages/admin/DiscountList"; // Import trang quản lý mã giảm giá
+import ProductEdit from "./pages/admin/ProductEdit";
+import AdminUserList from "./pages/admin/UserList";
+import AdminDiscountList from "./pages/admin/DiscountList";
 import AdminCategoryList from "./pages/admin/CategoryList";
 
 

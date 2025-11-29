@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation, Link } from "react-router-dom"; // Import thêm useLocation, Link
+import { useNavigate, useParams, useLocation, Link } from "react-router-dom";
 import { AdminAPI, ProductAPI } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../../components/common/Loader";

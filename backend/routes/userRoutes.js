@@ -24,29 +24,17 @@ const {
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 
-// --- ĐĂNG NHẬP GOOGLE (ĐÃ SỬA) ---
+// Đăng nhập băng google
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback',
-    // 1. Middleware xác thực của Passport (Sửa lại dòng này, bỏ wrapper thừa)
     passport.authenticate('google', { failureRedirect: '/login-failed' }),
-
-    // 2. Hàm xử lý sau khi đăng nhập thành công
-    (req, res) => {
-        res.redirect(`http://localhost:3000/login-success?token=${req.user.token}`);
-    }
+        (req, res) => {
+            res.redirect(`http://localhost:3000/login-success?token=${req.user.token}`);
+        }
 );
 
-// Đăng nhập với Facebook
-router.get('/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
-router.get('/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/login-failed' }),
-    (req, res) => {
-        res.redirect(`http://localhost:3000/login-success?token=${req.user.token}`);
-    }
-);
-
-// Lấy dữ liệu cho tài khoản đăng nhập bằng gg và fb
+// Lấy dữ liệu cho tài khoản đăng nhập bằng google
 router.get('/me', protect(), async (req, res) => {
     res.json({
         _id: req.user._id,
