@@ -4,8 +4,8 @@ dotenv.config();
 
 const connectDB = require('./config/db');
 const passport = require('./config/passport');
-const http = require('http'); // Import http
-const { Server } = require('socket.io'); // Import socket.io
+const http = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -16,7 +16,7 @@ const app = express();
 // Cấu hình CORS
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL || "http://localhost:3000", // Đặt cứng localhost:3000 nếu biến môi trường lỗi
+        origin: process.env.FRONTEND_URL || "http://localhost:3000",
         credentials: true,
     })
 );
@@ -31,11 +31,11 @@ app.use(
         saveUninitialized: false,
         store: MongoStore.create({
             mongoUrl: process.env.MONGO_URI,
-            ttl: 14 * 24 * 60 * 60,
+            ttl: 60 * 60,
         }),
         cookie: {
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24,
+            maxAge: 1000 * 60 * 60,
         },
     })
 );
@@ -55,7 +55,6 @@ const io = new Server(server, {
     }
 });
 
-// Chia sẻ biến io để dùng ở controller (req.app.get('io'))
 app.set('io', io);
 
 // Xử lý kết nối Socket
@@ -92,5 +91,4 @@ server.listen(PORT, () => {
     console.log(`Socket.io đã sẵn sàng!`);
 });
 
-// Export io nếu cần dùng ở nơi khác (tùy chọn, vì đã dùng app.set)
 module.exports = { io };

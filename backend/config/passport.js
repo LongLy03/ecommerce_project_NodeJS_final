@@ -33,36 +33,6 @@ passport.use(new GoogleStrategy({
     }
 }));
 
-// Đăng nhập bằng Facebook
-passport.use(new FacebookStrategy({
-    clientID: process.env.FACEBOOK_APP_ID,
-    clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: process.env.FACEBOOK_CALLBACK_URL,
-    profileFields: ['id', 'displayName', 'emails']
-}, async (accessToken, refreshToken, profile, done) => {
-    try {
-        const email = profile.emails ? profile.emails[0].value : `${profile.id}@facebook.com`;
-        let user = await User.findOne({ email });
-
-        if (!user) {
-            user = await User.create({
-                name: profile.displayName || "Facebook User",
-                email,
-                password: Math.random().toString(36).slice(-8),
-            });
-        }
-
-        return done(null, {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            token: generateToken(user._id),
-        });
-    } catch (error) {
-        return done(error, null);
-    }
-}));
-
 passport.serializeUser((user, done) => done(null, user._id ? user._id.toString() : user));
 
 passport.deserializeUser(async (id, done) => {

@@ -170,7 +170,6 @@ const updateVariant = async(req, res) => {
         // Cập nhật dữ liệu
         const variant = product.variants[variantIndex];
         Object.keys(updateData).forEach(key => {
-            // Xử lý nested object nếu cần (ví dụ attributes)
             if (typeof updateData[key] === 'object' && !Array.isArray(updateData[key]) && variant[key]) {
                 variant[key] = {...variant[key], ...updateData[key] };
             } else {
@@ -279,13 +278,13 @@ const getOrders = async(req, res) => {
             page = 1,
                 limit = 20,
                 filter,
-                status, // <--- Thêm tham số status vào đây
+                status,
                 startDate,
                 endDate
         } = req.query;
 
         const skip = (parseInt(page) - 1) * parseInt(limit);
-        const queryConditions = {}; // Đổi tên biến cho rõ nghĩa (không chỉ là dateFilter nữa)
+        const queryConditions = {};
 
         const now = new Date();
         const todayStart = new Date(now.setHours(0, 0, 0, 0));
@@ -314,7 +313,7 @@ const getOrders = async(req, res) => {
             };
         }
 
-        // 2. Lọc theo trạng thái (Logic Mới)
+        // 2. Lọc theo trạng thái
         if (status && status !== '') {
             queryConditions.status = status;
         }
@@ -417,7 +416,7 @@ const updateOrderStatus = async(req, res) => {
         const { id } = req.params;
         const { status } = req.body;
 
-        const validStatuses = ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled']; // Lưu ý: 'shipping' không phải 'shipped' nếu frontend gửi 'shipping'
+        const validStatuses = ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled'];
         if (!validStatuses.includes(status)) return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
 
         const order = await Order.findById(id)
@@ -556,7 +555,6 @@ const dashboardBasic = async(req, res) => {
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const startOfPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
-        // Chạy song song các truy vấn thống kê
         const [
             userStats,
             orderStats,

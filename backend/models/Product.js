@@ -29,8 +29,7 @@ const productSchema = new mongoose.Schema({
         required: [true, 'Vui lòng nhập giá sản phẩm'],
         default: 0
     },
-    // CẤU HÌNH QUAN TRỌNG: Cho phép images nhận cả String hoặc Object
-    // Để tương thích với mọi loại dữ liệu bạn đang có
+
     images: [mongoose.Schema.Types.Mixed],
 
     variants: [{
@@ -59,7 +58,6 @@ const productSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Tạo index tìm kiếm
 productSchema.index({ name: 'text', description: 'text' });
 
 module.exports = mongoose.model('Product', productSchema);
