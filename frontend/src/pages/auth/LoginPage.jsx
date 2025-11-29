@@ -10,7 +10,6 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Lấy URL Backend từ biến môi trường để gọi Social Login
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
   const handleSubmit = async (e) => {
@@ -29,7 +28,7 @@ const LoginPage = () => {
 
       toast.success(`Chào mừng ${data.name} quay trở lại!`);
 
-      // Chuyển hướng
+      // Điều hướng
       if (data.isAdmin) {
         navigate("/admin"); 
       } else {
@@ -44,10 +43,7 @@ const LoginPage = () => {
     }
   };
 
-  // Hàm xử lý khi bấm nút Social Login
   const handleSocialLogin = (provider) => {
-      // Chuyển hướng trình duyệt sang trang đăng nhập của Backend
-      // Ví dụ: http://localhost:5000/api/users/google
       window.location.href = `${API_URL}/users/${provider}`;
   };
 
@@ -106,13 +102,12 @@ const LoginPage = () => {
                   {loading ? "Đang xử lý..." : "Đăng nhập"}
                 </button>
 
-                {/* --- PHẦN SOCIAL LOGIN MỚI --- */}
                 <div className="text-center mb-3">
                     <span className="text-muted small">hoặc đăng nhập với</span>
                 </div>
 
                 <div className="d-grid gap-2">
-                    {/* Nút Google */}
+                    {/* Đăng nhặp bằng Google */}
                     <button 
                         type="button"
                         className="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2"
@@ -121,7 +116,6 @@ const LoginPage = () => {
                         <i className="fab fa-google"></i> Đăng nhập với Google
                     </button>
                 </div>
-                {/* --------------------------- */}
 
               </form>
 

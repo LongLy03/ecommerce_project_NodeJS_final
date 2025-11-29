@@ -3,7 +3,6 @@ import { ProductAPI } from "../../services/api";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
 
-// Kết nối Socket tới Backend
 const API_URL = process.env.REACT_APP_API_URL?.replace('/api', '') || "http://localhost:5000";
 
 const ReviewSection = ({ productId }) => {
@@ -11,21 +10,17 @@ const ReviewSection = ({ productId }) => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  // State cho Form bình luận
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [guestInfo, setGuestInfo] = useState({ name: "", email: "" });
   const [submitting, setSubmitting] = useState(false);
   
-  // Ref để giữ kết nối socket
   const socketRef = useRef();
 
   useEffect(() => {
-    // Lấy thông tin user hiện tại
     const storedUser = JSON.parse(localStorage.getItem("userInfo"));
     setUser(storedUser);
 
-    // 1. Load danh sách review ban đầu từ API
     const fetchReviews = async () => {
       try {
         const res = await ProductAPI.getReviews(productId);
@@ -38,38 +33,28 @@ const ReviewSection = ({ productId }) => {
     };
     fetchReviews();
 
-    // 2. Thiết lập kết nối Socket.io
     socketRef.current = io(API_URL, {
         transports: ['websocket', 'polling'],
     });
 
-    // Tham gia vào "phòng" (room) của sản phẩm này
     socketRef.current.emit("join", `product_${productId}`);
 
-    // 3. Lắng nghe sự kiện có review mới (HOẶC CẬP NHẬT)
     socketRef.current.on("reviewAdded", (newReview) => {
-      // Kiểm tra xem review này có đúng của sản phẩm đang xem không
       const reviewProductId = typeof newReview.product === 'object' ? newReview.product._id : newReview.product;
 
       if (reviewProductId === productId) {
           setReviews((prevReviews) => {
-              // --- LOGIC SỬA LỖI ---
-              // Kiểm tra xem review này đã có trong danh sách chưa (dựa vào _id)
               const exists = prevReviews.find(r => r._id === newReview._id);
 
               if (exists) {
-                  // Nếu đã có -> Cập nhật lại nội dung (Thay thế cái cũ)
-                  // Ta dùng map để tạo mảng mới, thay thế phần tử trùng ID
                   return prevReviews.map(r => r._id === newReview._id ? newReview : r);
               } else {
-                  // Nếu chưa có -> Thêm mới vào đầu danh sách
                   return [newReview, ...prevReviews];
               }
           });
       }
     });
 
-    // Cleanup khi component bị hủy (rời khỏi trang)
     return () => {
       if (socketRef.current) {
           socketRef.current.disconnect();
@@ -81,7 +66,6 @@ const ReviewSection = ({ productId }) => {
     e.preventDefault();
     if (!comment.trim()) return toast.warn("Vui lòng nhập nội dung bình luận");
     
-    // Validate cho khách
     if (!user) {
         if (!guestInfo.name || !guestInfo.email) return toast.warn("Vui lòng nhập tên và email");
     }
@@ -98,12 +82,8 @@ const ReviewSection = ({ productId }) => {
       await ProductAPI.addReview(productId, payload);
       
       toast.success("Đã gửi đánh giá thành công!");
-      // Reset form
       setComment("");
-      if (user) setRating(5); // Reset sao về 5 nếu là user
-      // Giữ lại thông tin khách để họ comment tiếp cho tiện
-      
-      // KHÔNG CẦN setReviews ở đây vì Socket sẽ tự động cập nhật
+      if (user) setRating(5);
       
     } catch (error) {
       toast.error(error.message || "Gửi bình luận thất bại");
@@ -158,7 +138,6 @@ const ReviewSection = ({ productId }) => {
                       </small>
                   </div>
                   <div className="mt-2 p-3 bg-light rounded position-relative">
-                      {/* Mũi tên chỉ lên */}
                       <div style={{
                           position: 'absolute', top: '-8px', left: '20px', 
                           width: 0, height: 0, 
@@ -172,7 +151,7 @@ const ReviewSection = ({ productId }) => {
           )}
         </div>
 
-        {/* FORM VIẾT BÌNH LUẬN */}
+        {/* BÌNH LUẬN */}
         <div className="bg-white p-4 rounded border shadow-sm">
           <h5 className="fw-bold mb-3 text-primary"><i className="fas fa-pen me-2"></i>Viết đánh giá của bạn</h5>
           <form onSubmit={handleSubmit}>

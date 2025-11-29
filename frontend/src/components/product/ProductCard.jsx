@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-// 1. Built-in SVG Placeholder (No network needed)
 const PLACEHOLDER_IMG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20fill%3D%22%23f8f9fa%22%20width%3D%22200%22%20height%3D%22200%22%2F%3E%3Ctext%20fill%3D%22%23dee2e6%22%20font-family%3D%22sans-serif%22%20font-size%3D%2230%22%20dy%3D%2210.5%22%20font-weight%3D%22bold%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
 
 const ProductCard = ({ product }) => {
@@ -12,7 +11,6 @@ const ProductCard = ({ product }) => {
     }).format(price || 0);
   };
 
-  // Smart image getter
   const getImageUrl = (product) => {
     if (!product || !product.images || product.images.length === 0) {
       return PLACEHOLDER_IMG;
@@ -20,12 +18,10 @@ const ProductCard = ({ product }) => {
     
     const firstImage = product.images[0];
     
-    // Handle string URL (new data)
     if (typeof firstImage === 'string') {
         return firstImage;
     }
     
-    // Handle object URL (old data)
     if (typeof firstImage === 'object' && firstImage.url) {
         return firstImage.url;
     }
@@ -44,7 +40,7 @@ const ProductCard = ({ product }) => {
             className="card-img-top p-3"
             alt={product.name || "Sản phẩm"}
             loading="lazy"
-            referrerPolicy="no-referrer" // CRITICAL: Bypasses 403 Forbidden from external sites
+            referrerPolicy="no-referrer"
             style={{ objectFit: "contain", height: "200px", width: "100%" }}
             onError={(e) => { 
                 e.target.onerror = null; 

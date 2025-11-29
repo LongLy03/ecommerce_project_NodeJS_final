@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ProductAPI, OrderAPI } from "../../services/api";
 import { toast } from "react-toastify";
-import Loader from "../../components/common/Loader"; // Nhớ dùng Loader đã tạo
+import Loader from "../../components/common/Loader";
 import ReviewSection from "../../components/product/ReviewSection";
 
 const ProductDetail = () => {
@@ -12,7 +12,6 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   
-  // State để đổi ảnh khi click vào ảnh nhỏ
   const [mainImage, setMainImage] = useState("");
 
   useEffect(() => {
@@ -21,14 +20,11 @@ const ProductDetail = () => {
         const data = await ProductAPI.getDetail(id);
         setProduct(data);
         
-        // --- LOGIC MỚI: SET ẢNH MẶC ĐỊNH ---
         if (data.images && data.images.length > 0) {
             const firstImg = data.images[0];
-            // Lấy URL dù nó là object hay string
             const url = typeof firstImg === 'object' ? firstImg.url : firstImg;
             setMainImage(url);
         }
-        // ------------------------------------
 
         if (data.variants && data.variants.length > 0) {
           setSelectedVariant(data.variants[0]);
@@ -56,7 +52,6 @@ const ProductDetail = () => {
     }
   };
 
-  // Hàm helper lấy URL ảnh an toàn
   const getImgUrl = (imgItem) => {
       return typeof imgItem === 'object' ? imgItem.url : imgItem;
   };
@@ -67,7 +62,6 @@ const ProductDetail = () => {
   return (
     <div className="container mt-5 mb-5">
       <div className="row">
-        {/* CỘT ẢNH SẢN PHẨM */}
         <div className="col-md-6">
           <div className="border rounded p-2 text-center shadow-sm" style={{backgroundColor: '#fff'}}>
               <img
@@ -78,7 +72,6 @@ const ProductDetail = () => {
               />
           </div>
           
-          {/* List ảnh nhỏ */}
           <div className="d-flex mt-3 gap-2 overflow-auto pb-2">
             {product.images?.map((img, idx) => {
               const url = getImgUrl(img);
@@ -95,14 +88,13 @@ const ProductDetail = () => {
                         border: mainImage === url ? '2px solid #0d6efd' : '1px solid #dee2e6'
                     }} 
                     className="rounded"
-                    onClick={() => setMainImage(url)} // Click để đổi ảnh lớn
+                    onClick={() => setMainImage(url)}
                 />
               );
             })}
           </div>
         </div>
 
-        {/* CỘT THÔNG TIN */}
         <div className="col-md-6">
           <h2 className="fw-bold">{product.name}</h2>
           <div className="mb-3 text-warning">
@@ -116,7 +108,6 @@ const ProductDetail = () => {
               : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
           </h3>
 
-          {/* Chọn Variant */}
           {product.variants && product.variants.length > 0 && (
             <div className="mb-4">
               <label className="fw-bold mb-2">Chọn loại:</label>
@@ -127,7 +118,6 @@ const ProductDetail = () => {
                     className={`btn ${selectedVariant?._id === v._id ? 'btn-primary' : 'btn-outline-secondary'}`}
                     onClick={() => setSelectedVariant(v)}
                   >
-                    {/* Hiển thị thông tin thuộc tính (Màu, RAM...) */}
                     {v.attributes && v.attributes.length > 0 
                         ? v.attributes.map(a => a.value).join(" - ") 
                         : v.name}
@@ -153,7 +143,7 @@ const ProductDetail = () => {
             />
           </div>
 
-          {/* Nút mua */}
+          {/* Thêm vào giỏ hàng */}
           <div className="d-grid gap-2">
             <button 
               className="btn btn-danger btn-lg"
@@ -173,7 +163,7 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      {/* --- PHẦN BÌNH LUẬN --- */}
+      {/* --- BÌNH LUẬN --- */}
       <div className="mb-5">
          <ReviewSection productId={product._id} />
       </div>

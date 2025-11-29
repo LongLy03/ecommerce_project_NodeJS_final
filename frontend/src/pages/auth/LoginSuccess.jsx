@@ -17,10 +17,8 @@ const LoginSuccess = () => {
       return;
     }
 
-    // 1. Lưu Token
     localStorage.setItem("token", token);
 
-    // 2. Gọi API lấy user info từ token
     axios.get("http://localhost:5000/api/users/me", {
       headers: {
         Authorization: `Bearer ${token}`,

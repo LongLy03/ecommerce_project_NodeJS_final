@@ -1,16 +1,13 @@
 import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  // Nếu chỉ có 1 trang hoặc không có trang nào thì không hiển thị
   if (totalPages <= 1) return null;
 
-  // Tạo mảng số trang [1, 2, 3, ...]
   const pages = [...Array(totalPages).keys()].map((num) => num + 1);
 
   return (
     <nav aria-label="Page navigation">
       <ul className="pagination justify-content-center mt-4">
-        {/* Nút Trước (Previous) */}
         <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
           <button
             className="page-link"
@@ -22,7 +19,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           </button>
         </li>
 
-        {/* Các số trang */}
         {pages.map((page) => (
           <li
             key={page}
@@ -37,7 +33,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           </li>
         ))}
 
-        {/* Nút Sau (Next) */}
         <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
           <button
             className="page-link"

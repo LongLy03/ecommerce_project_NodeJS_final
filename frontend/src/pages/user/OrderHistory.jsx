@@ -21,7 +21,6 @@ const OrderHistory = () => {
     fetchOrders();
   }, []);
 
-  // Hàm helper để tô màu trạng thái
   const getStatusBadge = (status) => {
     switch (status) {
       case "pending": return <span className="badge bg-warning text-dark">Chờ xử lý</span>;
@@ -64,7 +63,6 @@ const OrderHistory = () => {
                   <td>{new Date(order.createdAt).toLocaleDateString("vi-VN")}</td>
                   <td>
                     <div className="d-flex align-items-center">
-                      {/* Hiển thị ảnh sản phẩm đầu tiên */}
                       {order.items?.[0]?.product?.images?.[0] && (
                         <img 
                           src={order.items[0].product.images[0]} 

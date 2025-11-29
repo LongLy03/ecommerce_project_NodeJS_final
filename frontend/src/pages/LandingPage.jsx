@@ -30,7 +30,6 @@ const LandingPage = () => {
 
   return (
     <div className="container my-4">
-      {/* Banner */}
       <div className="p-5 mb-5 bg-light rounded-3 shadow-sm text-center border">
         <h1 className="display-5 fw-bold text-primary">Máy Tính & Linh Kiện</h1>
         <p className="col-md-8 fs-4 mx-auto text-muted">
@@ -41,7 +40,7 @@ const LandingPage = () => {
         </Link>
       </div>
 
-      {/* 1. Sản phẩm mới */}
+      {/* Sản phẩm mới */}
       <section className="mb-5">
         <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
           <h3 className="fw-bold text-primary border-start border-4 border-primary ps-3 mb-0">
@@ -62,7 +61,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 2. Bán chạy nhất */}
+      {/* Bán chạy nhất */}
       <section className="mb-5">
         <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
           <h3 className="fw-bold text-danger border-start border-4 border-danger ps-3 mb-0">
@@ -80,7 +79,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 3. Các danh mục nổi bật */}
+      {/* Các danh mục nổi bật */}
       {data.categories && Object.keys(data.categories).map((key) => {
         const catData = data.categories[key];
         if (!catData || !catData.products || catData.products.length === 0) return null;

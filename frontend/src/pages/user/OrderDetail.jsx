@@ -26,17 +26,14 @@ const OrderDetail = () => {
   if (loading) return <Loader />;
   if (!order) return <div className="text-center mt-5">Không tìm thấy đơn hàng</div>;
 
-  // Format tiền tệ
   const formatMoney = (amount) => 
     new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
 
-  // Format ngày giờ
   const formatDate = (dateString) => 
     new Date(dateString).toLocaleString("vi-VN");
 
   return (
     <div className="container mt-4 mb-5">
-      {/* Header & Nút quay lại */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
            <Link to="/orders" className="text-decoration-none text-secondary mb-2 d-inline-block">
@@ -46,7 +43,6 @@ const OrderDetail = () => {
            <span className="text-muted">Ngày đặt: {formatDate(order.createdAt)}</span>
         </div>
         <div className="text-end">
-           {/* Badge Trạng thái lớn */}
            <span className={`badge fs-6 px-3 py-2 bg-${
              order.status === 'delivered' ? 'success' : 
              order.status === 'cancelled' ? 'danger' : 
@@ -61,7 +57,6 @@ const OrderDetail = () => {
       </div>
 
       <div className="row">
-        {/* Cột Trái: Danh sách sản phẩm & Thông tin thanh toán */}
         <div className="col-lg-8">
           {/* Danh sách sản phẩm */}
           <div className="card shadow-sm mb-4 border-0">
@@ -99,7 +94,7 @@ const OrderDetail = () => {
             </ul>
           </div>
 
-          {/* Tổng tiền thanh toán */}
+          {/* Tổng tiền */}
           <div className="card shadow-sm mb-4 border-0">
             <div className="card-body">
               <div className="d-flex justify-content-between mb-2">
@@ -134,7 +129,7 @@ const OrderDetail = () => {
           </div>
         </div>
 
-        {/* Cột Phải: Thông tin giao hàng & Lịch sử trạng thái */}
+        {/* Thông tin giao hàng & Lịch sử trạng thái */}
         <div className="col-lg-4">
           {/* Thông tin người nhận */}
           <div className="card shadow-sm mb-4 border-0">
@@ -151,13 +146,12 @@ const OrderDetail = () => {
             </div>
           </div>
 
-          {/* Lịch sử trạng thái (Tracking) - YÊU CẦU BẮT BUỘC */}
+          {/* Lịch sử trạng thái */}
           <div className="card shadow-sm border-0">
             <div className="card-header bg-white fw-bold">Lịch sử trạng thái</div>
             <div className="card-body p-0">
               <ul className="list-group list-group-flush">
                 {order.statusHistory && order.statusHistory.length > 0 ? (
-                   // Sắp xếp mới nhất lên đầu
                    [...order.statusHistory].reverse().map((hist, idx) => (
                      <li key={idx} className="list-group-item">
                        <div className="d-flex">

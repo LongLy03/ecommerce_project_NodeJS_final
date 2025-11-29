@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom"; // Import thêm useLocation
+import { Link, useLocation } from "react-router-dom";
 import { AdminAPI } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../../components/common/Loader";
@@ -34,7 +34,7 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [chartType, setChartType] = useState("revenue");
-  const location = useLocation(); // Hook để biết đang ở trang nào
+  const location = useLocation();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="container-fluid px-4 mt-4">
-      {/* HIỂN THỊ TASKBAR */}
+      {/* TASKBAR */}
       <AdminTaskbar />
 
       <h2 className="mb-4 fw-bold text-primary"><i className="fas fa-chart-line me-2"></i>Tổng quan hệ thống</h2>

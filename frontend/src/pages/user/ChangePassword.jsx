@@ -20,7 +20,6 @@ const ChangePassword = () => {
     e.preventDefault();
     const { oldPassword, newPassword, confirmPassword } = formData;
 
-    // 1. Kiểm tra dữ liệu đầu vào
     if (!oldPassword || !newPassword || !confirmPassword) {
       return toast.error("Vui lòng điền đầy đủ các trường");
     }
@@ -33,11 +32,10 @@ const ChangePassword = () => {
 
     try {
       setLoading(true);
-      // 2. Gọi API Backend
       await AuthAPI.changePassword({ oldPassword, newPassword });
       
       toast.success("Đổi mật khẩu thành công!");
-      navigate("/profile"); // Quay về trang hồ sơ
+      navigate("/profile");
     } catch (error) {
       toast.error(error.message || "Đổi mật khẩu thất bại. Kiểm tra lại mật khẩu cũ.");
     } finally {

@@ -4,13 +4,11 @@ import { OrderAPI, AuthAPI } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../../components/common/Loader";
 
-// Ảnh giữ chỗ dạng SVG (Base64) - Không bao giờ lỗi
 const PLACEHOLDER_IMG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20fill%3D%22%23f8f9fa%22%20width%3D%22200%22%20height%3D%22200%22%2F%3E%3Ctext%20fill%3D%22%23dee2e6%22%20font-family%3D%22sans-serif%22%20font-size%3D%2230%22%20dy%3D%2210.5%22%20font-weight%3D%22bold%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
 
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  // Lấy danh sách ID sản phẩm được chọn từ trang Giỏ hàng
   const { selectedItems } = location.state || { selectedItems: [] };
 
   const [loading, setLoading] = useState(true);
@@ -28,7 +26,6 @@ const CheckoutPage = () => {
     usedPoints: 0
   });
 
-  // Hàm lấy ảnh an toàn
   const getProductImage = (product) => {
     if (!product || !product.images || product.images.length === 0) return PLACEHOLDER_IMG;
     const firstImage = product.images[0];
@@ -38,7 +35,6 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    // Nếu không có sản phẩm nào được chọn -> Đá về giỏ hàng
     if (!selectedItems || selectedItems.length === 0) {
         toast.warning("Vui lòng chọn sản phẩm từ giỏ hàng để thanh toán");
         navigate("/cart");
@@ -47,30 +43,24 @@ const CheckoutPage = () => {
 
     const initData = async () => {
       try {
-        // 1. Lấy thông tin Giỏ hàng (để render lại list item)
         const cartData = await OrderAPI.getCart();
         setCart(cartData);
 
-        // 2. Lấy thông tin User (để điền tự động)
-        // Dùng try-catch riêng để nếu là Guest (lỗi 401) thì vẫn chạy tiếp được
         try {
             const userData = await AuthAPI.getProfile();
             setUser(userData);
             
-            // --- LOGIC TỰ ĐỘNG ĐIỀN ĐỊA CHỈ ---
             const defaultAddr = userData.defaultAddress;
             setFormData(prev => ({
                 ...prev,
                 name: userData.name || "",
                 email: userData.email || "",
-                // Nếu có địa chỉ mặc định thì điền, không thì để trống
                 phone: defaultAddr ? defaultAddr.phone : "",
                 address: defaultAddr ? defaultAddr.street : "",
                 city: defaultAddr ? defaultAddr.city : "",
                 country: defaultAddr ? defaultAddr.country : "Việt Nam"
             }));
         } catch (err) {
-            // Không sao, có thể là Guest checkout
             console.log("Guest checkout or error fetching profile");
         }
       } catch (error) {
@@ -82,8 +72,6 @@ const CheckoutPage = () => {
     initData();
   }, [selectedItems, navigate]);
 
-  // --- TÍNH TOÁN TIỀN BẠC ---
-  // Chỉ lấy những item nằm trong danh sách selectedItems
   const checkoutItems = cart?.items?.filter(item => selectedItems.includes(item._id)) || [];
   
   const subtotal = checkoutItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
@@ -91,7 +79,6 @@ const CheckoutPage = () => {
   const discountAmount = (subtotal * discountPercent) / 100;
   const shippingFee = 30000;
   
-  // Điểm thưởng (1000đ = 1 điểm -> 1 điểm trừ 1000đ)
   const pointsDiscount = Math.min((Number(formData.usedPoints) || 0) * 1000, subtotal); 
   
   const total = Math.max(0, subtotal - discountAmount + shippingFee - pointsDiscount);
@@ -99,7 +86,6 @@ const CheckoutPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate điểm thưởng
     if (user && formData.usedPoints > user.loyaltyPoints) {
         return toast.error(`Bạn chỉ có ${user.loyaltyPoints} điểm thưởng.`);
     }
@@ -115,20 +101,18 @@ const CheckoutPage = () => {
             country: formData.country
         },
         paymentMethod: formData.paymentMethod,
-        selectedItems: selectedItems, // Gửi danh sách ID item cần mua
+        selectedItems: selectedItems,
         usedPoints: formData.usedPoints
       };
 
       await OrderAPI.checkout(payload);
       
-      // Dùng SweetAlert hoặc toast
       toast.success("Đặt hàng thành công! Cảm ơn bạn đã mua sắm.");
       
-      // Chuyển hướng
       if (user) {
-          navigate("/orders"); // User -> Lịch sử đơn
+          navigate("/orders");
       } else {
-          navigate("/"); // Guest -> Trang chủ
+          navigate("/");
       }
       
     } catch (error) {
@@ -144,7 +128,6 @@ const CheckoutPage = () => {
       
       <form onSubmit={handleSubmit}>
         <div className="row">
-            {/* --- CỘT TRÁI: THÔNG TIN GIAO HÀNG --- */}
             <div className="col-md-7 mb-4">
             <div className="card shadow-sm border-0">
                 <div className="card-header bg-white py-3">
@@ -217,7 +200,7 @@ const CheckoutPage = () => {
                         value={formData.country}
                         onChange={(e) => setFormData({...formData, country: e.target.value})}
                         required
-                        readOnly // Thường mặc định VN
+                        readOnly
                         />
                     </div>
                 </div>
@@ -254,7 +237,6 @@ const CheckoutPage = () => {
                     </div>
                 </div>
 
-                {/* Điểm thưởng (Chỉ hiện cho User) */}
                 {user && (
                     <div className="mt-4 p-3 bg-light rounded border border-warning">
                         <div className="d-flex justify-content-between align-items-center mb-2">
@@ -286,14 +268,13 @@ const CheckoutPage = () => {
             </div>
             </div>
 
-            {/* --- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG --- */}
             <div className="col-md-5">
             <div className="card shadow-sm border-0 sticky-top" style={{top: '20px'}}>
                 <div className="card-header bg-white py-3">
                     <h5 className="mb-0 fw-bold"><i className="fas fa-shopping-bag me-2 text-primary"></i>Tóm tắt đơn hàng</h5>
                 </div>
                 <div className="card-body p-0">
-                    {/* Danh sách sản phẩm (Scroll nếu quá dài) */}
+                    {/* Danh sách sản phẩm */}
                     <div style={{maxHeight: '400px', overflowY: 'auto'}}>
                         <ul className="list-group list-group-flush">
                             {checkoutItems.map((item) => (

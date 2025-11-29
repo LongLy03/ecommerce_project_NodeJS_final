@@ -15,8 +15,6 @@ const ForgotPassword = () => {
 
     try {
       setLoading(true);
-      // Gọi API từ services/api.js. Bạn cần bổ sung hàm forgotPassword vào AuthAPI trong api.js nếu chưa có
-      // Backend: POST /users/forgot-password
       await AuthAPI.forgotPassword({ email });
       
       setIsSubmitted(true);

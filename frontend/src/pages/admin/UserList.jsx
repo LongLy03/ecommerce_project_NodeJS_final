@@ -9,7 +9,6 @@ const AdminUserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // State cho Modal Chỉnh sửa User
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
@@ -36,10 +35,8 @@ const AdminUserList = () => {
     fetchUsers();
   }, []);
 
-  // Mở Modal và fill dữ liệu
   const handleEditClick = (user) => {
     setEditingUser(user);
-    // Tìm địa chỉ mặc định (hoặc lấy địa chỉ đầu tiên nếu không có default)
     const defaultAddr = user.addresses?.find(a => a.isDefault) || user.addresses?.[0] || {};
     
     setFormData({
@@ -53,33 +50,23 @@ const AdminUserList = () => {
     setShowModal(true);
   };
 
-  // Xử lý thay đổi input trong Modal
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Lưu thay đổi User
   const handleSaveUser = async (e) => {
     e.preventDefault();
     try {
-      // Chuẩn bị payload. Lưu ý: Backend adminController.updateUser nhận body trực tiếp
-      // Tùy vào logic backend của bạn xử lý 'addresses' thế nào.
-      // Nếu backend chỉ update field cấp 1 (name, email), ta gửi name, email.
-      // Nếu backend hỗ trợ update address, ta cần gửi cấu trúc phù hợp.
-      // Ở đây giả định backend cho phép update name/email. Việc update address phức tạp hơn thường cần API riêng hoặc logic backend xử lý mảng.
-      // Tạm thời ta update Name và Email trước.
-      
       const payload = {
         name: formData.name,
         email: formData.email
-        // Phần address nếu muốn update từ admin cần backend hỗ trợ logic tìm và sửa trong mảng addresses
       };
 
       await AdminAPI.updateUser(editingUser._id, payload);
       
       toast.success("Cập nhật thông tin thành công!");
       setShowModal(false);
-      fetchUsers(); // Reload lại danh sách
+      fetchUsers();
     } catch (error) {
       toast.error(error.message || "Lỗi cập nhật thông tin");
     }
@@ -177,7 +164,6 @@ const AdminUserList = () => {
                     <td className="text-end pe-4">
                       {!user.isAdmin && ( 
                         <div className="d-flex gap-2 justify-content-end">
-                            {/* Nút Chi tiết / Chỉnh sửa (Icon chữ i) */}
                             <button 
                                 className="btn btn-sm btn-outline-info"
                                 onClick={() => handleEditClick(user)}
@@ -186,7 +172,6 @@ const AdminUserList = () => {
                                 <i className="fas fa-info-circle"></i>
                             </button>
 
-                            {/* Nút Khóa/Mở khóa */}
                             <button 
                             className={`btn btn-sm fw-bold ${user.isBlocked ? "btn-outline-success" : "btn-outline-danger"}`}
                             onClick={() => handleBlockUser(user._id, user.isBlocked, user.name)}
@@ -213,7 +198,7 @@ const AdminUserList = () => {
         </div>
       </div>
 
-      {/* MODAL CHỈNH SỬA THÔNG TIN USER */}
+      {/* CHỈNH SỬA THÔNG TIN NGƯỜI DÙNG */}
       {showModal && (
         <div className="modal d-block" style={{backgroundColor: "rgba(0,0,0,0.5)"}}>
           <div className="modal-dialog modal-dialog-centered">
@@ -251,7 +236,6 @@ const AdminUserList = () => {
                     </div>
                   </div>
 
-                  {/* Phần địa chỉ (Chỉ hiển thị để xem, nếu backend hỗ trợ update thì mở comment ra) */}
                   <hr />
                   <h6 className="text-muted mb-3">Thông tin địa chỉ mặc định (Tham khảo)</h6>
                   <div className="row g-2">

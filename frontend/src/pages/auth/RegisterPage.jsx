@@ -1,4 +1,3 @@
-// src/pages/auth/RegisterPage.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,7 +6,7 @@ import { AuthAPI } from "../../services/api";
 const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [address, setAddress] = useState(""); // Địa chỉ giao hàng ban đầu
+  const [address, setAddress] = useState(""); 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -16,22 +15,14 @@ const RegisterPage = () => {
 
     try {
       setLoading(true);
-      
-      // Backend yêu cầu: { name, email, addresses: [{...}] }
-      // Ta đóng gói address thành mảng object như backend muốn
       const payload = {
         name,
         email,
         addresses: address ? [{ street: address, isDefault: true }] : []
       };
 
-      // Gọi API
       await AuthAPI.register(payload);
-
-      // Thành công
       toast.success("Đăng ký thành công! Vui lòng kiểm tra Email để lấy mật khẩu.");
-      
-      // Chuyển hướng về trang đăng nhập để user nhập pass vừa nhận được
       navigate("/login");
 
     } catch (error) {
@@ -54,7 +45,7 @@ const RegisterPage = () => {
               </div>
 
               <form onSubmit={handleSubmit}>
-                {/* Full Name */}
+                {/* Tên */}
                 <div className="mb-3">
                   <label className="form-label">Họ và tên</label>
                   <input
@@ -80,7 +71,7 @@ const RegisterPage = () => {
                   />
                 </div>
                 
-                {/* Address (Optional but recommended) */}
+                {/* Địa chỉ */}
                  <div className="mb-3">
                   <label className="form-label">Địa chỉ giao hàng (Tùy chọn)</label>
                   <input
@@ -92,7 +83,6 @@ const RegisterPage = () => {
                   />
                 </div>
 
-                {/* Button */}
                 <button 
                   type="submit" 
                   className="btn btn-success w-100 py-2"

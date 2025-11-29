@@ -19,7 +19,7 @@ const AdminCategoryList = () => {
     description: ""
   });
 
-  // Hàm load danh sách
+  // Lấy danh sách danh mục
   const fetchCategories = async () => {
     try {
       const data = await AdminAPI.getCategories();
@@ -35,30 +35,28 @@ const AdminCategoryList = () => {
     fetchCategories();
   }, []);
 
-  // Xử lý input form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     
-    // Tự động tạo slug khi nhập tên (nếu đang tạo mới)
     if (name === "name" && !isEditing) {
         const slug = value.toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/đ/g, "d").replace(/Đ/g, "D")
-            .replace(/\s+/g, "-") // Thay khoảng trắng bằng dấu gạch ngang
-            .replace(/[^\w-]+/g, ""); // Bỏ ký tự đặc biệt
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
         setFormData(prev => ({ ...prev, slug }));
     }
   };
 
-  // Mở Modal (Thêm mới)
+  // Thêm danh mục
   const handleAddNew = () => {
     setIsEditing(false);
     setFormData({ name: "", slug: "", description: "" });
     setShowModal(true);
   };
 
-  // Mở Modal (Chỉnh sửa)
+  // Chỉnh sửa danh mục
   const handleEdit = (cat) => {
     setIsEditing(true);
     setSelectedId(cat._id);
@@ -84,7 +82,7 @@ const AdminCategoryList = () => {
         toast.success("Tạo danh mục mới thành công!");
       }
       setShowModal(false);
-      fetchCategories(); // Reload list
+      fetchCategories();
     } catch (error) {
       toast.error(error.message || "Lỗi lưu danh mục");
     }

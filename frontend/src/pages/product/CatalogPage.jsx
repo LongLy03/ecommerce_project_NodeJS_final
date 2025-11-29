@@ -6,11 +6,10 @@ import ProductCard from "../../components/product/ProductCard";
 
 const CatalogPage = () => {
   const [products, setProducts] = useState([]);
-  const [meta, setMeta] = useState({}); // Pagination info
+  const [meta, setMeta] = useState({});
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // State cho bộ lọc
   const [filter, setFilter] = useState({
     search: searchParams.get("search") || "",
     minPrice: searchParams.get("minPrice") || "",
@@ -22,7 +21,6 @@ const CatalogPage = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        // Convert URL params thành object để gọi API
         const params = Object.fromEntries([...searchParams]);
         const res = await ProductAPI.getAll(params);
         setProducts(res.data);
@@ -37,10 +35,8 @@ const CatalogPage = () => {
     fetchProducts();
   }, [searchParams]);
 
-  // Xử lý khi bấm nút Lọc/Tìm kiếm
   const handleApplyFilter = (e) => {
     e.preventDefault();
-    // Cập nhật URL để useEffect tự chạy lại
     setSearchParams(filter);
   };
 
@@ -52,7 +48,6 @@ const CatalogPage = () => {
   return (
     <div className="container mt-4">
       <div className="row">
-        {/* Sidebar Bộ lọc */}
         <div className="col-md-3 mb-4">
           <div className="card p-3 shadow-sm">
             <h5 className="mb-3">Bộ lọc tìm kiếm</h5>
@@ -124,7 +119,6 @@ const CatalogPage = () => {
                 </div>
               )}
 
-              {/* Phân trang */}
               {meta.totalPages > 1 && (
                 <nav className="mt-4">
                   <ul className="pagination justify-content-center">

@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { AdminAPI } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../../components/common/Loader";
-import AdminTaskbar from "./AdminTaskbar"; // Import thanh điều hướng
+import AdminTaskbar from "./AdminTaskbar";
 
 const AdminDiscountList = () => {
   const [discounts, setDiscounts] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // State cho form tạo mới
   const [newCode, setNewCode] = useState({ code: "", value: 0, usageLimit: 10 });
   const [showModal, setShowModal] = useState(false);
 
@@ -30,7 +29,6 @@ const AdminDiscountList = () => {
   const handleCreateDiscount = async (e) => {
     e.preventDefault();
     
-    // Ép kiểu sang số để đảm bảo Backend nhận đúng format
     const valueNum = Number(newCode.value);
     const usageLimitNum = Number(newCode.usageLimit);
 
@@ -39,12 +37,11 @@ const AdminDiscountList = () => {
     }
 
     try {
-      // Chuẩn bị dữ liệu sạch để gửi đi
       const payload = {
           code: newCode.code,
           value: valueNum,
           usageLimit: usageLimitNum,
-          usedCount: 0 // Mặc định khi tạo mới là chưa dùng lần nào
+          usedCount: 0
       };
 
       await AdminAPI.createDiscount(payload);
@@ -54,7 +51,6 @@ const AdminDiscountList = () => {
       setNewCode({ code: "", value: 0, usageLimit: 10 });
       fetchDiscounts(); 
     } catch (error) {
-      // Hiển thị chi tiết lỗi nếu có
       const errorMsg = error.error || error.message || "Lỗi tạo mã giảm giá";
       toast.error(errorMsg);
       console.error("Lỗi tạo mã:", error);
@@ -65,10 +61,8 @@ const AdminDiscountList = () => {
 
   return (
     <div className="container-fluid px-4 mt-4 mb-5">
-      {/* 1. Thanh điều hướng */}
       <AdminTaskbar />
 
-      {/* 2. Header Gọn gàng hơn */}
       <div className="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm border-start border-5 border-danger">
         <div>
            <h4 className="fw-bold text-danger mb-0">
@@ -84,7 +78,6 @@ const AdminDiscountList = () => {
         </button>
       </div>
 
-      {/* 3. Bảng Danh sách (Giao diện Card) */}
       <div className="card shadow-sm border-0">
         <div className="card-body p-0">
           <div className="table-responsive">
@@ -160,7 +153,6 @@ const AdminDiscountList = () => {
         </div>
       </div>
 
-      {/* 4. Modal Tạo Mã (Giao diện đẹp hơn) */}
       {showModal && (
         <div className="modal d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog modal-dialog-centered">

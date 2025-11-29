@@ -11,11 +11,9 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // State cho Modal Sửa Thông Tin Cá Nhân
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoForm, setInfoForm] = useState({ name: "", email: "", phone: "" });
 
-  // State cho Modal Địa chỉ (Thêm/Sửa)
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState(null);
   const [addressForm, setAddressForm] = useState({
@@ -23,10 +21,9 @@ const ProfilePage = () => {
     street: "",
     city: "",
     country: "Việt Nam"
-    // Bỏ field isDefault ở form
   });
 
-  // 1. LOAD DỮ LIỆU
+  // LẤY DỮ LIỆU
   const fetchProfileData = async () => {
     try {
       const [userData, addrData] = await Promise.all([
@@ -37,7 +34,6 @@ const ProfilePage = () => {
       setUser(userData);
       setAddresses(addrData || []);
       
-      // Lấy SĐT từ địa chỉ mặc định để hiển thị
       const defaultAddr = userData.defaultAddress;
       setInfoForm({ 
           name: userData.name, 
@@ -56,7 +52,7 @@ const ProfilePage = () => {
     fetchProfileData();
   }, []);
 
-  // 2. XỬ LÝ CẬP NHẬT THÔNG TIN CÁ NHÂN
+  // XỬ LÝ CẬP NHẬT THÔNG TIN CÁ NHÂN
   const handleUpdateInfo = async (e) => {
     e.preventDefault();
     try {
@@ -79,7 +75,7 @@ const ProfilePage = () => {
     }
   };
 
-  // 3. XỬ LÝ ĐỊA CHỈ (CRUD)
+  // XỬ LÝ ĐỊA CHỈ
   const openAddAddress = () => {
     setEditingAddressId(null);
     // Form mặc định không có isDefault
@@ -101,11 +97,7 @@ const ProfilePage = () => {
   const handleSaveAddress = async (e) => {
     e.preventDefault();
     try {
-      // Luôn gửi isDefault: false khi thêm/sửa từ form này
-      // Người dùng sẽ set default sau ở ngoài danh sách
       const payload = { ...addressForm, isDefault: false };
-      
-      // Tuy nhiên nếu đang sửa chính cái địa chỉ mặc định thì phải giữ nguyên là default
       if (editingAddressId) {
           const currentAddr = addresses.find(a => a._id === editingAddressId);
           if (currentAddr && currentAddr.isDefault) {
@@ -130,7 +122,6 @@ const ProfilePage = () => {
   const handleDeleteAddress = async (id) => {
     const addressToDelete = addresses.find(a => a._id === id);
 
-    // Cảnh báo nếu xóa địa chỉ mặc định
     const warningText = addressToDelete?.isDefault 
         ? "Đây là địa chỉ mặc định. Bạn sẽ cần chọn địa chỉ khác làm mặc định sau khi xóa." 
         : "Bạn có chắc chắn muốn xóa địa chỉ này không?";
@@ -150,7 +141,6 @@ const ProfilePage = () => {
         try {
             await AuthAPI.deleteAddress(id);
             toast.success("Đã xóa địa chỉ");
-            // KHÔNG tự động set default mới (theo yêu cầu mới)
             fetchProfileData();
         } catch (error) {
             toast.error("Lỗi khi xóa địa chỉ");
@@ -174,7 +164,6 @@ const ProfilePage = () => {
   return (
     <div className="container mt-4 mb-5">
       <div className="row">
-        {/* CỘT TRÁI: MENU & AVATAR */}
         <div className="col-md-4 mb-4">
           <div className="card shadow-sm border-0 text-center p-4">
               <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 fw-bold" 
@@ -206,9 +195,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* CỘT PHẢI: NỘI DUNG */}
         <div className="col-md-8">
-            
             {/* 1. THÔNG TIN CÁ NHÂN */}
             <div className="card shadow-sm border-0 mb-4">
                 <div className="card-header bg-white fw-bold py-3">
@@ -226,7 +213,6 @@ const ProfilePage = () => {
                     <div className="row mb-2">
                         <div className="col-sm-3 text-muted">Số điện thoại:</div>
                         <div className="col-sm-9">
-                            {/* Logic hiển thị: Ưu tiên SĐT mặc định, nếu không có thì báo chưa cập nhật */}
                             {user.defaultAddress?.phone ? (
                                 <span className="fw-bold text-dark">{user.defaultAddress.phone}</span>
                             ) : (
@@ -254,7 +240,7 @@ const ProfilePage = () => {
                 </div>
             </div>
 
-            {/* 2. SỔ ĐỊA CHỈ */}
+            {/* 2. ĐỊA CHỈ */}
             <div className="card shadow-sm border-0">
                 <div className="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
                     <span><i className="fas fa-map-marker-alt me-2 text-danger"></i>Sổ địa chỉ</span>
@@ -263,7 +249,6 @@ const ProfilePage = () => {
                     </button>
                 </div>
                 <div className="card-body">
-                    {/* Cảnh báo nếu chưa có địa chỉ mặc định */}
                     {!user.defaultAddress && addresses.length > 0 && (
                         <div className="alert alert-warning small mb-3">
                             <i className="fas fa-exclamation-triangle me-2"></i>
@@ -325,7 +310,7 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* --- MODAL 1: CHỈNH SỬA THÔNG TIN CÁ NHÂN --- */}
+      {/* CHỈNH SỬA THÔNG TIN CÁ NHÂN */}
       {showInfoModal && (
         <div className="modal d-block" style={{backgroundColor: "rgba(0,0,0,0.5)"}}>
             <div className="modal-dialog modal-dialog-centered">
@@ -378,7 +363,7 @@ const ProfilePage = () => {
         </div>
       )}
 
-      {/* --- MODAL 2: THÊM/SỬA ĐỊA CHỈ --- */}
+      {/* THÊM/SỬA ĐỊA CHỈ */}
       {showAddressModal && (
         <div className="modal d-block" style={{backgroundColor: "rgba(0,0,0,0.5)"}}>
             <div className="modal-dialog modal-dialog-centered">
@@ -427,9 +412,7 @@ const ProfilePage = () => {
                                     />
                                 </div>
                             </div>
-                            
-                            {/* Đã bỏ checkbox "Đặt làm mặc định" ở đây theo yêu cầu */}
-                            
+                        
                             <div className="d-flex justify-content-end gap-2 mt-3">
                                 <button type="button" className="btn btn-secondary" onClick={() => setShowAddressModal(false)}>Hủy</button>
                                 <button type="submit" className="btn btn-success">Lưu địa chỉ</button>

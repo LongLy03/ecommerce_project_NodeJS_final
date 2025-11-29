@@ -29,11 +29,10 @@ const CartPage = () => {
     fetchCart();
   }, []);
 
-  // --- LOGIC TÍNH TOÁN TIỀN DỰA TRÊN SẢN PHẨM ĐƯỢC CHỌN ---
-  // 1. Lọc ra các item hợp lệ
+  // 1. Lọc các sản phẩm
   const validItems = cart?.items?.filter(item => item.product) || [];
   
-  // 2. Tính Tạm tính (Chỉ cộng những item có id nằm trong selectedItems)
+  // 2. Tính Tạm tính
   const selectedSubtotal = validItems.reduce((acc, item) => {
       if (selectedItems.includes(item._id)) {
           return acc + (item.price * item.quantity);
@@ -41,8 +40,8 @@ const CartPage = () => {
       return acc;
   }, 0);
 
-  // 3. Tính Giảm giá (Nếu có mã giảm giá, tính % trên Tạm tính được chọn)
-  const discountPercent = cart?.discount?.value || 0; // Ví dụ: 10 (10%)
+  // 3. Tính Giảm giá
+  const discountPercent = cart?.discount?.value || 0;
   const selectedDiscountAmount = (selectedSubtotal * discountPercent) / 100;
 
   // 4. Phí vận chuyển (Chỉ tính khi có mua hàng)
@@ -50,7 +49,6 @@ const CartPage = () => {
 
   // 5. Tổng cộng cuối cùng
   const finalTotal = Math.max(0, selectedSubtotal - selectedDiscountAmount + shippingFee);
-  // ---------------------------------------------------------
 
   const handleUpdateQuantity = async (itemId, newQty) => {
     if (newQty < 1) return;
@@ -209,7 +207,7 @@ const CartPage = () => {
           </div>
         </div>
         
-        {/* CỘT THANH TOÁN - HIỂN THỊ DỮ LIỆU TÍNH TOÁN REALTIME */}
+        {/* CỘT THANH TOÁN */}
         <div className="col-lg-4">
           <div className="card shadow-sm border-0 sticky-top" style={{ top: "20px", zIndex: 1 }}>
             <div className="card-body p-4">
@@ -241,7 +239,7 @@ const CartPage = () => {
                 </div>
               )}
 
-              {/* Phí ship (chỉ hiện khi có hàng) */}
+              {/* Phí vận chuyển */}
               {selectedItems.length > 0 && (
                 <div className="d-flex justify-content-between mb-2 text-muted small">
                     <span>Phí vận chuyển:</span>

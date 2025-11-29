@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-// Lấy URL từ biến môi trường hoặc mặc định localhost
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-// 1. Khởi tạo Axios Instance
 const api = axios.create({
     baseURL: API_BASE,
     headers: {
@@ -11,7 +9,6 @@ const api = axios.create({
     },
 });
 
-// 2. Interceptor: Tự động gắn Token vào mọi request nếu đã đăng nhập
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token'); // Lấy token từ LocalStorage
@@ -23,37 +20,31 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// 3. Interceptor: Xử lý lỗi trả về
 api.interceptors.response.use(
-    (response) => response.data, // Trả về data trực tiếp cho gọn
+    (response) => response.data,
     (error) => {
-        // Xử lý lỗi 401 (Hết hạn token hoặc chưa đăng nhập)
         if (error.response && error.response.status === 401) {
-            // Chỉ logout nếu không phải đang ở trang login (tránh lặp vô tận)
             if (window.location.pathname !== '/login') {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userInfo');
-                // Có thể redirect về login hoặc reload trang
-                // window.location.href = '/login'; 
             }
         }
-        // Trả về lỗi để component xử lý hiển thị alert
         return Promise.reject(error.response ? error.response.data : error);
     }
 );
 
-// --- ĐỊNH NGHĨA CÁC API ENDPOINTS (Khớp với Backend Routes) ---
+// --- ĐỊNH NGHĨA CÁC API ENDPOINTS ---
 
 export const ProductAPI = {
-    // Lấy danh sách sản phẩm (hỗ trợ lọc, tìm kiếm, phân trang)
-    // Backend: GET /products?page=1&limit=20&search=...
+    // Lấy danh sách sản phẩm
+    // Backend: GET /products?
     getAll: (params) => api.get('/products', { params }),
 
-    // Lấy chi tiết sản phẩm (theo ID hoặc Slug)
+    // Lấy chi tiết sản phẩm
     // Backend: GET /products/:idOrSlug
     getDetail: (idOrSlug) => api.get(`/products/${idOrSlug}`),
 
-    // Lấy dữ liệu cho trang chủ (Mới, Bán chạy, Category)
+    // Lấy dữ liệu cho trang chủ
     // Backend: GET /products/home/sections
     getHomeSections: () => api.get('/products/home/sections'),
 

@@ -13,7 +13,6 @@ const AdminOrderList = () => {
   const [page, setPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState(""); 
 
-  // State cho Modal Chi tiết
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
@@ -40,12 +39,11 @@ const AdminOrderList = () => {
     fetchOrders();
   }, [page, filterStatus]);
 
-  // --- HÀM XEM CHI TIẾT ---
+  // Xem chi tiết đơn hàng
   const handleViewDetail = async (orderId) => {
     setShowModal(true);
     setLoadingDetail(true);
     try {
-        // Gọi API lấy chi tiết đơn hàng
         const detail = await AdminAPI.getOrderDetail(orderId);
         setSelectedOrder(detail);
     } catch (error) {
@@ -91,7 +89,6 @@ const AdminOrderList = () => {
         });
         fetchOrders();
         
-        // Nếu đang mở modal chi tiết của đơn hàng này thì cập nhật lại data trong modal luôn
         if (selectedOrder && selectedOrder._id === orderId) {
             handleViewDetail(orderId);
         }
@@ -156,7 +153,6 @@ const AdminOrderList = () => {
                   <th>Ngày đặt</th>
                   <th>Tổng tiền</th>
                   <th>Trạng thái</th>
-                  {/* CỘT CHI TIẾT MỚI */}
                   <th className="text-center">Chi tiết</th>
                   <th className="text-end pe-4">Hành động</th>
                 </tr>
@@ -176,7 +172,6 @@ const AdminOrderList = () => {
                         <td className="fw-bold text-danger">{formatMoney(order.totalPrice)}</td>
                         <td>{getStatusBadge(order.status)}</td>
                         
-                        {/* NÚT ICON CHỮ I (Xem chi tiết) */}
                         <td className="text-center">
                             <button 
                                 className="btn btn-sm btn-outline-info rounded-circle shadow-sm" 
@@ -226,7 +221,7 @@ const AdminOrderList = () => {
         )}
       </div>
 
-      {/* --- MODAL CHI TIẾT ĐƠN HÀNG --- */}
+      {/* --- CHI TIẾT ĐƠN HÀNG --- */}
       {showModal && (
         <div className="modal d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)", overflowY: 'auto' }}>
           <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -268,7 +263,6 @@ const AdminOrderList = () => {
                                         <strong className="me-2">Trạng thái: </strong> {getStatusBadge(selectedOrder.status)}
                                     </div>
                                     
-                                    {/* Nút cập nhật nhanh trong Modal */}
                                     {selectedOrder.status === 'pending' && (
                                         <button className="btn btn-sm btn-primary w-100 shadow-sm" onClick={() => handleUpdateStatus(selectedOrder._id, 'confirmed')}>
                                             <i className="fas fa-check me-1"></i> Xác nhận đơn này

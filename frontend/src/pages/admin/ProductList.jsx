@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import Loader from "../../components/common/Loader";
 import Pagination from "../../components/common/Pagination";
 import Swal from "sweetalert2";
-import AdminTaskbar from "./AdminTaskbar"; // <--- QUAN TRỌNG: Đã import Taskbar
+import AdminTaskbar from "./AdminTaskbar";
 
 const PLACEHOLDER_IMG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20fill%3D%22%23f8f9fa%22%20width%3D%22200%22%20height%3D%22200%22%2F%3E%3Ctext%20fill%3D%22%23dee2e6%22%20font-family%3D%22sans-serif%22%20font-size%3D%2230%22%20dy%3D%2210.5%22%20font-weight%3D%22bold%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
 
@@ -80,8 +80,6 @@ const AdminProductList = () => {
 
   return (
     <div className="container-fluid px-4 mt-4 mb-5">
-      
-      {/* --- THANH TASKBAR ĐÃ ĐƯỢC THÊM VÀO ĐÂY --- */}
       <AdminTaskbar />
 
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -94,7 +92,6 @@ const AdminProductList = () => {
         </Link>
       </div>
 
-      {/* Bộ lọc tìm kiếm */}
       <div className="card shadow-sm mb-4">
         <div className="card-body py-3">
             <div className="row">
@@ -117,7 +114,6 @@ const AdminProductList = () => {
         </div>
       </div>
 
-      {/* Bảng dữ liệu */}
       <div className="card shadow-sm border-0">
         <div className="card-body p-0">
           <div className="table-responsive">

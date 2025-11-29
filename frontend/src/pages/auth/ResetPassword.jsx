@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { AuthAPI } from "../../services/api";
 
 const ResetPassword = () => {
-  const { token } = useParams(); // Lấy token từ URL
+  const { token } = useParams();
   const navigate = useNavigate();
   
   const [password, setPassword] = useState("");
@@ -24,8 +24,6 @@ const ResetPassword = () => {
 
     try {
       setLoading(true);
-      // Gọi API Reset
-      // Backend: POST /users/reset-password/:token
       await AuthAPI.resetPassword(token, { password });
       
       toast.success("Đặt lại mật khẩu thành công! Vui lòng đăng nhập.");
