@@ -2,10 +2,15 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy cả package.json và package-lock.json (nếu có)
 COPY package*.json ./
-RUN npm install
-# RUN npm install sweetalert2 (Dòng này có thể gộp vào npm install nếu đã có trong package.json)
 
+# Cài đặt dependencies (bao gồm cả sweetalert2 nếu đã có trong package.json)
+# Nếu chưa có sweetalert2 trong package.json, bạn có thể chạy: npm install sweetalert2 --save
+RUN npm install
+RUN npm install sweetalert2
+
+# Copy mã nguồn
 COPY . .
 
 EXPOSE 3000

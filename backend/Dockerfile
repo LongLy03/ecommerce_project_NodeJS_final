@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 5000
 
 # Chạy lệnh dev
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

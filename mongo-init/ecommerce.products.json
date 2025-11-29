@@ -354,7 +354,7 @@
   "images": [
     "https://cdn2.fptshop.com.vn/unsafe/2023_9_18_638306528295272368_tai-nghe-airpods-pro-2023-usb-c-dd.jpg",
     "https://cdn.tgdd.vn/Products/Images/54/315014/tai-nghe-bluetooth-airpods-pro-2nd-gen-usb-c-charge-apple-thumb-1-600x600.jpg",
-    "https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/airpods-pro-2.png"
+    "data:image/jpeg;base64,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"
   ],
   "rating": 0,
   "numReviews": 0,
@@ -665,7 +665,7 @@
       "sku": "I9-14900K-BOX",
       "name": "Box Chính Hãng",
       "price": 14990000,
-      "stock": 10,
+      "stock": 8,
       "attributes": [
         {
           "key": "Bảo hành",
@@ -680,14 +680,14 @@
     "https://product.hstatic.net/200000722513/product/i9k_379efd950af74727a83b02c13817a3a7.png",
     "https://songphuong.vn/Content/uploads/2023/10/CPU-Intel-Core-i9-14900-i9-14900F-i9-14900K-i9-14900KF-5.jpg"
   ],
-  "rating": 0,
-  "numReviews": 0,
-  "numComments": 0,
+  "rating": 4,
+  "numReviews": 1,
+  "numComments": 1,
   "createdAt": {
     "$date": "2025-10-29T09:05:00.000Z"
   },
   "updatedAt": {
-    "$date": "2025-10-29T09:05:00.000Z"
+    "$date": "2025-11-28T15:04:59.652Z"
   }
 },
 {
@@ -709,7 +709,7 @@
       "sku": "MZ-V9P1T0",
       "name": "1TB",
       "price": 3290000,
-      "stock": 20,
+      "stock": 19,
       "attributes": [
         {
           "key": "Dung lượng",
@@ -739,13 +739,13 @@
     "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/e/text_ng_n_4__8_30.png",
     "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/e/text_ng_n_5__10_26.png"
   ],
-  "rating": 0,
-  "numReviews": 0,
-  "numComments": 0,
+  "rating": 5,
+  "numReviews": 1,
+  "numComments": 1,
   "createdAt": {
     "$date": "2025-10-29T09:10:00.000Z"
   },
   "updatedAt": {
-    "$date": "2025-10-29T09:10:00.000Z"
+    "$date": "2025-11-28T15:50:29.892Z"
   }
 }]

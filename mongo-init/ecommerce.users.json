@@ -55,45 +55,6 @@
 },
 {
   "_id": {
-    "$oid": "692855ed625bfaa1fff78358"
-  },
-  "name": "Giản Hoàng Huy pro",
-  "email": "huygianhoang2007@gmail.com",
-  "password": "$2b$10$7rg6EtSvOGNLikjbYQ8CW.vqkouPgmUnBz8JYykUHYsXXqJeZs1NO",
-  "isAdmin": false,
-  "isBlocked": false,
-  "addresses": [
-    {
-      "phone": "0987654343",
-      "street": "Đại học TDT",
-      "city": "HCM",
-      "country": "Việt Nam",
-      "isDefault": true,
-      "_id": {
-        "$oid": "6928569c625bfaa1fff78377"
-      },
-      "createdAt": {
-        "$date": "2025-11-27T13:48:12.388Z"
-      },
-      "updatedAt": {
-        "$date": "2025-11-27T13:48:47.388Z"
-      }
-    }
-  ],
-  "loyaltyPoints": 0,
-  "createdAt": {
-    "$date": "2025-11-27T13:45:17.909Z"
-  },
-  "updatedAt": {
-    "$date": "2025-11-27T14:18:39.595Z"
-  },
-  "__v": 2,
-  "tokenInvalidBefore": {
-    "$date": "2025-11-27T13:50:00.586Z"
-  }
-},
-{
-  "_id": {
     "$oid": "692857c8625bfaa1fff783eb"
   },
   "name": "Lý Tiểu Long",
@@ -129,5 +90,44 @@
   "__v": 1,
   "tokenInvalidBefore": {
     "$date": "2025-11-27T14:18:21.814Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69287ea9a2ee128cf0594c60"
+  },
+  "name": "Giản Hoàng Huy",
+  "email": "huygianhoang2007@gmail.com",
+  "password": "$2b$10$ofygwj9B3WatyPQTCO6.IeQ/qVr0ehve4fAGY1HJEXDx3CcenTplu",
+  "isAdmin": false,
+  "isBlocked": false,
+  "addresses": [
+    {
+      "phone": "09876543321",
+      "street": "923/32 Lê Văn Lương",
+      "city": "TP HCM",
+      "country": "Việt Nam",
+      "isDefault": true,
+      "_id": {
+        "$oid": "69287ed7a2ee128cf0594c6d"
+      },
+      "createdAt": {
+        "$date": "2025-11-27T16:39:51.128Z"
+      },
+      "updatedAt": {
+        "$date": "2025-11-27T16:39:53.312Z"
+      }
+    }
+  ],
+  "loyaltyPoints": 2967,
+  "createdAt": {
+    "$date": "2025-11-27T16:39:05.255Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-28T16:01:14.360Z"
+  },
+  "__v": 1,
+  "tokenInvalidBefore": {
+    "$date": "2025-11-28T16:01:14.360Z"
   }
 }]
