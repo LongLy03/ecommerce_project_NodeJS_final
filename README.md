@@ -56,7 +56,7 @@ docker-compose logs -f
 ### 1. Tài khoản đăng nhập
 Dữ liệu mẫu (Users, Products...) đã được tự động import khi Docker khởi chạy.
 * Tài khoản Admin: **admin@gmail.com / Admin123@**
-* Tài khoản User: **user@example.com / user123**
+* Tài khoản User: Giảng viên tạo ở chức năng đăng ký
 
 ### 2. Reset dữ liệu (Nếu cần)
 Nếu muốn xóa sạch dữ liệu và môi trường để chấm lại từ đầu, vui lòng chạy lệnh sau tại thư mục gốc:
