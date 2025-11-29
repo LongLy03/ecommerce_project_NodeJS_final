@@ -1,4 +1,3 @@
-Hướng dẫn cho giảng viên đối với bài final môn Lập trình web với NodeJS
 # Bài final môn Lập trình web với NodeJS
 
 Đây là project website thương mại điện tử (E-Commerce) cuối kỳ cho môn Lập trình web với NodeJS.
@@ -13,56 +12,55 @@ Hướng dẫn cho giảng viên đối với bài final môn Lập trình web v
 ## Yêu cầu hệ thống
 
 * **Node.js**: Phiên bản 18 trở lên.
-* **Docker Desktop**: Đã cài đặt và đang bật (để khởi tạo Database).
+* **Docker Desktop**: Đã cài đặt và đang bật.
 
 ---
 
-## Hướng dẫn cài đặt
+## PHẦN 1: HƯỚNG DẪN CÀI ĐẶT (INSTALLATION)
 
-1.  Clone repository:
-    ```bash
-    git clone [URL_REPOSITORY_CUA_BAN]
-    cd [TEN_THU_MUC_PROJECT]
-    ```
-2.  Cài đặt dependencies cho backend:
-    ```bash
-    cd backend
-    npm install
-    ```
-3.  Cài đặt dependencies cho frontend (nếu có):
-    ```bash
-    cd ../frontend
-    npm install
-    npm install sweetalert2
-    ```
+Thực hiện các bước sau để tải mã nguồn và cài đặt các thư viện cần thiết.
 
-## Hướng dẫn chạy dự án
+### 1. Clone Repository
+```bash
+git clone [URL_REPOSITORY_CUA_BAN]
+cd [TEN_THU_MUC_PROJECT]
+```
 
-1.  Tạo file `.env` trong thư mục `backend` và điền các biến môi trường cần thiết (ví dụ: `MONGO_URI`, `JWT_SECRET`).
-2.  Chạy backend server:
-    ```bash
-    cd backend
-    npm run dev
-    ```
-3.  Chạy frontend (nếu có):
-    ```bash
-    cd frontend
-    npm start
-    ```
-4.  Khởi chạy Database (Docker):
-    Mở tại thư mục gốc của dự án và chạy:
-    ```bash
-    docker-compose up -d
-    ```
----
+### 2. Kiểm tra File Cấu hình Docker
+Đảm bảo rằng các file sau đã tồn tại trong dự án của bạn (vì Docker sẽ sử dụng chúng để xây dựng môi trường):
+* **docker-compose.yml** (ở thư mục gốc)
+* **backend/Dockerfile**
+* **frontend/Dockerfile**
 
-## Hướng dẫn cho giảng viên
+## PHẦN 2: HƯỚNG DẪN CHẠY DỰ ÁN (RUN PROJECT)
+Dự án được thiết lập để chạy toàn bộ Database, Backend và Frontend chỉ với 1 lệnh Docker duy nhất.
 
-* **Tài khoản Admin:** `admin@gmail.com` / `Admin123@`
-* **Tài khoản User:** `user@example.com` / `user123`
+### 1. Khởi chạy toàn bộ hệ thống
+Mở terminal tại thư mục gốc của dự án và chạy lệnh sau:
+```bash
+docker-compose up -d --build
+```
 
-## Reset dữ liệu (nếu cần)
-    
-    docker-compose down -v
-    docker-compose up -d
-    
+### 2. Truy cập
+Sau khi lệnh chạy xong (có thể mất vài phút cho lần đầu tiên), bạn truy cập:
+* Website: **http://localhost:3000**
+* API Backend: **http://localhost:5000**
+
+### 3. Xem Log (Gỡ lỗi)
+Sử dụng lệnh sau để xem lỗi hoặc **console.log** của Backend/Frontend:
+```bash
+docker-compose logs -f
+```
+
+## Hướng dẫn chấm bài cho Giảng viên
+### 1. Tài khoản đăng nhập
+Dữ liệu mẫu (Users, Products...) đã được tự động import khi Docker khởi chạy.
+* Tài khoản Admin: **admin@gmail.com / Admin123@**
+* Tài khoản User: **user@example.com / user123**
+
+### 2. Reset dữ liệu (Nếu cần)
+Nếu muốn xóa sạch dữ liệu và môi trường để chấm lại từ đầu, vui lòng chạy lệnh sau tại thư mục gốc:
+```bash
+docker-compose down -v
+docker-compose up -d --build
+```
