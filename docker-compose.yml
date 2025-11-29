@@ -1,22 +1,65 @@
 version: '3.8'
 
 services:
+  # 1. Database (Giữ nguyên cấu hình cũ)
   mongodb:
     image: mongo:latest
     container_name: ecommerce-mongo
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=password123
-      # Tự động tạo DB tên là ecommerce_db khi khởi tạo
-      - MONGO_INITDB_DATABASE=ecommerce_db 
+      - MONGO_INITDB_DATABASE=ecommerce_db
     ports:
       - "27018:27017"
     volumes:
       - mongo_data:/data/db
-      
-      # QUAN TRỌNG: Mount cả thư mục database vào entrypoint
-      # Docker sẽ tự chạy file .sh và nhìn thấy các file .json ở đó luôn
       - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - ecommerce-network
+
+  # 2. Backend Service
+  backend:
+    build: ./backend  # Dựng từ Dockerfile trong folder backend
+    container_name: ecommerce-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      # QUAN TRỌNG: Trong mạng Docker, tên host là tên service ('mongodb'), cổng là cổng gốc (27017)
+      - MONGO_URI=mongodb://root:password123@mongodb:27017/ecommerce_db?authSource=admin
+      - JWT_SECRET=secret_cua_ban
+      - SESSION_SECRET=secret_session_cua_ban
+      - FRONTEND_URL=http://localhost:3000
+    volumes:
+      - ./backend:/app           # Mount code máy thật vào để Hot Reload
+      - /app/node_modules        # Giữ nguyên node_modules của container (không bị ghi đè)
+    depends_on:
+      - mongodb                  # Đợi mongo chạy xong mới chạy backend
+    networks:
+      - ecommerce-network
+
+  # 3. Frontend Service
+  frontend:
+    build: ./frontend # Dựng từ Dockerfile trong folder frontend
+    container_name: ecommerce-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Bắt buộc để Hot Reload React hoạt động trên Docker Windows
+      - WDS_SOCKET_PORT=0
+    volumes:
+      - ./frontend:/app          # Mount code máy thật vào
+      - /app/node_modules        # Giữ nguyên node_modules
+    stdin_open: true             # Giữ terminal mở để React không bị thoát
+    tty: true
+    depends_on:
+      - backend
+    networks:
+      - ecommerce-network
 
 volumes:
   mongo_data:
+
+networks:
+  ecommerce-network:
+    driver: bridge
