@@ -1,5 +1,5 @@
 services:
-  # 1. Database (Giữ nguyên cấu hình cũ)
+  # 1. Database (Giữ nguyên cấu hình cũ nhưng thêm import)
   mongodb:
     image: mongo:latest
     container_name: ecommerce-mongo
@@ -11,6 +11,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+      - ./mongo-init:/mongo-init   # <-- MOUNT THƯ MỤC IMPORT
     networks:
       - ecommerce-network
     healthcheck:
@@ -18,6 +19,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+    # <-- OVERRIDE ENTRYPOINT ĐỂ TỰ IMPORT DATA
+    command: >
+      bash -c "
+      mongod --bind_ip_all --logpath /var/log/mongodb.log &
+      sleep 5 &&
+      echo '>>> START IMPORTING JSON FILES >>>' &&
+      mongosh /mongo-init/init.js &&
+      echo '>>> IMPORT DONE >>>' &&
+      tail -f /dev/null
+      "
 
   # 2. Backend Service
   backend:
