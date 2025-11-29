@@ -1,22 +1,21 @@
 #!/bin/bash
 set -e
 
+DB_HOST="ecommerce-mongo"
+
 echo ">>> BẮT ĐẦU IMPORT DỮ LIỆU TỰ ĐỘNG..."
 
-# Chờ một chút để đảm bảo mongod đã sẵn sàng chấp nhận kết nối
-sleep 5
+# Chờ database chính khởi động xong
+sleep 2
 
-# Duyệt qua tất cả file json bắt đầu bằng ecommerce. trong thư mục mount
-for file in /docker-entrypoint-initdb.d/ecommerce.*.json; do
+for file in /data/ecommerce.*.json; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
-        # Tách tên collection từ tên file (VD: ecommerce.products.json -> products)
-        # Logic: Lấy phần giữa dấu chấm đầu tiên và dấu chấm cuối cùng
         collection_name=$(echo "$filename" | cut -d'.' -f2)
         
         echo "Dang import file: $filename vao collection: $collection_name"
 
-        mongoimport --host localhost \
+        mongoimport --host $DB_HOST \
                     --username root \
                     --password password123 \
                     --authenticationDatabase admin \
@@ -25,7 +24,7 @@ for file in /docker-entrypoint-initdb.d/ecommerce.*.json; do
                     --type json \
                     --file "$file" \
                     --jsonArray \
-                    --drop  # Xóa dữ liệu cũ trước khi import
+                    --drop
     fi
 done
 

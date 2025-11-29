@@ -10,7 +10,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./mongo-init:/docker-entrypoint-initdb.d
+      - mongo_data:/data/db
     networks:
       - ecommerce-network
     healthcheck:
@@ -18,6 +18,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # SERVICE MỚI: Dùng để import data
+  mongo-seed:
+    build: ./mongo-init
+    container_name: ecommerce-seed
+    networks:
+      - ecommerce-network
+    depends_on:
+      mongodb:
+        condition: service_healthy # Chỉ chạy khi mongodb đã healthcheck OK
+    restart: "no" # Chạy xong 1 lần rồi tắt, không restart
 
   # 2. Backend
   backend:
