@@ -20,13 +20,7 @@
 
 Thực hiện các bước sau để tải mã nguồn và cài đặt các thư viện cần thiết.
 
-### 1. Clone Repository
-```bash
-git clone [URL_REPOSITORY_CUA_BAN]
-cd [TEN_THU_MUC_PROJECT]
-```
-
-### 2. Kiểm tra File Cấu hình Docker
+### Kiểm tra File Cấu hình Docker
 Đảm bảo rằng các file sau đã tồn tại trong dự án của bạn (vì Docker sẽ sử dụng chúng để xây dựng môi trường):
 * **docker-compose.yml** (ở thư mục gốc)
 * **backend/Dockerfile**

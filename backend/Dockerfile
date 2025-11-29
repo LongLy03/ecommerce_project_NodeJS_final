@@ -16,5 +16,5 @@ COPY . .
 # Mở port 5000
 EXPOSE 5000
 
-# Chạy lệnh dev (để dùng nodemon)
-CMD ["npm", "run", "dev"]
+# Chạy server
+CMD ["npm", "start"]
