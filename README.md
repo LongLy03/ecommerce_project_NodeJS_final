@@ -13,6 +13,7 @@
 
 * **Node.js**: Phiên bản 18 trở lên.
 * **Docker Desktop**: Đã cài đặt và đang bật.
+* **import.sh**: Đảm bảo file import.sh trong thư mục **mongo-init** ở định dạng **LF**
 
 ---
 
