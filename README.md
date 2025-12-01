@@ -2,6 +2,12 @@
 
 Đây là project website thương mại điện tử (E-Commerce) cuối kỳ cho môn Lập trình web với NodeJS.
 
+## Các thành ien trong nhóm thực hiện ứng dụng
+
+* Lý Tiểu Long - 52200168
+* Giản Hoàng Huy - 52200147
+* Lê Ngọc Sơn - 52200158
+
 ## Các công nghệ sử dụng
 
 * **Backend:** Node.js, Express, MongoDB (Mongoose)

@@ -27,7 +27,7 @@ services:
       - ecommerce-network
     depends_on:
       mongodb:
-        condition: service_healthy # Chỉ chạy khi mongodb đã healthcheck OK
+        condition: service_healthy
     restart: "no" # Chạy xong 1 lần rồi tắt, không restart
 
   # 2. Backend

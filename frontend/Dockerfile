@@ -6,7 +6,6 @@ WORKDIR /app
 COPY package*.json ./
 
 # Cài đặt dependencies (bao gồm cả sweetalert2 nếu đã có trong package.json)
-# Nếu chưa có sweetalert2 trong package.json, bạn có thể chạy: npm install sweetalert2 --save
 RUN npm install
 RUN npm install sweetalert2
 
